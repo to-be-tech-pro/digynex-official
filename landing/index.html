@@ -1,0 +1,589 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DigyNex | Architecting the Digital Future</title>
+    <meta
+      name="description"
+      content="DigyNex is a global IT ecosystem specializing in tuition management, social automation, and enterprise solutions."
+    />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <!-- Premium Navigation -->
+    <nav class="glass-nav">
+      <div class="container nav-content">
+        <div class="logo"><span class="gold-text">Digy</span>Nex</div>
+        <ul class="nav-links">
+          <li><a href="#home">Home</a></li>
+          <li><a href="#products">Products</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#about">About</a></li>
+        </ul>
+        <div class="nav-actions">
+          <a href="#contact" class="btn btn-outline">Contact Us</a>
+          <button onclick="openLoginModal()" class="btn btn-gold">
+            Client Portal
+          </button>
+        </div>
+      </div>
+    </nav>
+
+    <main>
+      <!-- Hero Section -->
+      <section id="home" class="hero">
+        <div class="hero-glow"></div>
+        <div class="container hero-content">
+          <div class="hero-text">
+            <span class="badge">Next Generation IT Ecosystem</span>
+            <h1>
+              Architecting the <span class="gold-text">Digital Future</span>
+            </h1>
+            <p>
+              Empowering businesses and institutions worldwide with
+              high-performance digital tools, automation, and unparalleled IT
+              expertise.
+            </p>
+            <div class="cta-group">
+              <a href="#products" class="btn btn-gold btn-lg"
+                >Explore Ecosystem</a
+              >
+              <button class="btn btn-glass btn-lg" onclick="openLoginModal()">
+                <i class="fa-solid fa-user-lock"></i> Client Access
+              </button>
+            </div>
+          </div>
+          <div class="hero-visual">
+            <div class="tech-canvas">
+              <!-- Integrated Branding -->
+              <div class="hero-branding">
+                <div class="brand-identity">
+                  <span class="brand-name"
+                    >Digy<span class="gold-text">Nex</span></span
+                  >
+                  <div class="brand-status">
+                    <span class="status-dot"></span>
+                    <span>Systems Online</span>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Animated UI Elements -->
+              <div class="ui-cluster">
+                <div class="glass-element core-ui">
+                  <img
+                    src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1500&auto=format&fit=crop"
+                    alt="Core Infrastructure"
+                    class="ui-img"
+                  />
+                </div>
+                <div class="floating-data dns-card">
+                  <i class="fa-solid fa-microchip icon-gold gold-text"></i>
+                  <div class="data-text">
+                    <small>Core Engine</small>
+                    <strong>v3.0 ENTERPRISE</strong>
+                  </div>
+                </div>
+                <div class="floating-data lead-card">
+                  <i class="fa-solid fa-bolt icon-gold gold-text"></i>
+                  <div class="data-text">
+                    <small>Execution Speed</small>
+                    <strong>0.02ms LATENCY</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Products Tabs Section -->
+      <section id="products" class="products">
+        <div class="container">
+          <div class="section-header">
+            <h2>Our <span class="gold-text">Product Ecosystem</span></h2>
+            <p>Scalable solutions designed for the modern world.</p>
+          </div>
+
+          <div class="product-tabs">
+            <div class="tab-triggers">
+              <button class="tab-btn active" data-target="tuition">
+                Tuition Manager
+              </button>
+              <button class="tab-btn" data-target="cms">Enterprise CMS</button>
+              <button class="tab-btn" data-target="fb-auto">
+                Facebook Nexus
+              </button>
+              <button class="tab-btn" data-target="future">Future Labs</button>
+            </div>
+
+            <div class="tab-content active" id="tuition">
+              <div class="product-grid">
+                <div class="product-info">
+                  <h3>Elite Tuition Manager</h3>
+                  <p>
+                    A central operating system for educational institutes.
+                    Manage students, attendance, payments, and exams with
+                    military-grade precision.
+                  </p>
+                  <ul class="features-list">
+                    <li>
+                      <i class="fa-solid fa-check gold-text"></i> Automated
+                      Billing & Fees
+                    </li>
+                    <li>
+                      <i class="fa-solid fa-check gold-text"></i> QR-Based
+                      Attendance
+                    </li>
+                    <li>
+                      <i class="fa-solid fa-check gold-text"></i> Parent Connect
+                      Portal
+                    </li>
+                  </ul>
+                  <div class="cta-row">
+                    <button
+                      onclick="openLeadModal('Tuition Manager')"
+                      class="btn btn-gold"
+                    >
+                      Request Demo
+                    </button>
+                    <a
+                      href="https://tms.digynex.se"
+                      target="_blank"
+                      class="btn btn-glass"
+                    >
+                      Explore Ecosystem
+                    </a>
+                  </div>
+                </div>
+                <div class="product-image">
+                  <div class="glass-mockup">
+                    <img
+                      src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=1000&auto=format&fit=crop"
+                      alt="CMS Preview"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-content" id="cms">
+              <div class="product-grid">
+                <div class="product-info">
+                  <h3>Nexus Enterprise CMS</h3>
+                  <p>
+                    The operational heart for scaling businesses. A
+                    comprehensive ecosystem for lead orchestration, client
+                    lifecycle management, and high-performance workflow
+                    automation.
+                  </p>
+                  <ul class="features-list">
+                    <li>
+                      <i class="fa-solid fa-check gold-text"></i> End-to-End
+                      Lead Tracking
+                    </li>
+                    <li>
+                      <i class="fa-solid fa-check gold-text"></i> Visual Deal
+                      Pipelines
+                    </li>
+                    <li>
+                      <i class="fa-solid fa-check gold-text"></i> Multi-channel
+                      CRM Sync
+                    </li>
+                  </ul>
+                  <div class="cta-row">
+                    <button
+                      onclick="openLeadModal('Enterprise CMS')"
+                      class="btn btn-gold"
+                    >
+                      Request Demo
+                    </button>
+                    <a
+                      href="https://cms.digynex.se"
+                      target="_blank"
+                      class="btn btn-glass"
+                    >
+                      View Solutions
+                    </a>
+                  </div>
+                </div>
+                <div class="product-image">
+                  <div class="glass-mockup">
+                    <img
+                      src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?q=80&w=1000&auto=format&fit=crop"
+                      alt="Enterprise CMS Dashboard"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Facebook Nexus Tab -->
+            <div class="tab-content" id="fb-auto">
+              <div class="product-grid">
+                <div class="product-info">
+                  <h3>Nexus Flow (FB Automation)</h3>
+                  <p>
+                    The ultimate marketing engine. Scale your reach without
+                    lifting a finger. Our AI-driven automation handles
+                    engagement, posting, and leads.
+                  </p>
+                  <ul class="features-list">
+                    <li>
+                      <i class="fa-solid fa-check gold-text"></i> Intelligent
+                      Auto-Engagement
+                    </li>
+                    <li>
+                      <i class="fa-solid fa-check gold-text"></i> High-Speed
+                      Lead Generation
+                    </li>
+                    <li>
+                      <i class="fa-solid fa-check gold-text"></i> 24/7 Smart
+                      Posting Engine
+                    </li>
+                  </ul>
+                  <div
+                    class="nexus-monitor glass-card"
+                    id="nexusMonitor"
+                    style="
+                      display: none;
+                      margin-bottom: 20px;
+                      padding: 15px;
+                      border-radius: 12px;
+                      background: rgba(255, 255, 255, 0.03);
+                    "
+                  >
+                    <div
+                      style="
+                        display: flex;
+                        align-items: center;
+                        gap: 10px;
+                        margin-bottom: 10px;
+                      "
+                    >
+                      <span class="status-indicator online"></span>
+                      <strong
+                        style="
+                          font-size: 14px;
+                          letter-spacing: 1px;
+                          color: var(--gold);
+                        "
+                        >NEXUS LIVE FEED</strong
+                      >
+                    </div>
+                    <div
+                      id="nexusStatus"
+                      style="font-size: 13px; color: #ccc; margin-bottom: 8px"
+                    >
+                      Connecting to VPS Engine...
+                    </div>
+                    <div
+                      style="
+                        height: 6px;
+                        background: rgba(0, 0, 0, 0.3);
+                        border-radius: 3px;
+                        overflow: hidden;
+                      "
+                    >
+                      <div
+                        id="nexusProgress"
+                        style="
+                          width: 0%;
+                          height: 100%;
+                          background: var(--gold-grad);
+                          transition: 0.5s;
+                        "
+                      ></div>
+                    </div>
+                  </div>
+                  <div class="cta-row">
+                    <button
+                      onclick="triggerNexusFlow()"
+                      class="btn btn-gold"
+                      id="nexusTriggerBtn"
+                    >
+                      Trigger Nexus Flow
+                    </button>
+                    <a
+                      href="https://n8n.digynex.se/"
+                      target="_blank"
+                      class="btn btn-glass"
+                      >Admin Portal</a
+                    >
+                  </div>
+                </div>
+                <div class="product-image">
+                  <div class="product-slider glass-mockup">
+                    <div class="p-slide active">
+                      <img
+                        src="https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=1000&auto=format&fit=crop"
+                        alt="Branded Corporate Space"
+                      />
+                      <div class="p-slide-overlay">
+                        <span>Branded Identity</span>
+                      </div>
+                    </div>
+                    <div class="p-slide">
+                      <img
+                        src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?q=80&w=1000&auto=format&fit=crop"
+                        alt="Cyber Security Nexus"
+                      />
+                      <div class="p-slide-overlay">
+                        <span>Cyber Infrastructure</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Services Section -->
+      <section id="services" class="services">
+        <div class="container">
+          <div class="section-header">
+            <h2>Superior <span class="gold-text">IT Services</span></h2>
+            <p>
+              Beyond products, we provide the backbone for your digital
+              presence.
+            </p>
+          </div>
+          <div class="services-grid">
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="fa-solid fa-screwdriver-wrench"></i>
+              </div>
+              <h3>Precision IT Repair</h3>
+              <p>
+                Specialized hardware diagnostics and restoration for corporate
+                infrastructure and high-end workstations.
+              </p>
+            </div>
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="fa-solid fa-shield-halved"></i>
+              </div>
+              <h3>Cyber Security</h3>
+              <p>
+                Military-grade encryption and proactive threat monitoring to
+                safeguard your institutional data assets.
+              </p>
+            </div>
+            <div class="service-card">
+              <div class="service-icon">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+              </div>
+              <h3>Cloud Engineering</h3>
+              <p>
+                Scalable cloud architecture setup and migration services
+                optimized for performance and cost-efficiency.
+              </p>
+            </div>
+            <div class="service-card">
+              <div class="service-icon"><i class="fa-solid fa-brain"></i></div>
+              <h3>AI Integration</h3>
+              <p>
+                Custom neural networks and automation workflows tailored to
+                optimize your business logic.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- About Us Section -->
+      <section id="about" class="about">
+        <div class="container about-container">
+          <div class="about-image">
+            <div class="glass-orb-container">
+              <div class="glass-orb"></div>
+              <img
+                src="https://images.unsplash.com/photo-1522071820081-009f0129c71c?q=80&w=1000&auto=format&fit=crop"
+                alt="Our Team"
+                class="about-img"
+              />
+            </div>
+          </div>
+          <div class="about-text">
+            <span class="badge">The DigyNex Mission</span>
+            <h2>Architecting a <span class="gold-text">Smarter World</span></h2>
+            <p>
+              Founded on the principle of digital excellence, DigyNex has
+              evolved from a boutique IT firm into a global ecosystem provider.
+              We don't just build software; we architect the future of how
+              businesses interact with technology.
+            </p>
+            <div class="stats-grid">
+              <div class="stat-item">
+                <span class="stat-number">500+</span>
+                <span class="stat-label">Clients Globally</span>
+              </div>
+              <div class="stat-item">
+                <span class="stat-number">99.9%</span>
+                <span class="stat-label">Uptime Core</span>
+              </div>
+            </div>
+            <button
+              onclick="openLeadModal('Partnership Proposal')"
+              class="btn btn-gold"
+            >
+              Join the Ecosystem
+            </button>
+          </div>
+        </div>
+      </section>
+      <!-- Compact Modern Contact Section -->
+      <section id="contact" class="contact">
+        <div class="container">
+          <div class="contact-compact-wrapper glass-card">
+            <div class="contact-header-minimal">
+              <span class="badge">Direct Access</span>
+              <h2>Get in <span class="gold-text">Touch</span></h2>
+              <p>Sweden HQ | Global Digital Solutions</p>
+            </div>
+
+            <div class="contact-methods-hub">
+              <a href="tel:+46769703311" class="hub-item">
+                <i class="fa-solid fa-phone"></i>
+                <div class="hub-text">
+                  <small>Call Direct</small>
+                  <span>+46 76 970 33 11</span>
+                </div>
+              </a>
+              <a href="mailto:info@digynex.se" class="hub-item">
+                <i class="fa-solid fa-envelope"></i>
+                <div class="hub-text">
+                  <small>Email Us</small>
+                  <span>info@digynex.se</span>
+                </div>
+              </a>
+              <div class="hub-item clickable" onclick="downloadVCard()">
+                <i class="fa-solid fa-address-card"></i>
+                <div class="hub-text">
+                  <small>Save to Phone</small>
+                  <span>Digital Business Card</span>
+                </div>
+              </div>
+            </div>
+
+            <div class="contact-footer-actions">
+              <button
+                onclick="openLeadModal('Global Inquiry')"
+                class="btn btn-gold"
+              >
+                Start a Conversation
+              </button>
+              <a href="card.html" target="_blank" class="btn btn-glass"
+                >View NFC Profile</a
+              >
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="main-footer">
+      <div class="container footer-content">
+        <div class="footer-brand">
+          <div class="logo"><span class="gold-text">Digy</span>Nex</div>
+          <p>Global Leaders in IT Transformation.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Solutions</h4>
+          <a href="#">Tuition Manager</a>
+          <a href="#">FB Nexus</a>
+          <a href="#">Custom Software</a>
+        </div>
+        <div class="footer-links">
+          <h4>Company</h4>
+          <a href="#">About Us</a>
+          <a href="#">Careers</a>
+          <a href="#">Privacy Policy</a>
+        </div>
+        <div class="footer-contact">
+          <h4>Connect</h4>
+          <div class="social-icons">
+            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="#"><i class="fa-brands fa-linkedin"></i></a>
+            <a href="#"><i class="fa-brands fa-github"></i></a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>
+          &copy; 2026 DigyNex Systems. Official Domain |
+          <span class="gold-text">digynex.se</span>
+        </p>
+      </div>
+    </footer>
+    <!-- Modal System -->
+    <div id="leadModal" class="modal-overlay">
+      <div class="modal-card">
+        <button class="close-btn" onclick="closeLeadModal()">&times;</button>
+        <h3 id="modalTitle">Get Started</h3>
+        <p>Enter your details and our team will contact you within 24 hours.</p>
+        <form class="lead-form" onsubmit="handleForm(event)">
+          <input type="text" placeholder="Full Name" required />
+          <input type="email" placeholder="Work Email" required />
+          <textarea placeholder="Your Requirement" rows="4"></textarea>
+          <button type="submit" class="btn btn-gold full-width">
+            Send Request
+          </button>
+        </form>
+      </div>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal-overlay">
+      <div class="modal-card">
+        <button class="close-btn" onclick="closeLoginModal()">&times;</button>
+        <h3>Client Access Portal</h3>
+        <p>Login to manage your automation & IT assets.</p>
+        <form class="lead-form" onsubmit="handleLogin(event)">
+          <div class="input-group">
+            <i class="fa-solid fa-user icon-field"></i>
+            <input type="text" placeholder="Client ID / Username" required />
+          </div>
+          <div class="input-group">
+            <i class="fa-solid fa-lock icon-field"></i>
+            <input type="password" placeholder="Password" required />
+          </div>
+          <button type="submit" class="btn btn-gold full-width">
+            Secure Entry
+          </button>
+          <div class="login-footer">
+            <small><a href="#" class="gold-text">Forgot Credentials?</a></small>
+          </div>
+        </form>
+      </div>
+    </div>
+
+    <!-- Video Modal -->
+    <div id="videoModal" class="modal-overlay">
+      <div class="modal-card video-card">
+        <button class="close-btn" onclick="closeDemoModal()">&times;</button>
+        <div class="video-placeholder">
+          <i class="fa-solid fa-play-circle icon-large gold-text"></i>
+          <p>DigyNex Ecosystem Demo Loading...</p>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>

@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DigyNex - Premium IT Solutions</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+<style>
+:root{
+    --deep:#0a0f1c;
+    --light:#1d2d47;
+    --gold:#bf953f;
+    --gold-grad:linear-gradient(135deg,#bf953f,#fcf6ba,#aa771c);
+    --whatsapp-green:#25D366;
+}
+
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:#cfcfcf;
+    font-family:Montserrat,sans-serif;
+    padding:20px 10px;
+}
+
+.card{
+    position:relative;
+    max-width:400px;
+    width:100%;
+    padding:40px 26px 35px;
+    border-radius:30px;
+    text-align:center;
+    color:#fff;
+    background:linear-gradient(to bottom,var(--light),var(--deep));
+    box-shadow:0 25px 70px rgba(0,0,0,0.8);
+    border:1px solid rgba(255,255,255,0.08);
+}
+
+/* LOGO */
+.logo-wrap{
+    width:135px;height:135px;margin:auto;
+    padding:3px;border-radius:50%;
+    background:var(--gold-grad);
+    display:flex;align-items:center;justify-content:center;
+    margin-bottom:15px;
+}
+.logo-img{
+    width:100%;height:100%;
+    border-radius:50%;
+    background:var(--deep);
+    padding:4px;
+    object-fit:contain;
+}
+
+/* TITLE */
+h1{
+    margin:8px 0 6px;
+    font-size:32px;
+    font-weight:800;
+    background:var(--gold-grad);
+    -webkit-background-clip:text;
+    color:transparent;
+}
+
+/* LANGUAGE SWITCH */
+.lang-switch{
+    position:absolute;
+    top:18px;
+    right:18px;
+    display:flex;
+    gap:6px;
+}
+.lang-btn{
+    background:transparent;
+    border:1px solid var(--gold);
+    color:var(--gold);
+    font-size:11px;
+    font-weight:600;
+    padding:4px 10px;
+    border-radius:20px;
+    cursor:pointer;
+}
+.lang-btn.active{
+    background:var(--gold);
+    color:#0a0f1c;
+}
+
+/* HERO */
+.hero-text{
+    font-size:14px;
+    line-height:1.5;
+    color:rgba(255,255,255,0.85);
+    margin:6px 0 16px;
+}
+
+/* EXPERIENCE + SAVE */
+.exp-save-wrap{
+    display:inline-flex;
+    flex-direction:column;
+    gap:8px;
+    margin-bottom:12px; /* CHANGED: Reduced bottom margin from 20px to 12px */
+}
+.experience{
+    padding:6px 20px;
+    border-radius:30px;
+    background:rgba(191,149,63,0.15);
+    color:var(--gold);
+    font-size:14px;
+    font-weight:600;
+}
+.prime-save-btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    padding:8px 0;
+    border-radius:30px;
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(191,149,63,0.4);
+    color:var(--gold);
+    font-size:13px;
+    text-decoration:none;
+    cursor:pointer;
+}
+
+/* SECTIONS */
+.section-title{
+    margin:15px 0 8px; /* CHANGED: Reduced top margin from 24px to 15px */
+    font-size:13px;
+    letter-spacing:1px;
+    color:rgba(255,255,255,0.7);
+    text-transform:uppercase;
+}
+.about-text{
+    background:rgba(255,255,255,0.05);
+    padding:14px;
+    border-radius:14px;
+    font-size:14px;
+    line-height:1.6;
+}
+
+/* SERVICES */
+.services-list{
+    text-align:left;
+    margin:20px 0 30px;
+}
+.service-item{
+    display:flex;
+    align-items:center;
+    gap:14px;
+    margin:12px 0;
+    font-weight:600;
+}
+.service-icon{color:var(--gold);}
+
+/* BUTTONS */
+.btn{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:12px;
+    padding:15px;
+    margin:10px 0;
+    border-radius:15px;
+    text-decoration:none;
+    color:#fff;
+    font-size:16px;
+    font-weight:600;
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.1);
+    transition: 0.3s;
+}
+.btn:hover{
+    background:rgba(255,255,255,0.1);
+}
+
+/* SPECIFIC ICON COLORS */
+.icon-gold { color: var(--gold); font-size: 18px; }
+.icon-whatsapp { color: var(--whatsapp-green); font-size: 20px; }
+
+/* QR CODE */
+.qr-container{
+    margin-top:30px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:5px;
+}
+.qr-wrapper{
+    position:relative;
+    width:110px;height:110px;
+    background:#fff;
+    padding:5px;
+    border-radius:12px;
+}
+.qr-img{width:100%;height:100%;border-radius:8px}
+.qr-logo{
+    position:absolute;
+    top:50%;left:50%;
+    transform:translate(-50%,-50%);
+    width:25px;height:25px;
+    background:var(--deep);
+    border-radius:50%;
+    padding:3px;
+    border:2px solid #fff;
+}
+.qr-text{
+    font-size:10px;
+    color:var(--gold);
+    letter-spacing:1px;
+}
+
+.footer{
+    margin-top:25px;
+    font-size:11px;
+    color:var(--gold);
+    letter-spacing:1px;
+}
+</style>
+</head>
+
+<body>
+
+<div class="card">
+
+<div class="lang-switch">
+    <button class="lang-btn active" onclick="setLang('en')">EN</button>
+    <button class="lang-btn" onclick="setLang('sw')">SW</button>
+</div>
+
+<div class="logo-wrap">
+    <img src="Logo.png" class="logo-img">
+</div>
+
+<h1>DigyNex</h1>
+
+<div class="hero-text" id="hero-text">
+Trusted IT support for seniors, homes, and small businesses —<br>
+local visits in Gothenburg and remote help across Nordic & USA.
+</div>
+
+<div class="exp-save-wrap">
+    <div class="experience">18+ Years of IT Expertise</div>
+    <a onclick="downloadVCard()" class="prime-save-btn">
+        <i class="fa-solid fa-user-plus"></i> Save Contact
+    </a>
+</div>
+
+<div class="section-title">About Us</div>
+<div class="about-text">
+We provide calm, reliable IT support for seniors, homes, and small businesses.
+With over 18 years of hands-on experience, DigyNex helps you fix problems,
+stay secure, and use technology with confidence — without technical stress.
+</div>
+
+<div class="section-title">Our Services</div>
+<div class="services-list">
+    <div class="service-item"><i class="fa-solid fa-laptop-medical service-icon"></i> IT Support & Repairs – computers & phones</div>
+    <div class="service-item"><i class="fa-solid fa-shield-halved service-icon"></i> Cyber Security – email & data protection</div>
+    <div class="service-item"><i class="fa-solid fa-network-wired service-icon"></i> Network & WiFi Setup – fast, stable internet</div>
+    <div class="service-item"><i class="fa-solid fa-video service-icon"></i> CCTV & Smart Home – installation & support</div>
+</div>
+
+<a href="tel:+46769703311" class="btn">
+    <i class="fa-solid fa-phone icon-gold"></i> Call Me
+</a>
+<a href="https://wa.me/46769703311" class="btn">
+    <i class="fa-brands fa-whatsapp icon-whatsapp"></i> WhatsApp
+</a>
+<a href="mailto:info@digynex.se" class="btn">
+    <i class="fa-solid fa-envelope icon-gold"></i> info@digynex.se
+</a>
+
+<p style="font-size:12px;color:rgba(255,255,255,0.7);margin-top:10px;">
+We explain clearly — no technical language.
+</p>
+
+<div class="qr-container">
+<div class="qr-wrapper">
+<img src="https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://digynex.se" class="qr-img">
+<img src="Logo.png" class="qr-logo">
+</div>
+<div class="qr-text">SCAN TO VISIT</div>
+</div>
+
+<div class="footer">digynex.se | Teknik utan krångel</div>
+
+</div>
+
+<script>
+function setLang(lang){
+    const hero = document.getElementById("hero-text");
+    const btns = document.querySelectorAll(".lang-btn");
+    
+    // Reset active class
+    btns.forEach(b => b.classList.remove("active"));
+
+    if(lang === "sw"){
+        hero.innerHTML = "Trygg IT-hjälp för seniorer, hem och småföretag —<br>hembesök i Göteborg och fjärrsupport i Norden & USA.";
+        btns[1].classList.add("active");
+    } else {
+        hero.innerHTML = "Trusted IT support for seniors, homes, and small businesses —<br>local visits in Gothenburg and remote help across Nordic & USA.";
+        btns[0].classList.add("active");
+    }
+}
+
+function downloadVCard(){
+    var v="BEGIN:VCARD\nVERSION:3.0\nFN:DigyNex IT Support\nTEL:+46769703311\nEMAIL:info@digynex.se\nEND:VCARD";
+    var b=new Blob([v],{type:"text/vcard"});
+    var a=document.createElement("a");
+    a.href=URL.createObjectURL(b);
+    a.download="DigyNex.vcf";
+    a.click();
+}
+</script>
+
+</body>
+</html>

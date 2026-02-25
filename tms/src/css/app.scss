@@ -1,0 +1,120 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+// app global css in SCSS form
+
+.bg-blue-gradient {
+  background: linear-gradient(135deg, #1976d2 0%, #64b5f6 100%);
+  box-shadow: 0 4px 15px rgba(25, 118, 210, 0.3);
+}
+
+.bg-purple-gradient {
+  background: linear-gradient(135deg, #7b1fa2 0%, #ba68c8 100%);
+  box-shadow: 0 4px 15px rgba(123, 31, 162, 0.3);
+}
+
+.bg-green-gradient {
+  background: linear-gradient(135deg, #388e3c 0%, #81c784 100%);
+  box-shadow: 0 4px 15px rgba(56, 142, 60, 0.3);
+}
+
+.bg-orange-gradient {
+  background: linear-gradient(135deg, #f57c00 0%, #ffb74d 100%);
+  box-shadow: 0 4px 15px rgba(245, 124, 0, 0.3);
+}
+
+.rounded-borders-15 {
+  border-radius: 12px;
+}
+
+// Global Font & Radius Overrides
+body,
+.q-page,
+.q-layout,
+.q-drawer,
+.q-header,
+.q-footer {
+  font-family: 'Inter', sans-serif !important;
+}
+
+// Global Component Border Radius (12px)
+.q-btn:not(.q-btn--round),
+.q-card,
+.q-menu,
+.q-dialog__inner > div,
+.q-field__control,
+.q-table__card {
+  border-radius: 12px !important;
+}
+
+// Ensure standard inputs align with the rounded look
+.q-field--outlined .q-field__control {
+  border-radius: 12px !important;
+}
+
+// Premium Scrollbar (Chrome/Edge/Safari)
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+// Global Dark Mode Overrides (Deep Slate Theme)
+.body--dark {
+  background-color: $dark-page !important;
+  color: #e2e8f0; // Slate 200 text
+}
+
+.body--dark .q-card {
+  background-color: #1e293b !important; // Slate 800
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.body--dark .q-drawer {
+  background-color: #0f172a !important; // Slate 900 (matches page bg for seamless look)
+  border-right: 1px solid rgba(255, 255, 255, 0.05) !important;
+}
+
+.body--dark .q-header {
+  background-color: rgba(15, 23, 42, 0.85) !important; // Slate 900 with opacity
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+// Dark Mode Inputs
+.body--dark .q-field__control {
+  background: #334155 !important; // Slate 700
+}
+.body--dark .q-field__native,
+.body--dark .q-field__input {
+  color: white !important;
+}
+
+// Text Utilities for Dark Mode
+.text-slate-300 {
+  color: #cbd5e1 !important;
+}
+.text-slate-400 {
+  color: #94a3b8 !important;
+}
+
+// Hybrid Theme Background
+body:not(.body--dark) .bg-slate-50 {
+  background-color: #f8fafc !important;
+}
+
+.opacity-20 {
+  opacity: 0.2;
+}
+
+.border-light {
+  border: 1px solid #e2e8f0;
+}
