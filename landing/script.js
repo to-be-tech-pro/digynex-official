@@ -90,8 +90,8 @@ document.addEventListener("DOMContentLoaded", () => {
     e.preventDefault();
     const btn = e.target.querySelector("button");
     const originalText = btn.innerText;
-
-    // Get Data
+    
+    // Get Data from the form correctly
     const formData = {
       name: e.target[0].value,
       email: e.target[1].value,
@@ -99,58 +99,41 @@ document.addEventListener("DOMContentLoaded", () => {
       requirement: e.target[3].value,
       product: document.getElementById("modalTitle").innerText,
       timestamp: new Date().toISOString(),
+      source: "Website"
     };
 
     btn.innerText = "Processing...";
     btn.disabled = true;
 
-    // 1. Submit to Supabase REST API (Direct)
-    const SUPABASE_URL = 'https://ticmdqeyeiycznfzxqrx.supabase.co';
-    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRpY21kcWV5ZWl5Y3puZnp4cXJ4Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzAzOTMzNzYsImV4cCI6MjA4NTk2OTM3Nn0.rDnmzU407z9BmIFhvFlQghXmthoYKHvlrBVyrd33i0I';
-
-    fetch(`${SUPABASE_URL}/rest/v1/leads`, {
-      method: 'POST',
+    // Send only to n8n Webhook
+    // n8n will handle the Supabase insertion and other automations
+    fetch("https://n8n.digynex.se/webhook/lead-ingestion", {
+      method: "POST",
       headers: {
-        'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
-        'Content-Type': 'application/json',
-        'Prefer': 'return=minimal'
+        "Content-Type": "application/json",
       },
-      body: JSON.stringify({
-        name: formData.name,
-        email: formData.email,
-        phone: formData.phone, 
-        notes: formData.requirement,
-        source: 'Website - ' + formData.product,
-        status: 'New'
-      })
+      body: JSON.stringify(formData),
     })
-    .then(() => {
-      // 2. Also Notify n8n for Automation
-      return fetch('https://n8n.digynex.se/webhook/lead-ingestion', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData)
-      });
-    })
-    .then(() => {
+    .then((response) => {
+      if (!response.ok) throw new Error("n8n submission failed");
+      
       alert(
-        "Success! Your request has been logged. Our Team will reach out to you at " +
-          formData.email +
-          " within 24 hours.",
+        "Success! Your request has been logged. Our Team will reach out to you within 24 hours."
       );
+      
       btn.innerText = originalText;
       btn.disabled = false;
       closeLeadModal();
       e.target.reset();
     })
     .catch((err) => {
-      console.error('Submission error:', err);
-      alert('Something went wrong. Please try again later.');
+      console.error("Submission error:", err);
+      alert("Something went wrong. Please try again later.");
       btn.innerText = originalText;
       btn.disabled = false;
     });
   };
+
 
   // Nexus Flow Automation Trigger
   window.triggerNexusFlow = function () {
