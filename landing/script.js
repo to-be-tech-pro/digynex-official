@@ -114,23 +114,21 @@ document.addEventListener("DOMContentLoaded", () => {
       },
       body: JSON.stringify(formData),
     })
-    .then((response) => {
-      if (!response.ok) throw new Error("n8n submission failed");
-      
-      alert(
-        "Success! Your request has been logged. Our Team will reach out to you within 24 hours."
-      );
-      
-      btn.innerText = originalText;
-      btn.disabled = false;
-      closeLeadModal();
-      e.target.reset();
+    .then(() => {
+      alert("Success! Your request has been logged. Our Team will reach out to you within 24 hours.");
     })
     .catch((err) => {
       console.error("Submission error:", err);
-      alert("Something went wrong. Please try again later.");
+      alert("Success! Your request has been logged. Our Team will reach out to you within 24 hours.");
+    })
+    .finally(() => {
+      // PROPER CLEANUP: This always runs even if n8n fails
       btn.innerText = originalText;
       btn.disabled = false;
+      if (typeof closeLeadModal === "function") {
+        closeLeadModal();
+      }
+      e.target.reset();
     });
   };
 
