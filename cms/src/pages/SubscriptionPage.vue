@@ -8,9 +8,9 @@
         </p>
       </div>
       <!-- Regional Toggle -->
-      <div class="glass-panel q-px-md q-py-sm rounded-borders border-glass shadow-lg">
-        <span class="text-weight-bold text-emerald">Region: </span>
-        <span class="text-uppercase text-white"
+      <div class="bg-white q-px-md q-py-sm rounded-borders shadow-1">
+        <span class="text-weight-bold text-primary">Region: </span>
+        <span class="text-uppercase text-dark text-weight-bold"
           >{{ currencyStore.countryCode }} ({{ currencyStore.currency }})</span
         >
       </div>
@@ -394,16 +394,6 @@ const processUpgrade = async () => {
   &:hover {
     transform: scale(1.05);
   }
-}
-.text-emerald {
-  color: #10b981;
-}
-.glass-panel {
-  background: rgba(255, 255, 255, 0.03);
-  backdrop-filter: blur(10px);
-}
-.border-glass {
-  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 .text-emerald {
   color: #10b981;

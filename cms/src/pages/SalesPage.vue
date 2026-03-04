@@ -70,8 +70,8 @@
                     <div class="text-weight-bolder text-white text-subtitle1 leading-tight">
                       {{ element.title }}
                     </div>
-                    <q-btn flat round dense icon="more_vert" color="grey-7" size="sm" @click.stop>
-                      <q-menu class="bg-slate-900 border-glass text-white shadow-24">
+                    <q-btn flat round dense icon="more_vert" color="grey-7" size="sm">
+                      <q-menu auto-close class="bg-dark border-glass text-white shadow-24">
                         <q-list style="min-width: 150px">
                           <q-item clickable v-close-popup @click="editDeal(element)">
                             <q-item-section avatar
