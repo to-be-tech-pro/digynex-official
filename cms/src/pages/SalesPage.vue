@@ -70,7 +70,24 @@
                     <div class="text-weight-bolder text-white text-subtitle1 leading-tight">
                       {{ element.title }}
                     </div>
-                    <q-btn flat round dense icon="more_vert" color="grey-7" size="sm" @click.stop />
+                    <q-btn flat round dense icon="more_vert" color="grey-7" size="sm" @click.stop>
+                      <q-menu class="bg-slate-900 border-glass text-white shadow-24">
+                        <q-list style="min-width: 150px">
+                          <q-item clickable v-close-popup @click="editDeal(element)">
+                            <q-item-section avatar
+                              ><q-icon name="edit" size="xs" color="blue"
+                            /></q-item-section>
+                            <q-item-section>Edit Details</q-item-section>
+                          </q-item>
+                          <q-item clickable v-close-popup @click="deleteDeal(element.id)">
+                            <q-item-section avatar
+                              ><q-icon name="delete" size="xs" color="red"
+                            /></q-item-section>
+                            <q-item-section class="text-red">Delete Deal</q-item-section>
+                          </q-item>
+                        </q-list>
+                      </q-menu>
+                    </q-btn>
                   </div>
 
                   <div class="row items-center q-gutter-x-sm q-mb-lg">
@@ -222,7 +239,7 @@
           <q-btn
             unelevated
             rounded
-            label="Initialize Deal"
+            label="Synchronize Genesis"
             class="bg-emerald-gradient text-white q-px-xl font-bold"
             @click="saveDeal"
             :loading="saving"
@@ -252,6 +269,7 @@ const userOrgId = ref(null)
 
 const stages = ['Discovery', 'Proposal', 'Negotiation', 'Closed Won', 'Closed Lost']
 const dealForm = ref({
+  id: null,
   title: '',
   lead_id: null,
   stage: 'Discovery',
@@ -288,6 +306,7 @@ const fetchData = async () => {
 
 const openDealDialog = () => {
   dealForm.value = {
+    id: null,
     title: '',
     lead_id: null,
     stage: 'Discovery',
@@ -298,6 +317,38 @@ const openDealDialog = () => {
   dealDialog.value = true
 }
 
+const editDeal = (deal) => {
+  dealForm.value = {
+    id: deal.id,
+    title: deal.title,
+    lead_id: deal.lead_id,
+    stage: deal.stage,
+    value: deal.value,
+    probability: deal.probability,
+    expected_close_date: deal.expected_close_date ? deal.expected_close_date.replace(/-/g, '/') : null,
+  }
+  dealDialog.value = true
+}
+
+const deleteDeal = async (id) => {
+  $q.dialog({
+    title: 'Confirm Deletion',
+    message: 'Are you sure you want to remove this deal protocol?',
+    cancel: true,
+    persistent: true,
+    dark: true
+  }).onOk(async () => {
+    try {
+      const { error } = await supabase.from('deals').delete().eq('id', id)
+      if (error) throw error
+      $q.notify({ type: 'positive', message: 'Deal removed successfully.' })
+      fetchData()
+    } catch (err) {
+      $q.notify({ type: 'negative', message: 'Deletion failed: ' + err.message })
+    }
+  })
+}
+
 const saveDeal = async () => {
   saving.value = true
   try {
@@ -305,9 +356,20 @@ const saveDeal = async () => {
       data: { user },
     } = await supabase.auth.getUser()
     const payload = { ...dealForm.value, user_id: user.id, org_id: userOrgId.value }
-    const { error } = await supabase.from('deals').insert(payload)
+    const dealId = payload.id
+    delete payload.id
+
+    let error
+    if (dealId) {
+      const { error: updateError } = await supabase.from('deals').update(payload).eq('id', dealId)
+      error = updateError
+    } else {
+      const { error: insertError } = await supabase.from('deals').insert(payload)
+      error = insertError
+    }
+
     if (error) throw error
-    $q.notify({ type: 'positive', message: 'Deal genesis complete.' })
+    $q.notify({ type: 'positive', message: dealId ? 'Deal synchronization successful.' : 'Deal genesis complete.' })
     dealDialog.value = false
     fetchData()
   } catch (err) {
