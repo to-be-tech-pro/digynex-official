@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="row items-center justify-between q-mb-lg">
       <div>
-        <h1 class="text-h5 text-weight-bold q-my-none">Students</h1>
+        <h1 class="text-h5 text-weight-bold q-my-none text-white">Students</h1>
         <p class="text-grey-5 q-mt-xs q-mb-none">Manage student enrollments and details.</p>
       </div>
       <div class="q-gutter-x-sm">
@@ -38,15 +38,15 @@
     <!-- Stats Row -->
     <div class="row q-col-gutter-md q-mb-lg">
       <div class="col-12 col-md-3">
-        <q-card class="no-shadow border-gray q-pa-md">
+        <q-card class="no-shadow border-gray q-pa-md bg-transparent">
           <div class="text-caption text-grey-5 text-uppercase text-weight-bold">Total Students</div>
-          <div class="text-h4 text-weight-bold q-mt-xs">{{ rows.length }}</div>
+          <div class="text-h4 text-weight-bold q-mt-xs text-white">{{ rows.length }}</div>
         </q-card>
       </div>
     </div>
 
     <!-- Students Table -->
-    <q-card class="no-shadow border-gray">
+    <q-card class="no-shadow border-gray bg-transparent">
       <q-table
         :rows="rows"
         :columns="columns"
@@ -303,15 +303,18 @@
 </template>
 
 <script setup>
-import { ref, onMounted, watch } from 'vue'
+import { ref, onMounted, watch, computed } from 'vue'
 import { useQuasar, exportFile } from 'quasar'
-import { supabase } from 'src/boot/supabase'
+import { supabase } from 'boot/supabase'
+import { useAuthStore } from 'stores/auth'
 import { useRouter, useRoute } from 'vue-router'
 import QrcodeVue from 'qrcode.vue'
 
 const $q = useQuasar()
 const router = useRouter()
 const route = useRoute()
+const authStore = useAuthStore()
+
 const editDialog = ref(false)
 const importDialog = ref(false)
 const idCardDialog = ref(false)
@@ -322,7 +325,7 @@ const loading = ref(false)
 const importFile = ref(null)
 const parsedStudents = ref([])
 const selectedStudentForID = ref(null)
-const planType = ref('free') // Default to free
+const planType = computed(() => authStore.profile?.plan_type || 'free')
 
 const openIdCard = (student) => {
   selectedStudentForID.value = student
@@ -334,14 +337,7 @@ const printIDCard = () => {
 }
 
 const columns = [
-  {
-    name: 'name',
-    required: true,
-    label: 'Student Name',
-    align: 'left',
-    field: 'name',
-    sortable: true,
-  },
+  { name: 'name', label: 'Student Name', align: 'left', field: 'name', headerClasses: 'text-grey-4', sortable: true },
   { name: 'grade', align: 'left', label: 'Grade', field: 'grade', sortable: true },
   { name: 'phone', align: 'left', label: 'Contact', field: 'phone' },
   { name: 'status', align: 'left', label: 'Status', field: 'status', sortable: true },
@@ -351,9 +347,14 @@ const columns = [
 const rows = ref([])
 
 const fetchStudents = async () => {
+  if (!authStore.userOrgId) return
+
   loading.value = true
   try {
-    let query = supabase.from('students').select('*').order('created_at', { ascending: false })
+    let query = supabase.from('students')
+      .select('*')
+      .eq('org_id', authStore.userOrgId)
+      .order('created_at', { ascending: false })
 
     // Search Filter
     const searchQuery = route.query.q
@@ -373,19 +374,14 @@ const fetchStudents = async () => {
 }
 
 onMounted(async () => {
-  await fetchStudents()
-  // Fetch Plan Type
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (user) {
-    const { data } = await supabase.from('profiles').select('plan_type').eq('id', user.id).single()
-    if (data) planType.value = data.plan_type || 'free'
+  if (!authStore.user) {
+    await authStore.initialize()
   }
+  await fetchStudents()
 })
 
 watch(
-  () => route.query.q,
+  () => [route.query.q, authStore.userOrgId],
   async () => {
     await fetchStudents()
   },
@@ -437,11 +433,14 @@ const saveStudent = async () => {
     // Remove ID if it's new (let DB generate it) or keep it for update
     if (!isEditMode.value) delete studentData.id
 
-    // Assign User ID for Multi-tenancy
+    // Assign User ID and Org ID for Multi-tenancy
     const {
       data: { user },
     } = await supabase.auth.getUser()
-    if (user) studentData.user_id = user.id
+    if (user) {
+      studentData.user_id = user.id
+      if (authStore.userOrgId) studentData.org_id = authStore.userOrgId
+    }
 
     const { error } = await supabase.from('students').upsert(studentData).select()
 

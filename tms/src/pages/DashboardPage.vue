@@ -1,20 +1,20 @@
 <template>
   <q-page class="q-pa-lg">
     <!-- Welcome Header -->
-    <div class="row items-center justify-between q-mb-xl">
-      <div>
-        <h1 class="text-h4 text-weight-bolder text-gold-gradient q-my-none">
+    <div class="row items-center justify-between q-mb-xl q-gutter-y-md">
+      <div class="col-12 col-md-auto">
+        <h1 class="text-h4 text-weight-bolder text-gold-gradient q-my-none mobile-title">
           Good Morning, Admin! <span class="text-h4">👋</span>
         </h1>
         <p class="text-grey-5 text-subtitle1 q-mt-sm q-mb-none font-medium">
           Managing your DigyNex Ecosystem from <span class="text-white">Sweden HQ</span>.
         </p>
       </div>
-      <div class="row q-gutter-md">
+      <div class="col-12 col-md-auto row q-gutter-md no-wrap mobile-header-btns">
         <q-btn
           unelevated
           rounded
-          class="bg-gold-gradient text-white q-px-lg shadow-2 hover-scale"
+          class="bg-gold-gradient text-white q-px-lg shadow-2 hover-scale flex-grow-1"
           icon="auto_awesome"
           label="Nexus Flow"
           no-caps
@@ -25,10 +25,10 @@
           rounded
           color="secondary"
           icon="add"
-          label="New Student"
+          label="Add"
           no-caps
           to="/students"
-          class="q-px-lg q-py-sm shadow-1 hover-scale"
+          class="q-px-lg q-py-sm shadow-1 hover-scale flex-grow-1"
         />
       </div>
     </div>
@@ -174,7 +174,7 @@
 
           <q-separator dark class="opacity-10" />
 
-          <q-card-section class="q-pa-none">
+          <q-card-section class="q-pa-none scroll">
             <q-table
               :rows="recentStudents"
               :columns="studentColumns"
@@ -184,10 +184,11 @@
               :rows-per-page-options="[0]"
               card-class="bg-transparent text-white"
               table-header-class="text-grey-5"
+              style="min-width: 600px"
             >
               <template v-slot:body-cell-name="props">
                 <q-td :props="props">
-                  <div class="row items-center">
+                  <div class="row items-center no-wrap">
                     <q-avatar
                       size="36px"
                       class="bg-gold-gradient text-white q-mr-md font-bold text-subtitle2"
@@ -363,10 +364,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted, computed } from 'vue'
+import { ref, onMounted, onUnmounted, computed, watch } from 'vue'
 import { useQuasar } from 'quasar'
+import { supabase } from 'src/boot/supabase'
+import { useAuthStore } from 'stores/auth'
 
 const $q = useQuasar()
+const authStore = useAuthStore()
 
 const now = ref(new Date())
 let timeInterval
@@ -375,52 +379,133 @@ const updateTime = () => {
   now.value = new Date()
 }
 
-onMounted(() => {
-  timeInterval = setInterval(updateTime, 1000)
+const userOrgId = ref(null)
+const loading = ref(false)
+
+const statsData = ref({
+  totalStudents: 0,
+  totalTutors: 0,
+  monthlyRevenue: 0,
+  newInquiries: 0,
+  totalLeads: 0,
+  dailyPosts: 0
 })
+
+const recentStudents = ref([])
+
+onMounted(async () => {
+  timeInterval = setInterval(updateTime, 1000)
+
+  if (!authStore.user) {
+    await authStore.initialize()
+  }
+
+  if (authStore.isAuthenticated) {
+    userOrgId.value = authStore.userOrgId
+    fetchDashboardData()
+  }
+})
+
+watch(() => authStore.userOrgId, (newOrgId) => {
+  userOrgId.value = newOrgId
+  fetchDashboardData()
+})
+
+const fetchDashboardData = async () => {
+  if (!userOrgId.value) return
+  loading.value = true
+
+  try {
+    // 1. Fetch Students count
+    const { count: studentCount } = await supabase
+      .from('students')
+      .select('*', { count: 'exact', head: true })
+      .eq('org_id', userOrgId.value)
+    statsData.value.totalStudents = studentCount || 0
+
+    // 2. Fetch Tutors count
+    const { count: tutorCount } = await supabase
+      .from('tutors')
+      .select('*', { count: 'exact', head: true })
+      .eq('org_id', userOrgId.value)
+    statsData.value.totalTutors = tutorCount || 0
+
+    // 3. Fetch Monthly Revenue (Approximate for now)
+    const now = new Date()
+    const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+    const { data: payments } = await supabase
+      .from('payments')
+      .select('amount')
+      .eq('org_id', userOrgId.value)
+      .gte('payment_date', firstDay)
+
+    statsData.value.monthlyRevenue = payments?.reduce((sum, p) => sum + p.amount, 0) || 0
+
+    // 4. Recent Students
+    const { data: recent } = await supabase
+      .from('students')
+      .select('id, name, grade, created_at')
+      .eq('org_id', userOrgId.value)
+      .order('created_at', { ascending: false })
+      .limit(4)
+
+    recentStudents.value = recent?.map(s => ({
+      id: `#ST-${s.id.toString().padStart(3, '0')}`,
+      name: s.name,
+      subject: s.grade, // Using grade as subject placeholder
+      date: new Date(s.created_at).toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+      status: 'Paid' // Placeholder logic
+    })) || []
+
+    // 5. Fetch Leads (New Inquiries)
+    const { count: leadCount } = await supabase
+      .from('leads')
+      .select('*', { count: 'exact', head: true })
+      .eq('org_id', userOrgId.value)
+    statsData.value.totalLeads = leadCount || 0
+    statsData.value.newInquiries = leadCount || 0
+
+  } catch (error) {
+    console.error('Error fetching dashboard stats:', error)
+  } finally {
+    loading.value = false
+  }
+}
 
 onUnmounted(() => {
   if (timeInterval) clearInterval(timeInterval)
 })
 
 const currentPeriod = computed(() => {
-  // Simple check for AM/PM display if desired, or just "Today"
-  // User had "AM Today". Let's try to match 12h format if that was the intent,
-  // But standard digital clocks are often 24h or User preference.
-  // The design showed "10:30" and "AM Today".
-  // Let's stick to 12h format for the big numbers and AM/PM below.
   const hour = now.value.getHours()
   const ampm = hour >= 12 ? 'PM' : 'AM'
   return `${ampm} Today`
 })
 
-// Update currentTime logic to return 12h format numbers without AM/PM
 const formattedTime12 = computed(() => {
   let hours = now.value.getHours()
   const minutes = now.value.getMinutes().toString().padStart(2, '0')
   hours = hours % 12
-  hours = hours ? hours : 12 // the hour '0' should be '12'
+  hours = hours ? hours : 12
   return `${hours}:${minutes}`
 })
-// Override previous computed to use this one for the template
-// Renaming strictly for the ReplacementChunk to match variable names
 
 import { useCurrencyStore } from 'stores/currency'
 
 const currencyStore = useCurrencyStore()
 
 const stats = computed(() => [
-  { label: 'Total Students', value: '1,240', icon: 'school', color: 'blue', trend: 12 },
-  { label: 'Total Tutors', value: '45', icon: 'person', color: 'purple', trend: 5 },
+  { label: 'Total Students', value: statsData.value.totalStudents.toLocaleString(), icon: 'school', color: 'blue', trend: 12 },
+  { label: 'Total Tutors', value: statsData.value.totalTutors.toLocaleString(), icon: 'person', color: 'purple', trend: 5 },
   {
     label: 'Monthly Revenue',
-    value: '425k', // Just the number
-    currency: currencyStore.currency, // Separate currency for styling
+    value: statsData.value.monthlyRevenue > 1000 ? (statsData.value.monthlyRevenue / 1000).toFixed(1) + 'k' : statsData.value.monthlyRevenue.toLocaleString(),
+    currency: currencyStore.currency,
     icon: 'payments',
     color: 'green',
     trend: 8,
   },
-  { label: 'New Inquiries', value: '18', icon: 'pending_actions', color: 'orange', trend: -2 },
+  { label: 'New Inquiries', value: statsData.value.newInquiries.toLocaleString(), icon: 'pending_actions', color: 'orange', trend: 0 },
 ])
 
 const quickActions = [
@@ -430,25 +515,14 @@ const quickActions = [
   { label: 'Finance', icon: 'payments', color: 'green', route: '/payments' },
 ]
 
-const marketingStats = [
-  { label: 'Social Reach', value: '42.5k', icon: 'public', color: 'gold' },
-  { label: 'Daily Posts', value: '04', icon: 'post_add', color: 'secondary' },
-  { label: 'Automation Score', value: '98%', icon: 'bolt', color: 'blue' },
-]
+const marketingStats = computed(() => [
+  { label: 'Total Leads', value: statsData.value.totalLeads.toLocaleString(), icon: 'public', color: 'gold' },
+  { label: 'Daily Posts', value: statsData.value.dailyPosts.toLocaleString(), icon: 'post_add', color: 'secondary' },
+  { label: 'Automation Score', value: '100%', icon: 'bolt', color: 'blue' },
+])
 
 const marketingLogs = ref([
-  { time: '21:40:12', msg: 'Gemini AI: Trend analysis completed for @DigyNex.', type: 'info' },
-  {
-    time: '21:42:05',
-    msg: 'Cloud-Sync: Image assets generated and uploaded to bucket.',
-    type: 'info',
-  },
-  {
-    time: '21:45:30',
-    msg: 'Webhook Sent: Waiting for human approval via Telegram...',
-    type: 'info',
-  },
-  { time: '21:50:00', msg: 'ERROR: LinkedIn API Token expired. Retrying in 60s.', type: 'error' },
+  { time: new Date().toLocaleTimeString(), msg: 'Systems Initialized. Ready for automation.', type: 'info' }
 ])
 
 const triggerMarketingFlow = () => {
@@ -471,12 +545,6 @@ const studentColumns = [
   { name: 'status', label: 'Status', align: 'right', field: 'status' },
 ]
 
-const recentStudents = [
-  { id: '#ST-001', name: 'Kasun Perera', subject: 'Mathematics', date: 'Oct 24', status: 'Paid' },
-  { id: '#ST-002', name: 'Nimali Silva', subject: 'Science', date: 'Oct 23', status: 'Pending' },
-  { id: '#ST-003', name: 'Amal De Silva', subject: 'History', date: 'Oct 22', status: 'Paid' },
-  { id: '#ST-004', name: 'Rohan Jay', subject: 'Physics', date: 'Oct 21', status: 'Paid' },
-]
 
 // --- Charts Data ---
 const chartTab = ref('revenue')
@@ -595,7 +663,8 @@ const enrollmentOptions = ref({
   opacity: 0.9;
 }
 .stats-card {
-  background: white;
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(8px);
   transition: all 0.3s ease;
   border: 1px solid rgba(0, 0, 0, 0.05);
 }
@@ -620,7 +689,7 @@ const enrollmentOptions = ref({
     border-color 0.2s ease,
     transform 0.2s ease;
   border: 1px solid transparent;
-  background: white; /* Default light */
+  background: transparent;
 }
 
 .hover-border:hover {
@@ -694,5 +763,22 @@ const enrollmentOptions = ref({
 
 .text-mono {
   font-family: 'Roboto Mono', monospace;
+}
+
+@media (max-width: 600px) {
+  .mobile-title {
+    font-size: 1.5rem !important;
+    text-align: center;
+  }
+  .q-page {
+    padding: 16px !important;
+  }
+  .mobile-header-btns {
+    width: 100%;
+    justify-content: center;
+  }
+  .flex-grow-1 {
+    flex-grow: 1;
+  }
 }
 </style>

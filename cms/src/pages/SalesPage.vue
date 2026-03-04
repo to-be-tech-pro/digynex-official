@@ -1,20 +1,20 @@
 <template>
   <q-page class="q-pa-lg">
-    <div class="row items-center justify-between q-mb-xl fade-in-up">
-      <div class="col">
-        <h1 class="text-h4 text-weight-bolder q-my-none row items-center">
+    <div class="row items-center justify-between q-mb-xl fade-in-up q-gutter-y-md">
+      <div class="col-12 col-md">
+        <h1 class="text-h4 text-weight-bolder q-my-none row items-center mobile-title">
           <span class="text-emerald-gradient">Deal Pipeline</span>
-          <q-icon name="handshake" size="md" class="q-ml-md text-emerald" />
+          <q-icon name="handshake" size="md" class="q-ml-md text-emerald gt-xs" />
         </h1>
         <p class="text-grey-5 text-subtitle1 q-mt-sm q-mb-none font-medium text-emerald-light">
           Global liquidity stream and conversion velocity tracking.
         </p>
       </div>
-      <div class="col-auto">
+      <div class="col-12 col-md-auto">
         <q-btn
           unelevated
           rounded
-          class="bg-emerald-gradient text-white q-px-lg shadow-2 hover-scale"
+          class="bg-emerald-gradient text-white q-px-lg shadow-2 hover-scale full-width-mobile"
           icon="add"
           label="Initialize Deal"
           no-caps
@@ -122,10 +122,11 @@
     </div>
 
     <!-- Dialog -->
-    <q-dialog v-model="dealDialog" backdrop-filter="blur(10px)">
+    <q-dialog v-model="dealDialog" backdrop-filter="blur(10px)" :maximized="$q.screen.lt.md">
       <q-card
-        style="min-width: 500px; border-radius: 24px"
+        style="width: 500px; max-width: 95vw; border-radius: 24px"
         class="bg-dark-card border-glass text-white"
+        :style="$q.screen.lt.md ? 'border-radius: 0' : ''"
       >
         <q-card-section class="q-px-xl q-py-lg">
           <div class="row items-center q-mb-xl">
@@ -247,6 +248,7 @@ const loading = ref(false)
 const saving = ref(false)
 const dealDialog = ref(false)
 const leads = ref([])
+const userOrgId = ref(null)
 
 const stages = ['Discovery', 'Proposal', 'Negotiation', 'Closed Won', 'Closed Lost']
 const dealForm = ref({
@@ -302,7 +304,8 @@ const saveDeal = async () => {
     const {
       data: { user },
     } = await supabase.auth.getUser()
-    const { error } = await supabase.from('deals').insert({ ...dealForm.value, user_id: user.id })
+    const payload = { ...dealForm.value, user_id: user.id, org_id: userOrgId.value }
+    const { error } = await supabase.from('deals').insert(payload)
     if (error) throw error
     $q.notify({ type: 'positive', message: 'Deal genesis complete.' })
     dealDialog.value = false
@@ -326,7 +329,14 @@ const getProbabilityColor = (p) =>
 const formatDateShort = (s) =>
   s ? new Date(s).toLocaleDateString([], { month: 'short', day: 'numeric' }) : ''
 
-onMounted(() => fetchData())
+onMounted(async () => {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) {
+    const { data: profile } = await supabase.from('profiles').select('org_id').eq('id', user.id).single()
+    if (profile) userOrgId.value = profile.org_id
+  }
+  fetchData()
+})
 </script>
 
 <style scoped>
@@ -382,6 +392,19 @@ onMounted(() => fetchData())
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .mobile-title {
+    font-size: 1.5rem !important;
+    text-align: center;
+  }
+  .q-page {
+    padding: 16px !important;
+  }
+  .full-width-mobile {
+    width: 100%;
   }
 }
 </style>

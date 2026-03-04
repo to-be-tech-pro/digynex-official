@@ -3,8 +3,8 @@
     <!-- Header -->
     <div class="row items-center justify-between q-mb-lg">
       <div>
-        <h1 class="text-h5 text-weight-bold q-my-none text-dark">System Users</h1>
-        <p class="text-grey-6 q-mt-xs q-mb-none">Manage system administrators and staff access.</p>
+        <h1 class="text-h5 text-weight-bold q-my-none text-white">System Users</h1>
+        <p class="text-grey-4 q-mt-xs q-mb-none">Manage system administrators and staff access.</p>
       </div>
       <div class="q-gutter-x-sm">
         <q-btn
@@ -36,8 +36,8 @@
                 {{ props.row.name.charAt(0) }}
               </q-avatar>
               <div>
-                <div class="text-weight-bold">{{ props.row.name }}</div>
-                <div class="text-caption text-grey-6">{{ props.row.email }}</div>
+                <div class="text-weight-bold text-white">{{ props.row.name }}</div>
+                <div class="text-caption text-grey-4">{{ props.row.email }}</div>
               </div>
             </div>
           </q-td>
@@ -182,11 +182,13 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, watch } from 'vue'
 import { useQuasar } from 'quasar'
 import { supabase } from 'boot/supabase'
+import { useAuthStore } from 'stores/auth'
 
 const $q = useQuasar()
+const authStore = useAuthStore()
 const editDialog = ref(false)
 const passwordDialog = ref(false)
 const editingRow = ref({})
@@ -212,16 +214,27 @@ const columns = [
 
 const rows = ref([])
 
-onMounted(() => {
+onMounted(async () => {
+  if (!authStore.user) {
+    await authStore.initialize()
+  }
+  fetchUsers()
+})
+
+watch(() => authStore.userOrgId, () => {
   fetchUsers()
 })
 
 const fetchUsers = async () => {
+  if (!authStore.userOrgId) return
+
   loading.value = true
   const { data, error } = await supabase
     .from('profiles')
     .select('*')
+    .eq('org_id', authStore.userOrgId)
     .order('created_at', { ascending: false })
+
   if (error) {
     $q.notify({ type: 'negative', message: 'Error fetching users: ' + error.message })
   } else {
@@ -231,33 +244,37 @@ const fetchUsers = async () => {
 }
 
 const getRoleColor = (role) => {
-  switch (role) {
-    case 'Admin':
+  switch (role?.toLowerCase()) {
+    case 'admin':
       return 'purple-1'
-    case 'Manager':
+    case 'manager':
       return 'blue-1'
-    case 'Staff':
+    case 'staff':
       return 'grey-2'
+    case 'super_admin':
+      return 'gold-1'
     default:
       return 'grey-1'
   }
 }
 
 const getRoleTextColor = (role) => {
-  switch (role) {
-    case 'Admin':
+  switch (role?.toLowerCase()) {
+    case 'admin':
       return 'purple-9'
-    case 'Manager':
+    case 'manager':
       return 'blue-9'
-    case 'Staff':
+    case 'staff':
       return 'grey-9'
+    case 'super_admin':
+      return 'gold-9'
     default:
       return 'grey-8'
   }
 }
 
 const openAddDialog = () => {
-  editingRow.value = { status: 'Active', role: 'Staff', password: '' }
+  editingRow.value = { status: 'Active', role: 'staff', password: '' }
   isEditMode.value = false
   editDialog.value = true
 }
@@ -323,6 +340,7 @@ const saveUser = async () => {
         password: editingRow.value.password,
         name: editingRow.value.name,
         role: editingRow.value.role,
+        org_id: authStore.userOrgId, // Pass the org_id
       },
     })
 

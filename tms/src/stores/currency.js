@@ -7,8 +7,13 @@ export const useCurrencyStore = defineStore('currency', {
     currency: 'LKR',
     symbol: 'LKR',
     proPrice: 15000,
+    taxRate: 0,
     isLoaded: false,
   }),
+
+  getters: {
+    totalProPrice: (state) => state.proPrice * (1 + state.taxRate),
+  },
 
   actions: {
     async initialize() {
@@ -40,15 +45,24 @@ export const useCurrencyStore = defineStore('currency', {
         this.currency = 'LKR'
         this.symbol = 'LKR'
         this.proPrice = 15000
+        this.taxRate = 0 // SL default
       } else if (this.countryCode === 'SE') {
         this.currency = 'SEK'
         this.symbol = 'kr'
         this.proPrice = 750
+        this.taxRate = 0.25 // Sweden VAT
+      } else if (['IN', 'PK', 'BD', 'ID', 'PH', 'VN'].includes(this.countryCode)) {
+        // Asian Markets
+        this.currency = 'USD'
+        this.symbol = '$'
+        this.proPrice = 49
+        this.taxRate = 0.15 // Asian Digital Tax Average
       } else {
         // International Default
         this.currency = 'USD'
         this.symbol = '$'
         this.proPrice = 49
+        this.taxRate = 0.05 // Global general duty/tax
       }
     },
 

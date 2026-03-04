@@ -129,7 +129,10 @@
               {{ currencyStore.format(currencyStore.proPrice) }}
               <span class="text-body2 text-grey-4 font-regular">/ month</span>
             </div>
-            <div class="text-caption text-grey-4 q-mb-lg">Unlimited power for large institutes</div>
+            <div v-if="currencyStore.taxRate > 0" class="text-caption text-emerald q-mb-md">
+              + {{ (currencyStore.taxRate * 100).toFixed(0) }}% Tax ({{ currencyStore.format(currencyStore.proPrice * currencyStore.taxRate) }})
+            </div>
+            <div class="text-caption text-grey-4 q-mb-lg" v-else>Unlimited power for large institutes</div>
 
             <q-separator dark class="q-mb-md opacity-20" />
 

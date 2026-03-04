@@ -54,9 +54,9 @@
         align="left"
         narrow-indicator
       >
-        <q-tab name="organizations" label="Registered Organizations" icon="business" />
-        <q-tab name="approvals" label="Payment Approvals" icon="verified" />
-        <q-tab name="users" label="All Users" icon="group" />
+        <q-tab name="organizations" label="Organizations" icon="business" />
+        <q-tab name="approvals" label="Payments" icon="verified" />
+        <q-tab name="users" label="Users" icon="group" />
       </q-tabs>
     </q-card>
 
@@ -65,19 +65,23 @@
       <q-tab-panel name="organizations" class="q-pa-none">
         <q-card class="no-shadow border-gray">
           <q-table :rows="organizations" :columns="orgColumns" row-key="id" flat :loading="loading">
-            <template v-slot:body-cell-plan="props">
+            <template v-slot:body-cell-category="props">
               <q-td :props="props">
+                <q-badge outline color="emerald" :label="props.row.category || 'Standard'" />
+              </q-td>
+            </template>
+            <template v-slot:body-cell-subscription_status="props">
+              <q-td :props="props" align="center">
                 <q-badge
-                  :color="getPlanColor(props.row.plan_type)"
-                  :label="props.row.plan_type || 'Free'"
-                  class="q-px-sm text-capitalize"
+                  :color="getPlanColor(props.row.subscription_status)"
+                  :label="props.row.subscription_status || 'Trial'"
+                  class="q-px-sm"
                 />
               </q-td>
             </template>
-            <template v-slot:body-cell-student_count="props">
-              <q-td :props="props">
-                <!-- Mocking count for now if logic is complex with RLS -->
-                {{ props.row.student_count || 0 }}
+            <template v-slot:body-cell-actions="props">
+              <q-td :props="props" align="right">
+                <q-btn flat round dense icon="edit" color="emerald" @click="editOrg(props.row)" />
               </q-td>
             </template>
           </q-table>
@@ -144,25 +148,90 @@
             <template v-slot:body-cell-role="props">
               <q-td :props="props">
                 <q-badge
-                  :color="props.row.role === 'Super Admin' ? 'purple' : 'grey-7'"
+                  :color="props.row.role === 'super_admin' ? 'purple' : props.row.role === 'Admin' ? 'emerald' : 'grey-7'"
                   :label="props.row.role"
                   class="q-px-sm"
                 />
               </q-td>
             </template>
-            <template v-slot:body-cell-plan="props">
-              <q-td :props="props">
-                <q-badge
-                  :color="getPlanColor(props.row.plan_type)"
-                  :label="props.row.plan_type || 'Free'"
-                  class="q-px-sm text-capitalize"
-                />
+            <template v-slot:body-cell-actions="props">
+              <q-td :props="props" align="right">
+                <q-btn flat round dense icon="manage_accounts" color="emerald" @click="editUser(props.row)" />
               </q-td>
             </template>
           </q-table>
         </q-card>
       </q-tab-panel>
     </q-tab-panels>
+
+    <!-- Edit Org Dialog -->
+    <q-dialog v-model="orgDialog">
+      <q-card style="min-width: 400px" class="bg-dark-card border-glass text-white">
+        <q-card-section>
+          <div class="text-h6">Edit Organization</div>
+        </q-card-section>
+        <q-card-section class="q-pt-none q-gutter-y-md">
+          <q-input outlined dark v-model="editingOrg.name" label="Organization Name" dense />
+          <q-select
+            outlined
+            dark
+            v-model="editingOrg.category"
+            :options="['General', 'Music', 'Language', 'Science', 'Arts', 'Individual']"
+            label="Category"
+            dense
+          />
+          <q-select
+            outlined
+            dark
+            v-model="editingOrg.subscription_status"
+            :options="['active', 'trial', 'inactive', 'suspended']"
+            label="Subscription Status"
+            dense
+          />
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn unelevated color="emerald" label="Save Changes" @click="saveOrg" :loading="saving" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <!-- Edit User Dialog -->
+    <q-dialog v-model="userDialog">
+      <q-card style="min-width: 400px" class="bg-dark-card border-glass text-white">
+        <q-card-section>
+          <div class="text-h6">Manage System User</div>
+          <div class="text-caption text-grey">{{ editingUser.email }}</div>
+        </q-card-section>
+        <q-card-section class="q-pt-none q-gutter-y-md">
+          <q-select
+            outlined
+            dark
+            v-model="editingUser.org_id"
+            :options="organizations"
+            option-label="name"
+            option-value="id"
+            emit-value
+            map-options
+            label="Assign Organization"
+            dense
+          />
+          <q-select
+            outlined
+            dark
+            v-model="editingUser.role"
+            :options="['super_admin', 'Admin', 'Staff', 'Tutor']"
+            label="System Role"
+            dense
+            hint="Admin is the Institute Owner"
+          />
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn unelevated color="emerald" label="Update Permissions" @click="saveUser" :loading="saving" />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
 
     <!-- Receipt Dialog -->
     <q-dialog v-model="receiptDialog">
@@ -196,37 +265,17 @@ const selectedReceipt = ref('')
 const users = ref([])
 
 const orgColumns = [
-  {
-    name: 'id',
-    label: 'User ID',
-    field: 'id',
-    align: 'left',
-    sortable: true,
-    style: 'max-width: 150px; overflow: hidden; text-overflow: ellipsis;',
-  },
-  {
-    name: 'full_name',
-    label: 'Name',
-    field: (row) => `${row.first_name || ''} ${row.last_name || ''}`,
-    align: 'left',
-    sortable: true,
-  },
-  { name: 'email', label: 'Email', field: 'email', align: 'left', sortable: true },
-  { name: 'plan', label: 'Plan Type', field: 'plan_type', align: 'left' },
-  {
-    name: 'student_count',
-    label: 'Students',
-    field: 'student_count',
-    align: 'center',
-    sortable: true,
-  },
+  { name: 'name', label: 'Organization Name', field: 'name', align: 'left', sortable: true },
+  { name: 'category', label: 'Category', field: 'category', align: 'left' },
+  { name: 'subscription_status', label: 'Status', field: 'subscription_status', align: 'center' },
   {
     name: 'created_at',
-    label: 'Joined',
+    label: 'Created',
     field: 'created_at',
     align: 'right',
     format: (val) => new Date(val).toLocaleDateString(),
   },
+  { name: 'actions', label: '', field: 'actions', align: 'right' },
 ]
 
 const proofColumns = [
@@ -250,12 +299,12 @@ const userColumns = [
   {
     name: 'full_name',
     label: 'Name',
-    field: (row) => `${row.first_name || ''} ${row.last_name || ''}`,
+    field: (row) => row.name || 'N/A',
     align: 'left',
     sortable: true,
   },
   { name: 'role', label: 'Role', field: 'role', align: 'left', sortable: true },
-  { name: 'plan', label: 'Plan', field: 'plan_type', align: 'center', sortable: true },
+  { name: 'org_name', label: 'Organization', field: 'org_name', align: 'left' },
   {
     name: 'joined',
     label: 'Joined',
@@ -263,49 +312,36 @@ const userColumns = [
     align: 'right',
     format: (val) => new Date(val).toLocaleDateString(),
   },
+  { name: 'actions', label: '', field: 'actions', align: 'right' },
 ]
 
-const SUPER_ADMINS = [
-  'amilawijayanthaperera@gmail.com',
-  'amilawijayanthaperera858@gmail.com',
-  'admin@digynex.com',
-]
-const SUPER_ADMIN_IDS = ['74736fbf-0700-4a0d-b797-84d0b0b3b554']
 
-const isSuperAdmin = (p) => {
-  return SUPER_ADMINS.includes(p.email?.toLowerCase()) || SUPER_ADMIN_IDS.includes(p.id)
-}
+
+const saving = ref(false)
+const orgDialog = ref(false)
+const userDialog = ref(false)
+const editingOrg = ref({})
+const editingUser = ref({})
 
 const loadData = async () => {
   loading.value = true
   try {
-    // 1. Fetch Organizations (Profiles)
-    const { data: profiles, error: profileError } = await supabase.from('profiles').select('*')
+    // 1. Fetch Real Organizations
+    const { data: orgs, error: orgError } = await supabase.from('organizations').select('*').order('created_at', { ascending: false })
+    if (orgError) throw orgError
+    organizations.value = orgs
 
+    // 2. Fetch All Profiles for Users tab
+    const { data: profiles, error: profileError } = await supabase
+      .from('profiles')
+      .select('*, organizations(name)')
+      .order('created_at', { ascending: false })
     if (profileError) throw profileError
 
-    // 2. Fetch Student Counts (Group by user_id)
-    const { data: students } = await supabase.from('students').select('user_id')
-
-    // Group count
-    const studentCounts = {}
-    if (students) {
-      students.forEach((s) => {
-        if (s.user_id) {
-          studentCounts[s.user_id] = (studentCounts[s.user_id] || 0) + 1
-        }
-      })
-    }
-
-    const mappedProfiles = profiles.map((p) => ({
+    users.value = profiles.map(p => ({
       ...p,
-      email: p.email || 'N/A', // If profile lacks email, we might not see it
-      student_count: studentCounts[p.id] || 0,
-      role: isSuperAdmin(p) ? 'Super Admin' : 'User', // Determine Role
+      org_name: p.organizations?.name || 'Unassigned'
     }))
-
-    organizations.value = mappedProfiles
-    users.value = mappedProfiles // Populate users
 
     // 3. Fetch Pending Proofs
     const { data: proofs, error: proofError } = await supabase
@@ -325,10 +361,12 @@ const loadData = async () => {
 
 const getPlanColor = (plan) => {
   switch (plan) {
-    case 'pro':
+    case 'active':
       return 'emerald'
-    case 'growth':
+    case 'trial':
       return 'blue'
+    case 'inactive':
+      return 'red'
     default:
       return 'grey'
   }
@@ -342,15 +380,6 @@ const viewReceipt = (url) => {
 const approvePayment = async (row) => {
   actionLoading.value = row.id
   try {
-    // 1. Update Profile to Pro
-    const { error: profileError } = await supabase
-      .from('profiles')
-      .update({ plan_type: 'pro' })
-      .eq('id', row.user_id)
-
-    if (profileError) throw profileError
-
-    // 2. Update Proof Status
     const { error: proofError } = await supabase
       .from('payment_proofs')
       .update({ status: 'approved' })
@@ -358,17 +387,64 @@ const approvePayment = async (row) => {
 
     if (proofError) throw proofError
 
-    $q.notify({ type: 'positive', message: 'Plan Upgraded to Pro!' })
-
-    // Remove from list
+    $q.notify({ type: 'positive', message: 'Payment Approved!' })
     pendingProofs.value = pendingProofs.value.filter((p) => p.id !== row.id)
-
-    // Refresh orgs
     loadData()
   } catch (e) {
     $q.notify({ type: 'negative', message: 'Action failed: ' + e.message })
   } finally {
     actionLoading.value = null
+  }
+}
+
+const editOrg = (org) => {
+  editingOrg.value = { ...org }
+  orgDialog.value = true
+}
+
+const saveOrg = async () => {
+  saving.value = true
+  const { error } = await supabase
+    .from('organizations')
+    .update({
+      name: editingOrg.value.name,
+      category: editingOrg.value.category,
+      subscription_status: editingOrg.value.subscription_status
+    })
+    .eq('id', editingOrg.value.id)
+
+  saving.value = false
+  if (error) {
+    $q.notify({ type: 'negative', message: error.message })
+  } else {
+    $q.notify({ type: 'positive', message: 'Organization updated' })
+    orgDialog.value = false
+    loadData()
+  }
+}
+
+const editUser = (user) => {
+  editingUser.value = { ...user }
+  userDialog.value = true
+}
+
+const saveUser = async () => {
+  saving.value = true
+  const { error } = await supabase
+    .from('profiles')
+    .update({
+      org_id: editingUser.value.org_id,
+      role: editingUser.value.role
+    })
+    .eq('id', editingUser.value.id)
+
+  saving.value = false
+  if (error) {
+    $q.notify({ type: 'negative', message: error.message })
+  } else {
+    $q.notify({ type: 'positive', message: 'User permissions updated' })
+    userDialog.value = false
+    loadData()
   }
 }
 

@@ -181,6 +181,7 @@ const loading = ref(false)
 
 const rows = ref([])
 const tutorOptions = ref([])
+const userOrgId = ref(null)
 
 const grades = [
   'Grade 6',
@@ -226,21 +227,27 @@ const columns = [
   { name: 'actions', align: 'right', label: '', field: 'actions' },
 ]
 
-onMounted(() => {
+onMounted(async () => {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) {
+    const { data: profile } = await supabase.from('profiles').select('org_id').eq('id', user.id).single()
+    if (profile) userOrgId.value = profile.org_id
+  }
   fetchClasses()
   fetchTutors()
 })
 
 const fetchClasses = async () => {
   loading.value = true
+  if (!userOrgId.value) return
+
   const { data, error } = await supabase
     .from('classes')
-    .select(
-      `
+    .select(`
         *,
         tutors (name)
-    `,
-    )
+    `)
+    .eq('org_id', userOrgId.value)
     .order('created_at', { ascending: false })
 
   if (error) {
@@ -253,7 +260,11 @@ const fetchClasses = async () => {
 }
 
 const fetchTutors = async () => {
-  const { data, error } = await supabase.from('tutors').select('id, name').eq('status', 'Active')
+  if (!userOrgId.value) return
+  const { data, error } = await supabase.from('tutors')
+    .select('id, name')
+    .eq('status', 'Active')
+    .eq('org_id', userOrgId.value)
   if (!error) {
     tutorOptions.value = data
   }
@@ -291,6 +302,7 @@ const saveClass = async () => {
     end_time: editingRow.value.end_time,
     fee: editingRow.value.fee,
     status: editingRow.value.status,
+    org_id: userOrgId.value
   }
 
   if (isEditMode.value) {

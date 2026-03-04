@@ -2,7 +2,7 @@
   <q-page class="q-pa-lg">
     <div class="row items-center justify-between q-mb-lg">
       <div>
-        <h1 class="text-h5 text-weight-bold q-my-none text-dark">Exam & Results</h1>
+        <h1 class="text-h5 text-weight-bold q-my-none text-white">Exam & Results</h1>
         <p class="text-grey-6 q-mt-xs q-mb-none">Schedule exams and enter marks.</p>
       </div>
       <div>
@@ -144,6 +144,7 @@ import { supabase } from 'boot/supabase'
 const $q = useQuasar()
 const exams = ref([])
 const classOptions = ref([])
+const userOrgId = ref(null)
 
 const newExamDialog = ref(false)
 const marksDialog = ref(false)
@@ -170,26 +171,38 @@ const examColumns = [
 ]
 
 onMounted(async () => {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) {
+    const { data: profile } = await supabase.from('profiles').select('org_id').eq('id', user.id).single()
+    if (profile) userOrgId.value = profile.org_id
+  }
   fetchExams()
   fetchClasses()
 })
 
 const fetchExams = async () => {
+  if (!userOrgId.value) return
   const { data } = await supabase
     .from('exams')
     .select('*, classes(name)')
+    .eq('org_id', userOrgId.value)
     .order('date', { ascending: false })
   if (data) exams.value = data
 }
 
 const fetchClasses = async () => {
-  const { data } = await supabase.from('classes').select('id, name, grade').eq('status', 'Active')
+  if (!userOrgId.value) return
+  const { data } = await supabase.from('classes')
+    .select('id, name, grade')
+    .eq('status', 'Active')
+    .eq('org_id', userOrgId.value)
   if (data) classOptions.value = data
 }
 
 const createExam = async () => {
   creatingExam.value = true
-  const { error } = await supabase.from('exams').insert([examForm.value])
+  const examData = { ...examForm.value, org_id: userOrgId.value }
+  const { error } = await supabase.from('exams').insert([examData])
   if (error) {
     $q.notify({ type: 'negative', message: error.message })
   } else {
@@ -224,9 +237,13 @@ const enterMarks = async (exam) => {
     .select('id, name')
     .eq('grade', classInfo.grade)
     .eq('status', 'Active')
+    .eq('org_id', userOrgId.value)
 
   // 2. Get Existing Marks
-  const { data: results } = await supabase.from('exam_results').select('*').eq('exam_id', exam.id)
+  const { data: results } = await supabase.from('exam_results')
+    .select('*')
+    .eq('exam_id', exam.id)
+    .eq('org_id', userOrgId.value)
 
   // 3. Merge
   studentResults.value = students.map((s) => {
@@ -286,6 +303,7 @@ const saveResults = async () => {
       student_id: s.student_id,
       marks: s.marks,
       grade: s.grade,
+      org_id: userOrgId.value
     }))
 
   if (upsertData.length === 0) {

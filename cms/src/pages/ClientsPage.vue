@@ -205,6 +205,7 @@ const currencyStore = useCurrencyStore()
 const loading = ref(false)
 const saving = ref(false)
 const clientDialog = ref(false)
+const userOrgId = ref(null)
 
 const clientForm = ref({
   name: '',
@@ -334,7 +335,7 @@ const saveClient = async () => {
     const {
       data: { user },
     } = await supabase.auth.getUser()
-    const payload = { ...clientForm.value, user_id: user?.id }
+    const payload = { ...clientForm.value, user_id: user?.id, org_id: userOrgId.value }
 
     const { error } = clientForm.value.id
       ? await supabase.from('clients').update(payload).eq('id', clientForm.value.id)
@@ -379,7 +380,14 @@ const openClientDialog = () => {
   clientDialog.value = true
 }
 
-onMounted(() => fetchClients())
+onMounted(async () => {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) {
+    const { data: profile } = await supabase.from('profiles').select('org_id').eq('id', user.id).single()
+    if (profile) userOrgId.value = profile.org_id
+  }
+  fetchClients()
+})
 </script>
 
 <style scoped>

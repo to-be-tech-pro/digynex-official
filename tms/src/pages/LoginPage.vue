@@ -116,9 +116,11 @@ import { ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { supabase } from 'boot/supabase'
+import { useAuthStore } from 'stores/auth'
 
 const $q = useQuasar()
 const router = useRouter()
+const authStore = useAuthStore()
 
 const email = ref('')
 const password = ref('')
@@ -137,6 +139,8 @@ const handleLogin = async () => {
     if (error) throw error
 
     if (data.session) {
+      await authStore.initialize()
+
       $q.notify({
         type: 'positive',
         message: 'Welcome back! Redirecting...',

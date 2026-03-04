@@ -135,7 +135,8 @@ const nodes = ref([
     color: 'deep-orange-7',
     active: true,
     executions: '4,821',
-    health: 0.98,
+    health: 1.0,
+    url: 'https://n8n.digynex.se/'
   },
   {
     name: 'Facebook Nexus Connector',
@@ -144,7 +145,7 @@ const nodes = ref([
     color: 'blue-8',
     active: true,
     executions: '1,204',
-    health: 0.92,
+    health: 0.95,
   },
   {
     name: 'Gemini 1.5 Analysis',
@@ -153,7 +154,7 @@ const nodes = ref([
     color: 'emerald-5',
     active: true,
     executions: '682',
-    health: 0.85,
+    health: 0.9,
   },
   {
     name: 'WhatsApp Business API',
@@ -162,7 +163,7 @@ const nodes = ref([
     color: 'green-6',
     active: true,
     executions: '2,410',
-    health: 0.99,
+    health: 1.0,
   },
   {
     name: 'Stripe Webhook Hub',
@@ -178,9 +179,9 @@ const nodes = ref([
     desc: 'Transactional emails and enterprise reporting delivery.',
     icon: 'email',
     color: 'sky-blue',
-    active: false,
-    executions: '0',
-    health: 0.0,
+    active: true,
+    executions: '1,540',
+    health: 0.98,
   },
 ])
 
@@ -244,6 +245,7 @@ const createNewWorkflow = () => {
     icon: 'auto_fix_high',
     color: 'emerald',
   })
+  window.open('https://n8n.digynex.se/', '_blank')
 }
 
 const onNodeToggle = (node, val) => {
@@ -257,10 +259,10 @@ const onNodeToggle = (node, val) => {
 
 const healthChecks = ref([
   { label: 'Core Orchestrator', details: 'All regions operational', ok: true },
-  { label: 'Supabase Data Gateway', details: 'Latency: 18ms (Optimal)', ok: true },
-  { label: 'n8n Webhook Instance', details: 'Connected & Listening', ok: true },
-  { label: 'AI Inference Engine', details: 'Load: 12% (Idle)', ok: true },
-  { label: 'External API Gateways', details: '9 Gateways active, 1 error', ok: false },
+  { label: 'Supabase Data Gateway', details: 'Latency: 12ms (Optimal)', ok: true },
+  { label: 'n8n Webhook Instance', details: 'Connected to n8n.digynex.se', ok: true },
+  { label: 'AI Inference Engine', details: 'Load: 8% (Gemini 1.5 Pro)', ok: true },
+  { label: 'External API Gateways', details: 'All Gateways active', ok: true },
 ])
 </script>
 

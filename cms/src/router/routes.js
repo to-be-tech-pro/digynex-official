@@ -67,6 +67,10 @@ const routes = [
         path: 'settings',
         component: () => import('pages/SettingsPage.vue'),
       },
+      {
+        path: 'subscription',
+        component: () => import('pages/SubscriptionPage.vue'),
+      },
     ],
     meta: { requiresAuth: true },
   },

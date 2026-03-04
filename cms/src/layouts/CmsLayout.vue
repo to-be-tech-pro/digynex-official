@@ -56,6 +56,30 @@
             class="hover-scale"
           />
 
+          <!-- Org Switcher for Super Admins -->
+          <q-select
+            v-if="isSuperAdmin"
+            v-model="currentOrg"
+            :options="orgOptions"
+            option-label="name"
+            option-value="id"
+            emit-value
+            map-options
+            dense
+            filled
+            dark
+            rounded
+            bg-color="grey-10"
+            class="q-mx-md gt-xs"
+            style="min-width: 200px"
+            label="Active Institution"
+            @update:model-value="handleOrgSwitch"
+          >
+            <template v-slot:prepend>
+              <q-icon name="apartment" color="emerald" />
+            </template>
+          </q-select>
+
           <q-separator vertical inset class="q-mx-sm bg-grey-9" />
 
           <q-btn flat no-caps class="q-ml-none rounded-borders text-white pl-1 hover-scale">
@@ -73,6 +97,25 @@
                 Nexus Core
               </div>
             </div>
+            <q-menu
+              dark
+              transition-show="jump-down"
+              transition-hide="jump-up"
+              class="bg-dark-drawer border-glass shadow-24"
+              style="border-radius: 12px"
+            >
+              <q-list style="min-width: 200px" class="q-py-sm">
+                <q-item clickable v-close-popup to="/cms/portal/settings" class="text-grey-3">
+                  <q-item-section avatar><q-icon name="person_outline" size="20px" /></q-item-section>
+                  <q-item-section class="text-weight-bold">Profile Settings</q-item-section>
+                </q-item>
+                <q-separator dark class="q-my-sm bg-grey-9 opacity-10" />
+                <q-item clickable v-close-popup @click="handleLogout" class="text-red-4">
+                  <q-item-section avatar><q-icon name="power_settings_new" size="20px" /></q-item-section>
+                  <q-item-section class="text-weight-bolder uppercase tracking-widest" style="font-size: 11px">Terminate Session</q-item-section>
+                </q-item>
+              </q-list>
+            </q-menu>
           </q-btn>
         </div>
       </q-toolbar>
@@ -237,20 +280,47 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue'
+import { ref, onMounted, computed } from 'vue'
+import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { supabase } from 'boot/supabase'
+import { useAuthStore } from 'stores/auth'
 
 const $q = useQuasar()
+const authStore = useAuthStore()
 $q.dark.set(true)
 
+const router = useRouter()
 const leftDrawerOpen = ref(false)
 const search = ref('')
-const userEmail = ref('')
 const supportDialog = ref(false)
+
+const userEmail = computed(() => authStore.user?.email || '')
+const isSuperAdmin = computed(() => authStore.isSuperAdmin)
+
+const orgOptions = ref([])
+const currentOrg = ref(null)
 
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
+}
+
+const handleOrgSwitch = (orgId) => {
+  authStore.setOrganization(orgId)
+  $q.notify({
+    type: 'info',
+    message: `Nexus switched to ${orgOptions.value.find(o => o.id === orgId)?.name}`,
+    color: 'emerald',
+    position: 'top'
+  })
+}
+
+const fetchOrgs = async () => {
+  const { data } = await supabase.from('organizations').select('id, name')
+  if (data) {
+    orgOptions.value = data
+    currentOrg.value = authStore.userOrgId
+  }
 }
 
 const handleSearch = () => {
@@ -265,17 +335,40 @@ const managementLinks = [
   { title: 'Live Nexus', icon: 'forum', link: '/cms/portal/chat' },
   { title: 'Enterprise Clients', icon: 'business', link: '/cms/portal/clients' },
   { title: 'Fiscal Intelligence', icon: 'payments', link: '/cms/portal/revenue' },
+  { title: 'Nexus Billing', icon: 'receipt_long', link: '/cms/portal/subscription' },
   { title: 'Nexus Control Center', icon: 'psychology', link: '/cms/portal/nexus' },
 ]
 
 onMounted(async () => {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (user) {
-    userEmail.value = user.email
+  if (!authStore.user) {
+    await authStore.initialize()
+  }
+
+  if (isSuperAdmin.value) {
+    fetchOrgs()
   }
 })
+
+const handleLogout = async () => {
+  try {
+    $q.loading.show({
+      message: 'Terminating Nexus Session...',
+      backgroundColor: 'dark',
+      customClass: 'text-emerald font-bold'
+    })
+    await supabase.auth.signOut()
+    router.push('/')
+    $q.notify({
+      type: 'info',
+      message: 'Nexus Session Terminated Successfully',
+      icon: 'power_settings_new'
+    })
+  } catch {
+    $q.notify({ type: 'negative', message: 'Logout failed' })
+  } finally {
+    $q.loading.hide()
+  }
+}
 </script>
 
 <style lang="scss">

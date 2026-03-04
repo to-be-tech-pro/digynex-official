@@ -1,8 +1,8 @@
 <template>
   <q-page class="q-pa-lg">
-    <div class="row items-center justify-between q-mb-lg">
-      <div>
-        <h1 class="text-h5 text-weight-bold q-my-none text-dark">Attendance Management</h1>
+    <div class="row items-center justify-between q-mb-lg q-gutter-y-sm">
+      <div class="col-12 col-sm-auto">
+        <h1 class="text-h5 text-weight-bold q-my-none text-white">Attendance</h1>
         <p class="text-grey-6 q-mt-xs q-mb-none">Mark and track student attendance.</p>
       </div>
     </div>
@@ -18,9 +18,9 @@
         align="left"
         narrow-indicator
       >
-        <q-tab name="mark" label="Mark Attendance" icon="check_circle" />
-        <q-tab name="reports" label="Attendance Reports" icon="bar_chart" />
-        <q-tab name="absent" label="Absence Tracking" icon="warning" />
+        <q-tab name="mark" label="Mark Attendance" icon="check_circle" class="text-grey-4" />
+        <q-tab name="reports" label="Attendance Reports" icon="bar_chart" class="text-grey-4" />
+        <q-tab name="absent" label="Absence Tracking" icon="warning" class="text-grey-4" />
       </q-tabs>
     </q-card>
 
@@ -28,7 +28,7 @@
       <!-- TAB 1: MARK ATTENDANCE (Original Logic) -->
       <q-tab-panel name="mark" class="q-pa-none">
         <!-- Active Session Card -->
-        <q-card class="no-shadow border-gray q-mb-lg bg-white">
+        <q-card class="no-shadow border-gray q-mb-lg bg-transparent">
           <q-card-section class="q-pb-none">
             <div class="text-subtitle1 text-weight-bold">Select Class Session</div>
           </q-card-section>
@@ -103,7 +103,7 @@
           <!-- Student List -->
           <div class="col-12 col-md-8">
             <q-card class="no-shadow border-gray">
-              <q-toolbar class="bg-white q-pl-md q-pr-md border-bottom-light">
+              <q-toolbar class="bg-transparent q-pl-md q-pr-md border-bottom-light">
                 <q-toolbar-title class="text-subtitle1">Student List</q-toolbar-title>
                 <q-btn
                   flat
@@ -142,29 +142,41 @@
                     <q-item-label caption>ID: {{ student.id }} | {{ student.phone }}</q-item-label>
                   </q-item-section>
 
-                  <q-item-section side>
-                    <div class="row q-gutter-sm">
+                  <q-item-section side class="mobile-status-section">
+                    <div class="row q-gutter-xs no-wrap">
                       <q-btn
+                        :unelevated="student.attendance === 'Present'"
                         :outline="student.attendance !== 'Present'"
                         :color="student.attendance === 'Present' ? 'green' : 'grey-5'"
-                        label="Present"
+                        label="P"
                         size="sm"
+                        class="status-btn"
                         @click="updateStatus(student, 'Present')"
-                      />
+                      >
+                        <q-tooltip>Present</q-tooltip>
+                      </q-btn>
                       <q-btn
+                        :unelevated="student.attendance === 'Absent'"
                         :outline="student.attendance !== 'Absent'"
                         :color="student.attendance === 'Absent' ? 'red' : 'grey-5'"
-                        label="Absent"
+                        label="A"
                         size="sm"
+                        class="status-btn"
                         @click="updateStatus(student, 'Absent')"
-                      />
+                      >
+                        <q-tooltip>Absent</q-tooltip>
+                      </q-btn>
                       <q-btn
+                        :unelevated="student.attendance === 'Late'"
                         :outline="student.attendance !== 'Late'"
                         :color="student.attendance === 'Late' ? 'orange' : 'grey-5'"
-                        label="Late"
+                        label="L"
                         size="sm"
+                        class="status-btn"
                         @click="updateStatus(student, 'Late')"
-                      />
+                      >
+                        <q-tooltip>Late</q-tooltip>
+                      </q-btn>
                     </div>
                   </q-item-section>
                 </q-item>
@@ -183,24 +195,24 @@
         <div class="row q-col-gutter-lg">
           <!-- Summary Cards -->
           <div class="col-12 col-md-4">
-            <q-card class="no-shadow border-gray bg-white q-pa-md text-center">
-              <div class="text-subtitle2 text-grey">Average Attendance</div>
-              <div class="text-h3 text-weight-bold text-primary q-mt-sm">85%</div>
+            <q-card class="no-shadow border-gray bg-transparent q-pa-md text-center">
+              <div class="text-subtitle2 text-grey-4">Average Attendance</div>
+              <div class="text-h3 text-weight-bold text-primary q-mt-sm">{{ avgAttendance }}%</div>
               <div class="text-caption text-green q-mt-xs">
                 <q-icon name="trending_up" /> +2.4% from last month
               </div>
             </q-card>
           </div>
           <div class="col-12 col-md-4">
-            <q-card class="no-shadow border-gray bg-white q-pa-md text-center">
-              <div class="text-subtitle2 text-grey">Total Sessions</div>
-              <div class="text-h3 text-weight-bold text-dark q-mt-sm">24</div>
+            <q-card class="no-shadow border-gray bg-transparent q-pa-md text-center">
+              <div class="text-subtitle2 text-grey-4">Total Sessions</div>
+              <div class="text-h3 text-weight-bold text-white q-mt-sm">{{ totalSessions }}</div>
               <div class="text-caption text-grey q-mt-xs">This Month</div>
             </q-card>
           </div>
           <div class="col-12 col-md-4">
-            <q-card class="no-shadow border-gray bg-white q-pa-md text-center">
-              <div class="text-subtitle2 text-grey">Best Attendance Class</div>
+            <q-card class="no-shadow border-gray bg-transparent q-pa-md text-center">
+              <div class="text-subtitle2 text-grey-4">Best Attendance Class</div>
               <div class="text-h4 text-weight-bold text-secondary q-mt-sm">Grade 10 - Maths</div>
               <div class="text-caption text-grey q-mt-xs">98% Turnout</div>
             </q-card>
@@ -295,6 +307,7 @@ const Apexchart = VueApexCharts
 const $q = useQuasar()
 const tab = ref('mark')
 const loading = ref(false)
+const userOrgId = ref(null)
 
 // --- MARK ATTENDANCE STATE ---
 const classOptions = ref([])
@@ -304,6 +317,10 @@ const students = ref([])
 const scanCode = ref('')
 const lastScanned = ref('')
 const scanInput = ref(null)
+
+// --- STATISTICS STATE ---
+const avgAttendance = ref(0)
+const totalSessions = ref(0)
 
 // --- REPORT CHARTS CONFIG ---
 const barChartOptions = {
@@ -360,12 +377,45 @@ const atRiskStudents = ref([
 
 // --- INIT ---
 onMounted(async () => {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) {
+    const { data: profile } = await supabase.from('profiles').select('org_id').eq('id', user.id).single()
+    if (profile) userOrgId.value = profile.org_id
+  }
   await fetchClasses()
+  await fetchStats()
 })
 
+const fetchStats = async () => {
+  if (!userOrgId.value) return
+
+  const now = new Date()
+  const firstDay = new Date(now.getFullYear(), now.getMonth(), 1).toISOString()
+
+  // 1. Fetch sessions count for this month
+  const { data: sessions } = await supabase
+    .from('attendance')
+    .select('date, status')
+    .eq('org_id', userOrgId.value)
+    .gte('date', firstDay)
+
+  if (sessions && sessions.length > 0) {
+    // Unique dates/classes combo for sessions
+    const sessionSet = new Set(sessions.map(s => s.date))
+    totalSessions.value = sessionSet.size
+
+    // Calculate AVG
+    const presentCount = sessions.filter(s => s.status === 'Present').length
+    avgAttendance.value = Math.round((presentCount / sessions.length) * 100)
+  }
+}
+
 const fetchClasses = async () => {
-  // Use mock data if DB is empty or fails, for UI demo purposes
-  const { data } = await supabase.from('classes').select('*').eq('status', 'Active')
+  if (!userOrgId.value) return
+  const { data } = await supabase.from('classes')
+    .select('*')
+    .eq('status', 'Active')
+    .eq('org_id', userOrgId.value)
   classOptions.value = data || []
   if (!data || data.length === 0) {
     // Fallback mock if needed for development
@@ -386,6 +436,7 @@ const loadStudents = async () => {
     .select('*')
     .eq('grade', selectedClass.value.grade)
     .eq('status', 'Active')
+    .eq('org_id', userOrgId.value)
 
   // 2. Fetch Existing Attendance
   const { data: attendanceList } = await supabase
@@ -393,6 +444,7 @@ const loadStudents = async () => {
     .select('*')
     .eq('class_id', selectedClass.value.id)
     .eq('date', selectedDate.value)
+    .eq('org_id', userOrgId.value)
 
   if (studentError || !studentList || studentList.length === 0) {
     // Mock Data if DB empty
@@ -429,6 +481,7 @@ const updateStatus = async (student, status) => {
       student_id: student.id,
       date: selectedDate.value,
       status: status,
+      org_id: userOrgId.value,
     },
     { onConflict: 'class_id, student_id, date' },
   )
@@ -495,5 +548,19 @@ body.body--light .border-gray {
 }
 .border-red {
   border: 1px solid #ef4444;
+}
+
+.status-btn {
+  width: 32px;
+  min-width: 32px;
+}
+
+@media (max-width: 600px) {
+  .q-page {
+    padding: 16px !important;
+  }
+  .mobile-status-section {
+    padding-left: 0 !important;
+  }
 }
 </style>

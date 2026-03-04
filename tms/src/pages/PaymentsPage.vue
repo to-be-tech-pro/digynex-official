@@ -1,10 +1,10 @@
 <template>
   <q-page class="q-pa-lg">
-    <div class="row items-center justify-between q-mb-lg">
-      <div>
-        <h1 class="text-h5 text-weight-bold q-my-none">Financial Management</h1>
+    <div class="row items-center justify-between q-mb-lg q-gutter-y-sm">
+      <div class="col-12 col-sm-auto">
+        <h1 class="text-h5 text-weight-bold q-my-none text-white">Finances</h1>
         <p class="text-grey-5 q-mt-xs q-mb-none">
-          Manage tuition fees, track dues, and record expenses.
+          Manage tuition fees and track expenses.
         </p>
       </div>
     </div>
@@ -20,9 +20,9 @@
         align="left"
         narrow-indicator
       >
-        <q-tab name="payments" label="Student Payments" icon="payments" />
-        <q-tab name="due" label="Due Payments" icon="pending_actions" />
-        <q-tab name="expenses" label="Institute Expenses" icon="account_balance_wallet" />
+        <q-tab name="payments" label="Student Payments" icon="payments" class="text-grey-4" />
+        <q-tab name="due" label="Due Payments" icon="pending_actions" class="text-grey-4" />
+        <q-tab name="expenses" label="Institute Expenses" icon="account_balance_wallet" class="text-grey-4" />
       </q-tabs>
     </q-card>
 
@@ -48,7 +48,7 @@
                 Total Revenue (This Month)
               </div>
               <div class="text-h4 text-weight-bold text-green-9 q-mt-xs">
-                {{ currencyStore.format(125000) }}
+                {{ currencyStore.format(totalRevenueComputed) }}
               </div>
             </q-card>
           </div>
@@ -58,20 +58,21 @@
                 Total Pending
               </div>
               <div class="text-h4 text-weight-bold text-orange-9 q-mt-xs">
-                {{ currencyStore.format(45000) }}
+                {{ currencyStore.format(0) }}
               </div>
             </q-card>
           </div>
         </div>
 
         <!-- Payments Table -->
-        <q-card class="no-shadow border-gray">
+        <q-card class="no-shadow border-gray scroll">
           <q-table
             :rows="rows"
             :columns="columns"
             row-key="id"
             flat
             :pagination="{ rowsPerPage: 10 }"
+            style="min-width: 600px"
           >
             <template v-slot:body-cell-student="props">
               <q-td :props="props" class="text-weight-bold">
@@ -126,25 +127,31 @@
             {{ dueFilterMonth }}.
           </q-banner>
 
-          <q-table :rows="dueRows" :columns="dueColumns" row-key="id" flat>
+          <q-table :rows="dueRows" :columns="dueColumns" row-key="id" flat style="min-width: 600px">
             <template v-slot:body-cell-actions="props">
               <q-td :props="props" align="right">
-                <q-btn
-                  size="sm"
-                  color="primary"
-                  icon="sms"
-                  label="Send Reminder"
-                  class="q-mr-sm"
-                  @click="sendReminder(props.row)"
-                />
-                <q-btn
-                  size="sm"
-                  outline
-                  color="green"
-                  icon="payments"
-                  label="Pay Now"
-                  @click="payNow(props.row)"
-                />
+                <div class="row q-gutter-xs no-wrap justify-end">
+                  <q-btn
+                    round
+                    flat
+                    color="primary"
+                    icon="sms"
+                    size="sm"
+                    @click="sendReminder(props.row)"
+                  >
+                    <q-tooltip>Send Reminder</q-tooltip>
+                  </q-btn>
+                  <q-btn
+                    round
+                    flat
+                    color="green"
+                    icon="payments"
+                    size="sm"
+                    @click="payNow(props.row)"
+                  >
+                    <q-tooltip>Pay Now</q-tooltip>
+                  </q-btn>
+                </div>
               </q-td>
             </template>
           </q-table>
@@ -196,8 +203,8 @@
           </div>
         </div>
 
-        <q-card class="no-shadow border-gray">
-          <q-table :rows="expenseRows" :columns="expenseColumns" row-key="id" flat>
+        <q-card class="no-shadow border-gray scroll">
+          <q-table :rows="expenseRows" :columns="expenseColumns" row-key="id" flat style="min-width: 600px">
             <template v-slot:body-cell-amount="props">
               <q-td :props="props" class="text-right text-weight-bold">
                 {{ props.row.amount.toLocaleString() }}
@@ -210,7 +217,7 @@
 
     <!-- Payment Dialog -->
     <q-dialog v-model="paymentDialog">
-      <q-card style="min-width: 400px">
+      <q-card style="width: 400px; max-width: 95vw">
         <q-card-section>
           <div class="text-h6">Record New Payment</div>
         </q-card-section>
@@ -247,7 +254,7 @@
 
     <!-- Expense Dialog -->
     <q-dialog v-model="expenseDialog">
-      <q-card style="min-width: 400px">
+      <q-card style="width: 400px; max-width: 95vw">
         <q-card-section><div class="text-h6">Record Expense</div></q-card-section>
         <q-card-section class="q-pt-none q-gutter-y-md">
           <q-input outlined v-model="expenseForm.category" label="Category" dense />
@@ -272,6 +279,10 @@ import { useCurrencyStore } from 'stores/currency'
 const $q = useQuasar()
 const currencyStore = useCurrencyStore()
 const tab = ref('payments')
+const userOrgId = ref(null)
+
+const totalRevenueComputed = ref(0)
+const totalExpensesComputed = ref(0)
 
 // --- PAYMENT TAB LOGIC ---
 const paymentDialog = ref(false)
@@ -292,11 +303,23 @@ const columns = [
 
 const rows = ref([])
 
+onMounted(async () => {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) {
+    const { data: profile } = await supabase.from('profiles').select('org_id').eq('id', user.id).single()
+    if (profile) userOrgId.value = profile.org_id
+  }
+  await fetchPayments()
+  await fetchExpenses()
+})
+
 const fetchPayments = async () => {
+  if (!userOrgId.value) return
   try {
     const { data, error } = await supabase
       .from('payments')
       .select('*, students(name)')
+      .eq('org_id', userOrgId.value)
       .order('created_at', { ascending: false })
 
     if (error) throw error
@@ -307,8 +330,11 @@ const fetchPayments = async () => {
       student: payment.students ? payment.students.name : 'Unknown',
       month: payment.payment_month,
       amount: payment.amount,
-      status: 'Paid', // All recorded payments are successful
+      status: 'Paid',
     }))
+
+    // Calculate total revenue from rows
+    totalRevenueComputed.value = rows.value.reduce((acc, r) => acc + Number(r.amount), 0)
   } catch (error) {
     console.error('Error fetching payments:', error)
     $q.notify({ type: 'negative', message: 'Failed to load payments' })
@@ -370,6 +396,7 @@ const savePayment = async () => {
       .from('students')
       .select('id')
       .ilike('name', `%${form.value.studentName}%`)
+      .eq('org_id', userOrgId.value)
       .limit(1)
     if (students && students.length > 0) studentId = students[0].id
 
@@ -382,6 +409,7 @@ const savePayment = async () => {
       payment_month: form.value.month,
       status: form.value.status,
       platform_fee: platformFee,
+      org_id: userOrgId.value,
     })
 
     if (error) throw error
@@ -431,6 +459,21 @@ const payNow = (row) => {
 }
 
 // --- EXPENSES LOGIC ---
+const fetchExpenses = async () => {
+  if (!userOrgId.value) return
+  const { data } = await supabase.from('expenses')
+    .select('*')
+    .eq('org_id', userOrgId.value)
+
+  if (data) {
+    expenseRows.value = data.map(e => ({
+      ...e,
+      date: new Date(e.expense_date).toISOString().split('T')[0]
+    }))
+    totalExpensesComputed.value = expenseRows.value.reduce((acc, row) => acc + Number(row.amount), 0)
+  }
+}
+
 const expenseDialog = ref(false)
 const expenseForm = ref({})
 const expenseColumns = [
@@ -445,31 +488,32 @@ const expenseColumns = [
     format: (val) => currencyStore.format(val),
   },
 ]
-const expenseRows = ref([
-  { id: 1, date: '2026-02-05', category: 'Rent', description: 'Monthly Hall Rent', amount: 50000 },
-  { id: 2, date: '2026-02-08', category: 'Electricity', description: 'Jan Bill', amount: 12500 },
-])
+const expenseRows = ref([])
 
-const totalExpenses = computed(() =>
-  expenseRows.value.reduce((acc, row) => acc + Number(row.amount), 0),
-)
-const totalRevenue = 125000 // Mocked from payments
-const profit = computed(() => totalRevenue - totalExpenses.value)
+const totalExpenses = computed(() => totalExpensesComputed.value)
+const totalRevenue = computed(() => totalRevenueComputed.value)
+const profit = computed(() => totalRevenue.value - totalExpenses.value)
 
 const openExpenseDialog = () => {
   expenseForm.value = { date: new Date().toISOString().split('T')[0] }
   expenseDialog.value = true
 }
 
-const saveExpense = () => {
-  expenseRows.value.unshift({
-    id: Date.now(),
-    date: expenseForm.value.date || new Date().toISOString().split('T')[0],
+const saveExpense = async () => {
+  const { error } = await supabase.from('expenses').insert({
+    org_id: userOrgId.value,
     category: expenseForm.value.category,
     description: expenseForm.value.description,
     amount: Number(expenseForm.value.amount),
+    expense_date: expenseForm.value.date || new Date().toISOString().split('T')[0],
   })
-  $q.notify({ type: 'positive', message: 'Expense saved' })
+
+  if (error) {
+    $q.notify({ type: 'negative', message: error.message })
+  } else {
+    $q.notify({ type: 'positive', message: 'Expense saved' })
+    fetchExpenses()
+  }
 }
 </script>
 
@@ -479,5 +523,11 @@ const saveExpense = () => {
 }
 body.body--light .border-gray {
   border: 1px solid #eaecf0;
+}
+
+@media (max-width: 600px) {
+  .q-page {
+    padding: 16px !important;
+  }
 }
 </style>

@@ -3,7 +3,7 @@
     <!-- Header -->
     <div class="row items-center justify-between q-mb-lg">
       <div>
-        <h1 class="text-h5 text-weight-bold q-my-none">Tutor Management</h1>
+        <h1 class="text-h5 text-weight-bold q-my-none text-white">Tutor Management</h1>
         <p class="text-grey-5 q-mt-xs q-mb-none">
           Manage tutors, track performance, and handle commission payments.
         </p>
@@ -31,9 +31,9 @@
         align="left"
         narrow-indicator
       >
-        <q-tab name="overview" label="Dashboard & Overview" />
-        <q-tab name="payments" label="Commission Payments" />
-        <q-tab name="tutors" label="All Tutors" />
+        <q-tab name="overview" label="Dashboard & Overview" class="text-grey-4" />
+        <q-tab name="payments" label="Commission Payments" class="text-grey-4" />
+        <q-tab name="tutors" label="All Tutors" class="text-grey-4" />
       </q-tabs>
     </q-card>
 
@@ -42,13 +42,13 @@
       <q-tab-panel name="overview" class="q-pa-none">
         <div class="row q-col-gutter-md q-mb-lg">
           <div class="col-12 col-md-3">
-            <q-card class="no-shadow border-gray q-pa-md bg-white">
+            <q-card class="no-shadow border-gray q-pa-md bg-transparent">
               <div class="row items-center justify-between">
                 <div>
                   <div class="text-caption text-grey-6 text-uppercase text-weight-bold">
                     Active Tutors
                   </div>
-                  <div class="text-h4 text-weight-bold text-dark q-mt-xs">
+                  <div class="text-h4 text-weight-bold text-white q-mt-xs">
                     {{ activeTutorsCount }}
                   </div>
                 </div>
@@ -57,7 +57,7 @@
             </q-card>
           </div>
           <div class="col-12 col-md-3">
-            <q-card class="no-shadow border-gray q-pa-md bg-white">
+            <q-card class="no-shadow border-gray q-pa-md bg-transparent">
               <div class="row items-center justify-between">
                 <div>
                   <div class="text-caption text-grey-6 text-uppercase text-weight-bold">
@@ -72,7 +72,7 @@
             </q-card>
           </div>
           <div class="col-12 col-md-3">
-            <q-card class="no-shadow border-gray q-pa-md bg-white">
+            <q-card class="no-shadow border-gray q-pa-md bg-transparent">
               <div class="row items-center justify-between">
                 <div>
                   <div class="text-caption text-grey-6 text-uppercase text-weight-bold">
@@ -87,13 +87,13 @@
             </q-card>
           </div>
           <div class="col-12 col-md-3">
-            <q-card class="no-shadow border-gray q-pa-md bg-white">
+            <q-card class="no-shadow border-gray q-pa-md bg-transparent">
               <div class="row items-center justify-between">
                 <div>
                   <div class="text-caption text-grey-6 text-uppercase text-weight-bold">
                     Top Performer
                   </div>
-                  <div class="text-h6 text-weight-bold text-dark q-mt-xs ellipsis">
+                  <div class="text-h6 text-weight-bold text-white q-mt-xs ellipsis">
                     {{ topPerformer.tutorName || 'N/A' }}
                   </div>
                 </div>
@@ -388,13 +388,17 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useQuasar } from 'quasar'
 import { useCurrencyStore } from 'stores/currency'
+import { supabase } from 'boot/supabase'
+import { useAuthStore } from 'stores/auth'
 
 const $q = useQuasar()
 const currencyStore = useCurrencyStore()
+const authStore = useAuthStore()
 const tab = ref('overview')
+const loading = ref(false)
 
 // --- LIST OF TUTORS ---
 const editDialog = ref(false)
@@ -423,35 +427,38 @@ const columns = [
   { name: 'actions', align: 'right', label: '', field: 'actions' },
 ]
 
-const rows = ref([
-  {
-    id: 1,
-    name: 'Mr. Sarath Mel',
-    email: 'sarath@examle.com',
-    subjects: ['Mathematics', 'Physics'],
-    phone: '077-1112223',
-    status: 'Active',
-    commission: 60,
-  },
-  {
-    id: 2,
-    name: 'Ms. Deepika Gunawardena',
-    email: 'deepika@example.com',
-    subjects: ['Chemistry'],
-    phone: '071-3334445',
-    status: 'Active',
-    commission: 70,
-  },
-  {
-    id: 3,
-    name: 'Mr. Rohan Jayasuriya',
-    email: 'rohan@example.com',
-    subjects: ['Biology', 'Science'],
-    phone: '070-5556667',
-    status: 'Inactive',
-    commission: 50,
-  },
-])
+const rows = ref([])
+
+const fetchTutors = async () => {
+  if (!authStore.userOrgId) return
+
+  loading.value = true
+  try {
+    const { data, error } = await supabase
+      .from('tutors')
+      .select('*')
+      .eq('org_id', authStore.userOrgId)
+      .order('created_at', { ascending: false })
+
+    if (error) throw error
+    rows.value = data
+  } catch (error) {
+    $q.notify({ type: 'negative', message: 'Error fetching tutors: ' + error.message })
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(async () => {
+  if (!authStore.user) {
+    await authStore.initialize()
+  }
+  await fetchTutors()
+})
+
+watch(() => authStore.userOrgId, async () => {
+  await fetchTutors()
+})
 
 // --- PAYMENTS & DASHBOARD LOGIC ---
 const paymentConfirmDialog = ref(false)
@@ -611,28 +618,25 @@ const editTutor = (row) => {
   editDialog.value = true
 }
 
-const saveTutor = () => {
-  if (isEditMode.value) {
-    // Edit existing logic
-    const index = rows.value.findIndex((r) => r.id === editingRow.value.id)
-    if (index !== -1) {
-      rows.value[index] = { ...editingRow.value }
-      $q.notify({
-        type: 'positive',
-        message: 'Tutor details updated successfully',
-      })
-    }
-  } else {
-    // Add new logic
-    const newId = Math.max(0, ...rows.value.map((r) => r.id)) + 1
-    rows.value.push({
-      id: newId,
-      ...editingRow.value,
-    })
+const saveTutor = async () => {
+  try {
+    const tutorData = { ...editingRow.value }
+    if (!isEditMode.value) delete tutorData.id
+
+    if (authStore.userOrgId) tutorData.org_id = authStore.userOrgId
+
+    const { error } = await supabase.from('tutors').upsert(tutorData).select()
+
+    if (error) throw error
+
     $q.notify({
       type: 'positive',
-      message: 'New tutor added successfully',
+      message: isEditMode.value ? 'Tutor updated' : 'Tutor added',
     })
+    fetchTutors()
+    editDialog.value = false
+  } catch (error) {
+    $q.notify({ type: 'negative', message: 'Error saving tutor: ' + error.message })
   }
 }
 
@@ -647,13 +651,15 @@ const deleteTutor = (id) => {
       color: 'negative',
       flat: true,
     },
-  }).onOk(() => {
-    rows.value = rows.value.filter((row) => row.id !== id)
-    $q.notify({
-      type: 'positive',
-      message: 'Tutor removed successfully',
-      icon: 'delete',
-    })
+  }).onOk(async () => {
+    try {
+      const { error } = await supabase.from('tutors').delete().eq('id', id)
+      if (error) throw error
+      $q.notify({ type: 'positive', message: 'Tutor removed', icon: 'delete' })
+      fetchTutors()
+    } catch (error) {
+      $q.notify({ type: 'negative', message: 'Error deleting: ' + error.message })
+    }
   })
 }
 </script>

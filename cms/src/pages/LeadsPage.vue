@@ -1,20 +1,20 @@
 <template>
   <q-page class="q-pa-lg">
-    <div class="row items-center justify-between q-mb-xl fade-in-up">
-      <div class="col">
-        <h1 class="text-h4 text-weight-bolder q-my-none row items-center">
+    <div class="row items-center justify-between q-mb-xl fade-in-up q-gutter-y-md">
+      <div class="col-12 col-md">
+        <h1 class="text-h4 text-weight-bolder q-my-none row items-center mobile-title">
           <span class="text-emerald-gradient">Lead Orchestration</span>
-          <q-icon name="gps_fixed" size="md" class="q-ml-md text-emerald" />
+          <q-icon name="gps_fixed" size="md" class="q-ml-md text-emerald gt-xs" />
         </h1>
         <p class="text-grey-5 text-subtitle1 q-mt-sm q-mb-none font-medium text-emerald-light">
           Identifying and managing high-value business opportunities.
         </p>
       </div>
-      <div class="col-auto">
+      <div class="col-12 col-md-auto">
         <q-btn
           unelevated
           rounded
-          class="bg-emerald-gradient text-white q-px-lg shadow-2 hover-scale"
+          class="bg-emerald-gradient text-white q-px-lg shadow-2 hover-scale full-width-mobile"
           icon="add"
           label="Initialize Lead"
           no-caps
@@ -37,6 +37,7 @@
         class="bg-transparent"
         :loading="loading"
         :pagination="{ rowsPerPage: 10 }"
+        style="min-width: 800px"
       >
         <template v-slot:body-cell-name="props">
           <q-td :props="props">
@@ -116,10 +117,11 @@
     </q-card>
 
     <!-- Dialog -->
-    <q-dialog v-model="leadDialog" backdrop-filter="blur(8px)">
+    <q-dialog v-model="leadDialog" backdrop-filter="blur(8px)" :maximized="$q.screen.lt.md">
       <q-card
-        style="min-width: 550px; border-radius: 24px"
+        style="width: 550px; max-width: 95vw; border-radius: 24px"
         class="bg-dark-card border-glass text-white"
+        :style="$q.screen.lt.md ? 'border-radius: 0' : ''"
       >
         <q-card-section class="q-px-xl q-py-lg">
           <div class="row items-center q-mb-xl">
@@ -129,7 +131,7 @@
           </div>
 
           <div class="row q-col-gutter-lg">
-            <div class="col-8">
+            <div class="col-12 col-sm-8">
               <q-input
                 dark
                 filled
@@ -139,7 +141,7 @@
                 class="q-mb-md"
               />
             </div>
-            <div class="col-4">
+            <div class="col-12 col-sm-4">
               <q-select
                 dark
                 filled
@@ -151,7 +153,7 @@
               />
             </div>
 
-            <div class="col-6">
+            <div class="col-12 col-sm-6">
               <q-input
                 dark
                 filled
@@ -161,7 +163,7 @@
                 class="q-mb-md"
               />
             </div>
-            <div class="col-6">
+            <div class="col-12 col-sm-6">
               <q-input
                 dark
                 filled
@@ -172,7 +174,7 @@
               />
             </div>
 
-            <div class="col-6">
+            <div class="col-12 col-sm-6">
               <q-select
                 dark
                 filled
@@ -183,7 +185,7 @@
                 class="q-mb-md"
               />
             </div>
-            <div class="col-6">
+            <div class="col-12 col-sm-6">
               <q-input
                 dark
                 filled
@@ -275,6 +277,7 @@ const saving = ref(false)
 const analyzing = ref(false)
 const leadDialog = ref(false)
 const rows = ref([])
+const userOrgId = ref(null)
 
 const form = ref({
   name: '',
@@ -360,7 +363,7 @@ const saveLead = async () => {
     const {
       data: { user },
     } = await supabase.auth.getUser()
-    const payload = { ...form.value, user_id: user?.id }
+    const payload = { ...form.value, user_id: user?.id, org_id: userOrgId.value }
     const { error } = form.value.id
       ? await supabase.from('leads').update(payload).eq('id', form.value.id)
       : await supabase.from('leads').insert(payload)
@@ -386,7 +389,14 @@ const confirmDelete = (row) => {
   })
 }
 
-onMounted(() => fetchLeads())
+onMounted(async () => {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) {
+    const { data: profile } = await supabase.from('profiles').select('org_id').eq('id', user.id).single()
+    if (profile) userOrgId.value = profile.org_id
+  }
+  fetchLeads()
+})
 </script>
 
 <style scoped>
@@ -438,6 +448,19 @@ onMounted(() => fetchLeads())
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .mobile-title {
+    font-size: 1.5rem !important;
+    text-align: center;
+  }
+  .q-page {
+    padding: 16px !important;
+  }
+  .full-width-mobile {
+    width: 100%;
   }
 }
 </style>

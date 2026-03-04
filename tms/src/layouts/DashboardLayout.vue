@@ -26,6 +26,29 @@
 
         <!-- Top Right Actions -->
         <div class="q-gutter-x-sm row items-center">
+          <!-- Org Switcher for Super Admins -->
+          <q-select
+            v-if="isSuperAdmin"
+            v-model="currentOrg"
+            :options="orgOptions"
+            option-label="name"
+            option-value="id"
+            emit-value
+            map-options
+            dense
+            outlined
+            rounded
+            bg-color="grey-1"
+            class="q-mr-md gt-xs"
+            style="min-width: 200px"
+            label="Active Institution"
+            @update:model-value="handleOrgSwitch"
+          >
+            <template v-slot:prepend>
+              <q-icon name="apartment" color="primary" />
+            </template>
+          </q-select>
+
           <q-input
             dense
             outlined
@@ -66,15 +89,15 @@
 
           <q-separator vertical inset class="q-mx-sm bg-grey-3" />
 
-          <q-btn flat no-caps class="q-ml-none rounded-borders text-dark pl-1">
+          <q-btn flat no-caps class="q-ml-none rounded-borders text-white pl-1">
             <q-avatar size="36px">
               <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
             </q-avatar>
             <div class="text-left q-ml-sm gt-xs">
-              <div class="text-weight-bold text-subtitle2" style="line-height: 1.1">
-                {{ userEmail.split('@')[0] || 'User' }}
+              <div class="text-weight-bold text-subtitle2 text-white" style="line-height: 1.1">
+                {{ authStore.profile?.name || userEmail.split('@')[0] || 'User' }}
               </div>
-              <div class="text-caption text-grey-6" style="line-height: 1; font-size: 11px">
+              <div class="text-caption text-grey-4" style="line-height: 1; font-size: 11px">
                 {{ isSuperAdmin ? 'Super Admin' : 'Administrator' }}
               </div>
             </div>
@@ -326,21 +349,47 @@ import { ref, onMounted, computed } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { supabase } from 'boot/supabase'
+import { useAuthStore } from 'stores/auth'
 
 const $q = useQuasar()
+const authStore = useAuthStore()
+const router = useRouter()
+
 // Hybrid Mode: Dark Sidebar, Light Content
 $q.dark.set(true)
 
 const leftDrawerOpen = ref(false)
 const search = ref('')
-const router = useRouter()
-const userEmail = ref('')
-const userId = ref('') // Added for robust checking
 const supportDialog = ref(false)
 const notifications = ref([])
 
+const userEmail = computed(() => authStore.user?.email || '')
+const isSuperAdmin = computed(() => authStore.isSuperAdmin)
+
+const orgOptions = ref([])
+const currentOrg = ref(null)
+
 const toggleLeftDrawer = () => {
   leftDrawerOpen.value = !leftDrawerOpen.value
+}
+
+const handleOrgSwitch = (orgId) => {
+  authStore.setOrganization(orgId)
+  $q.notify({
+    type: 'info',
+    message: `Switched to ${orgOptions.value.find(o => o.id === orgId)?.name}`,
+    position: 'top'
+  })
+  // Ideally refresh the current route or use provide/inject to refresh components
+  // For now, simple notification. The components should reactive to authStore.userOrgId
+}
+
+const fetchOrgs = async () => {
+  const { data } = await supabase.from('organizations').select('id, name')
+  if (data) {
+    orgOptions.value = data
+    currentOrg.value = authStore.userOrgId
+  }
 }
 
 const handleSearch = () => {
@@ -367,19 +416,9 @@ const allManagementLinks = [
     title: 'System Users',
     icon: 'manage_accounts',
     link: '/super-admin',
-    superAdminOnly: true, // Custom flag
+    superAdminOnly: true,
   },
 ]
-
-const isSuperAdmin = computed(() => {
-  const email = userEmail.value?.toLowerCase() || ''
-  return (
-    email === 'amilawijayanthaperera@gmail.com' ||
-    email === 'amilawijayanthaperera858@gmail.com' ||
-    email === 'admin@digynex.com' ||
-    userId.value === '74736fbf-0700-4a0d-b797-84d0b0b3b554'
-  )
-})
 
 const managementLinks = computed(() => {
   return allManagementLinks.filter((link) => {
@@ -391,17 +430,17 @@ const managementLinks = computed(() => {
 })
 
 onMounted(async () => {
-  const {
-    data: { user },
-  } = await supabase.auth.getUser()
-  if (user) {
-    userEmail.value = user.email
-    userId.value = user.id
+  if (!authStore.user) {
+    await authStore.initialize()
+  }
+
+  if (isSuperAdmin.value) {
+    fetchOrgs()
   }
 })
 
 const handleLogout = async () => {
-  await supabase.auth.signOut()
+  await authStore.logout()
   router.push('/login')
 }
 </script>
