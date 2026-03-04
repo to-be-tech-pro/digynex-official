@@ -1,0 +1,92 @@
+{
+  "name": "DigyNex AI Agent - Master Template",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "workflow-trigger",
+      "name": "When Chat Message Received",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "model": "gemini-pro",
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "id": "gemini-brain",
+      "name": "AI Brain (Gemini)",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [700, 300],
+      "credentials": {
+        "googleBaseApi": {
+          "id": "YOUR_GEMINI_API_KEY_ID"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "systemMessage": "=You are the DigyNex AI Master Assistant. Your goal is to help users understand DigyNex CMS (Business) and TMS (Tuition) products and collect leads.\n\nCOMMUNICATION RULES:\n1. Always reply in the language the user is using. \n2. You are fluent in Sinhalese, English, and Singlish (e.g., 'Fees kiyada?', 'Classes thiyenne koheda?'). Respond naturally in the same style.\n3. Be professional yet friendly (Ayubowan! / Hi!).\n\nLEAD CAPTURE LOGIC:\n- If the user asks about prices, classes, or business features, provide the info and then ask: 'May I have your Name and Phone Number to connect you with our expert?'\n- Once they provide details, confirm that a representative will contact them soon.\n\nHUMAN ESCALATION:\n- If a user asks for discounts, complex technical support, or repeatedly asks for a human, say: 'I will notify our team to assist you directly. One moment...'\n\nCONTEXT:\n- CMS: Best for Doctors, Bookshops, and Service providers to track Deals & Revenue.\n- TMS: Best for Teachers/Institutes for QR Attendance, Student Fees & Exams.\n- Pricing: Starter (Free), Pro ($15/LKR 4500), Growth (Custom/Commission).\n",
+        "options": {}
+      },
+      "id": "agent-logic",
+      "name": "AI Agent Logic",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1,
+      "position": [950, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "YOUR_SUPABASE_URL/rest/v1/leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "YOUR_SUPABASE_ANON_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": \"{{$node[\"AI Agent Logic\"].json[\"output_extracted_name\"]}}\",\n  \"phone\": \"{{$node[\"AI Agent Logic\"].json[\"output_extracted_phone\"]}}\",\n  \"source\": \"AI Engine\",\n  \"status\": \"new\"\n}",
+        "options": {}
+      },
+      "id": "supabase-sync",
+      "name": "Add to CMS Leads",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1200, 450]
+    }
+  ],
+  "connections": {
+    "When Chat Message Received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent Logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Brain (Gemini)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent Logic",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}

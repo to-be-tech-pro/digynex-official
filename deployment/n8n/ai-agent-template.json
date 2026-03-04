@@ -1,0 +1,104 @@
+{
+  "name": "DigyNex AI Agent - Master Template",
+  "nodes": [
+    {
+      "parameters": {
+        "options": {}
+      },
+      "id": "e7b6c5d4-a1b2-c3d4-e5f6-a7b8c9d0e1f2",
+      "name": "When Chat Message Received",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "model": "gemini-pro",
+        "options": {
+          "temperature": 0.7
+        }
+      },
+      "id": "f8e7d6c5-b2c3-d4e5-f6a7-b8c9d0e1f2g3",
+      "name": "AI Brain (Gemini)",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [700, 300],
+      "credentials": {
+        "googleBaseApi": {
+          "id": "YOUR_GEMINI_API_KEY_ID"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "systemMessage": "=You are the DigyNex AI Assistant. You help users understand our CMS and TMS products.\n\nContext:\n- Product 1: DigyNex CMS for Business Management (Deals, Revenue, Clients).\n- Product 2: DigyNex TMS for Tuition (Attendance, Fees, Exams).\n- Pricing: Starter (Free), Pro ($15), Growth (Custom).\n\nIf a user shows interest in a product or wants to sign up, ask for their Name and Phone number and say 'I will add you to our leads list'.\n\nAlways reply in the language the user speaks (Sinhala, English, or Singlish).",
+        "options": {}
+      },
+      "id": "g9h8i7j6-c3d4-e5f6-a7b8-c9d0e1f2g3h4",
+      "name": "AI Agent Logic",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1,
+      "position": [950, 300]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "YOUR_SUPABASE_URL/rest/v1/leads",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "YOUR_SUPABASE_ANON_KEY"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            },
+            {
+              "name": "Content-Type",
+              "value": "application/json"
+            },
+            {
+              "name": "Prefer",
+              "value": "return=minimal"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"name\": \"{{$node[\"AI Agent Logic\"].json[\"output_extracted_name\"]}}\",\n  \"phone\": \"{{$node[\"AI Agent Logic\"].json[\"output_extracted_phone\"]}}\",\n  \"source\": \"AI Chatbot\",\n  \"status\": \"new\"\n}",
+        "options": {}
+      },
+      "id": "h0i9j8k7-d4e5-f6a7-b8c9-d0e1f2g3h4i5",
+      "name": "Add to DigyNex Leads",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1200, 450]
+    }
+  ],
+  "connections": {
+    "When Chat Message Received": {
+      "main": [
+        [
+          {
+            "node": "AI Agent Logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Brain (Gemini)": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent Logic",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
