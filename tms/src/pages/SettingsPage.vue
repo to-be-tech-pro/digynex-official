@@ -76,15 +76,23 @@
                     <q-select
                       outlined
                       v-model="general.currency"
-                      :options="['LKR', 'USD']"
+                      :options="['SEK', 'LKR', 'USD']"
                       label="Currency"
                       dense
+                      @update:model-value="updateCurrency"
                     />
                   </div>
                 </div>
               </q-card-section>
               <q-card-actions align="right" class="q-pa-md">
-                <q-btn unelevated color="primary" label="Save Changes" no-caps />
+                <q-btn
+                  unelevated
+                  color="primary"
+                  label="Save Changes"
+                  no-caps
+                  :loading="saving"
+                  @click="saveGeneralSettings"
+                />
               </q-card-actions>
             </q-card>
 
@@ -406,7 +414,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { supabase } from 'boot/supabase'
 import { exportFile, useQuasar } from 'quasar'
 import { useCurrencyStore } from 'stores/currency'
@@ -414,17 +422,77 @@ import { useCurrencyStore } from 'stores/currency'
 const $q = useQuasar()
 const currencyStore = useCurrencyStore()
 const exporting = ref('')
+const saving = ref(false)
 
 const tab = ref('general')
 
 const general = ref({
-  name: 'DigyNex Institute',
-  email: 'admin@digynex.com',
-  phone: '0771234567',
-  currency: 'LKR',
+  name: '',
+  email: '',
+  phone: '',
+  currency: currencyStore.currency,
   darkMode: false,
   compactSidebar: false,
 })
+
+onMounted(async () => {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) {
+    general.value.email = user.email
+    const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+    if (profile) {
+      general.value.name = profile.name || ''
+      if (profile.country_code) {
+        currencyStore.setCountryCode(profile.country_code)
+        general.value.currency = currencyStore.currency
+      }
+    }
+  }
+})
+
+const updateCurrency = (curr) => {
+  let countryCode = 'US'
+  if (curr === 'SEK') countryCode = 'SE'
+  if (curr === 'LKR') countryCode = 'LK'
+  currencyStore.setCountryCode(countryCode)
+}
+
+const saveGeneralSettings = async () => {
+  saving.value = true
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
+    let countryCode = 'US'
+    if (general.value.currency === 'SEK') countryCode = 'SE'
+    if (general.value.currency === 'LKR') countryCode = 'LK'
+
+    const { error } = await supabase
+      .from('profiles')
+      .update({
+        country_code: countryCode,
+        name: general.value.name,
+      })
+      .eq('id', user.id)
+
+    if (error) throw error
+
+    currencyStore.setCountryCode(countryCode)
+
+    $q.notify({
+      type: 'positive',
+      message: 'System settings synchronized successfully.',
+      icon: 'sync'
+    })
+  } catch (error) {
+    $q.notify({
+      type: 'negative',
+      message: 'Failed to save settings: ' + error.message
+    })
+  } finally {
+    saving.value = false
+  }
+}
 
 const notifications = ref({
   newStudent: true,

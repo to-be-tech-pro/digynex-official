@@ -350,9 +350,11 @@ import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { supabase } from 'boot/supabase'
 import { useAuthStore } from 'stores/auth'
+import { useCurrencyStore } from 'stores/currency'
 
 const $q = useQuasar()
 const authStore = useAuthStore()
+const currencyStore = useCurrencyStore()
 const router = useRouter()
 
 // Hybrid Mode: Dark Sidebar, Light Content
@@ -433,6 +435,9 @@ onMounted(async () => {
   if (!authStore.user) {
     await authStore.initialize()
   }
+
+  // Initialize currency detection
+  await currencyStore.initialize()
 
   if (isSuperAdmin.value) {
     fetchOrgs()

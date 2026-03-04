@@ -138,6 +138,8 @@
                   class="bg-emerald-gradient text-white q-px-xl"
                   label="Synchronize Protocol"
                   no-caps
+                  :loading="saving"
+                  @click="saveGeneralSettings"
                 />
               </q-card-actions>
             </q-card>
@@ -462,7 +464,7 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
+import { ref, onMounted } from 'vue'
 import { supabase } from 'boot/supabase'
 import { exportFile, useQuasar } from 'quasar'
 import { useCurrencyStore } from 'stores/currency'
@@ -470,25 +472,78 @@ import { useCurrencyStore } from 'stores/currency'
 const $q = useQuasar()
 const currencyStore = useCurrencyStore()
 const exporting = ref('')
+const saving = ref(false)
 
 const tab = ref('general')
 
 const general = ref({
-  name: 'DigyNex Institute',
-  email: 'admin@digynex.com',
-  phone: '0771234567',
+  name: '',
+  email: '',
+  phone: '',
   currency: currencyStore.currency,
   darkMode: false,
   compactSidebar: false,
 })
 
+onMounted(async () => {
+  const { data: { user } } = await supabase.auth.getUser()
+  if (user) {
+    general.value.email = user.email
+    const { data: profile } = await supabase.from('profiles').select('*').eq('id', user.id).single()
+    if (profile) {
+      general.value.name = profile.name || ''
+      if (profile.country_code) {
+        currencyStore.setCountryCode(profile.country_code)
+        general.value.currency = currencyStore.currency
+      }
+    }
+  }
+})
+
 const updateCurrency = (curr) => {
-  if (curr === 'SEK') {
-    currencyStore.setCountryCode('SE')
-  } else if (curr === 'LKR') {
-    currencyStore.setCountryCode('LK')
-  } else {
-    currencyStore.setCountryCode('US')
+  let countryCode = 'US'
+  if (curr === 'SEK') countryCode = 'SE'
+  if (curr === 'LKR') countryCode = 'LK'
+  currencyStore.setCountryCode(countryCode)
+}
+
+const saveGeneralSettings = async () => {
+  saving.value = true
+  try {
+    const { data: { user } } = await supabase.auth.getUser()
+    if (!user) throw new Error('Not authenticated')
+
+    // Find country code based on currency
+    let countryCode = 'US'
+    if (general.value.currency === 'SEK') countryCode = 'SE'
+    if (general.value.currency === 'LKR') countryCode = 'LK'
+
+    const { error } = await supabase
+      .from('profiles')
+      .update({
+        country_code: countryCode,
+        // We could also store institute name/phone in profile or a separate orgs table
+        name: general.value.name,
+      })
+      .eq('id', user.id)
+
+    if (error) throw error
+
+    // Update global state
+    currencyStore.setCountryCode(countryCode)
+
+    $q.notify({
+      type: 'positive',
+      message: 'System protocols synchronized successfully.',
+      icon: 'sync'
+    })
+  } catch (error) {
+    $q.notify({
+      type: 'negative',
+      message: 'Synchronization failed: ' + error.message
+    })
+  } finally {
+    saving.value = false
   }
 }
 

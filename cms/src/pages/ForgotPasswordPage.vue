@@ -69,7 +69,7 @@ const handleReset = async () => {
   loading.value = true
   try {
     const { error } = await supabase.auth.resetPasswordForEmail(email.value, {
-      redirectTo: window.location.origin + '/reset-password',
+      redirectTo: 'https://cms.digynex.se/reset-password',
     })
     if (error) throw error
 
