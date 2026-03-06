@@ -297,7 +297,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const typingId = addTypingIndicator();
 
     // Send to n8n Webhook
-    fetch("https://n8n.digynex.se/webhook/web-chat", {
+    fetch("https://n8n.digynex.se/webhook/f639f695-c06f-4bfa-8fcb-e971392f7966", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
