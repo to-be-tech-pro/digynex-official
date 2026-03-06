@@ -587,27 +587,64 @@
       </div>
     </div>
 
-    <!-- AI Chat Widget -->
+    <!-- AI Chat Widget (New World-Class UI) -->
     <div class="ai-chat-widget">
+      <!-- Peek Tooltip -->
+      <div class="chat-peek" id="chatPeek">
+        <span>👋 Hello! I'm here to help you.</span>
+      </div>
+
       <div id="chatWindow" class="chat-window">
+        <!-- Header Section -->
         <div class="chat-header">
-          <span class="status-dot"></span>
-          <h4>DigyNex Strategy Expert</h4>
+          <div class="header-info">
+            <img src="ai-avatar.png" alt="Bot Avatar" class="header-avatar">
+            <div class="header-text">
+              <h4>DigyNex Strategy Expert</h4>
+              <p><span class="status-dot"></span> Replies in under 1 min</p>
+            </div>
+          </div>
+          <button class="close-btn-chat" onclick="toggleChat()">&times;</button>
         </div>
+
+        <!-- Body Section -->
         <div id="chatBody" class="chat-body">
-          <div class="chat-msg bot">
-            අයියේ/අක්කේ, මම DigyNex AI සහකාරිය. ඔයාගේ බිස්නස් එක ඩිජිටල් කරන්න මට මොන වගේ උදව්වක්ද කරන්න පුළුවන්? 😊
+          <!-- Welcome Message with Language Select -->
+          <div class="chat-msg bot welcome-msg">
+            <p>Welcome to DigyNex Ecosystem! 🇸🇪 How can I assist you today?</p>
+            <div class="lang-selector">
+              <select id="langSelect" onchange="changeLanguage()">
+                <option value="en">English (Global)</option>
+                <option value="si">සිංහල (Sri Lanka)</option>
+                <option value="sv">Svenska (Sweden)</option>
+              </select>
+            </div>
+          </div>
+          
+          <!-- Quick Action Buttons -->
+          <div class="quick-actions">
+            <button onclick="quickAction('Schedule a Demo')">📅 Schedule a Demo</button>
+            <button onclick="quickAction('Custom AI Chatbot')">🤖 I need a Chatbot</button>
+            <button onclick="quickAction('Tuition Management')">🎓 School System</button>
           </div>
         </div>
+
+        <!-- Footer Section -->
         <div class="chat-footer">
-          <input type="text" id="chatInput" placeholder="Write a message..." onkeypress="handleChatEnter(event)">
+          <input type="text" id="chatInput" placeholder="Type your answer..." onkeypress="handleChatEnter(event)">
           <button class="send-btn" onclick="sendChatMessage()">
             <i class="fa-solid fa-paper-plane"></i>
           </button>
         </div>
+        <div class="chat-branding">
+          Powered by DigyNex AI Agents ⚡
+        </div>
       </div>
+
+      <!-- Main Trigger Button -->
       <button class="chat-trigger-btn" onclick="toggleChat()">
         <img src="ai-avatar.png" alt="AI Avatar">
+        <div class="unread-dot"></div>
       </button>
     </div>
 

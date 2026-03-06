@@ -250,12 +250,33 @@ document.addEventListener("DOMContentLoaded", () => {
 
   // --- AI CHAT WIDGET LOGIC ---
   const chatWindow = document.getElementById("chatWindow");
+  const chatPeek = document.getElementById("chatPeek");
   const chatBody = document.getElementById("chatBody");
   const chatInput = document.getElementById("chatInput");
+  const langSelect = document.getElementById("langSelect");
   let chatSessionId = "web-" + Math.random().toString(36).substring(7);
 
   window.toggleChat = function() {
     chatWindow.classList.toggle("active");
+    if (chatPeek) chatPeek.style.display = "none";
+  };
+
+  window.changeLanguage = function() {
+    const lang = langSelect.value;
+    const msgBlock = document.querySelector(".welcome-msg p");
+    
+    if (lang === "si") {
+      msgBlock.innerHTML = "DigyNex Ecosystem එකට සාදරයෙන් පිළිගන්නවා! 🇸🇪 අද මට ඔයාට කොහොමද උදව් කරන්න පුළුවන්?";
+    } else if (lang === "sv") {
+      msgBlock.innerHTML = "Välkommen till DigyNex Ecosystem! 🇸🇪 Hur kan jag hjälpa dig idag?";
+    } else {
+      msgBlock.innerHTML = "Welcome to DigyNex Ecosystem! 🇸🇪 How can I assist you today?";
+    }
+  };
+
+  window.quickAction = function(actionText) {
+    chatInput.value = actionText;
+    sendChatMessage();
   };
 
   window.handleChatEnter = function(e) {
@@ -282,18 +303,19 @@ document.addEventListener("DOMContentLoaded", () => {
       body: JSON.stringify({
         message: text,
         sessionId: chatSessionId,
-        source: "website"
+        source: "website",
+        language: langSelect ? langSelect.value : "en"
       })
     })
     .then(res => res.json())
     .then(data => {
       removeTypingIndicator(typingId);
-      const reply = data.output || "අයියේ, මට ඒක හරියට තේරුණේ නැහැ. පොඩ්ඩක් ආයෙත් කියන්න පුළුවන්ද?";
+      const reply = data.output || "I'm sorry, I couldn't process that. Please try again.";
       addMessage(reply, "bot");
     })
     .catch(err => {
       removeTypingIndicator(typingId);
-      addMessage("Server connection error. Please try again.", "bot");
+      addMessage("Connection error. Our experts are standing by.", "bot");
       console.error(err);
     });
   };
