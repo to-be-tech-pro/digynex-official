@@ -73,7 +73,12 @@ h3,
   display: flex;
   justify-content: space-between;
   align-items: center;
-  position: relative;
+}
+
+.nav-right {
+  display: flex;
+  align-items: center;
+  gap: 40px;
 }
 
 .logo {
@@ -134,10 +139,9 @@ h3,
 }
 
 .nav-actions {
-  position: absolute;
-  right: 0;
   display: flex;
-  gap: 15px;
+  gap: 12px;
+  align-items: center;
 }
 
 /* --- BUTTONS --- */
