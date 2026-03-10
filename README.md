@@ -14,13 +14,13 @@ DigyNex is more than a service provider; it's a **Digital Architecture**. This r
 
 ### 🏗️ Ecosystem Components
 
-| Module                    | Description                                                  | Live Access                                          |
-| :------------------------ | :----------------------------------------------------------- | :--------------------------------------------------- |
-| **Main Landing**          | The public face of DigyNex. High-performance, SEO-optimized. | [digynex.se](https://digynex.se)                     |
-| **Enterprise CMS**        | Advanced lead orchestration and client management portal.    | [cms.digynex.se](https://cms.digynex.se)             |
-| **Tuition Manager (TMS)** | Specialized ERP for educational institutions.                | [tms.digynex.se](https://tms.digynex.se)             |
-| **NFC Digital Card**      | Professional networking tool with lead capture.              | [digynex.se/card](https://digynex.se/card)           |
-| **Architect Portfolio**   | The engineering philosophy behind the system.                | [digynex.se/portfolio](https://digynex.se/portfolio) |
+| Module                    | Description                                                  | Live Access                                  |
+| :------------------------ | :----------------------------------------------------------- | :------------------------------------------- |
+| **Main Landing**          | The public face of DigyNex. High-performance, SEO-optimized. | [digynex.se](https://digynex.se)             |
+| **Enterprise CMS**        | Advanced lead orchestration and client management portal.    | [cms.digynex.se](https://cms.digynex.se)     |
+| **Tuition Manager (TMS)** | Specialized ERP for educational institutions.                | [tms.digynex.se](https://tms.digynex.se)     |
+| **NFC Digital Card**      | Professional networking tool with lead capture.              | [digynex.se/card](https://digynex.se/card)   |
+| **Architect Portfolio**   | The engineering philosophy behind the system.                | [amila.digynex.se](https://amila.digynex.se) |
 
 ---
 

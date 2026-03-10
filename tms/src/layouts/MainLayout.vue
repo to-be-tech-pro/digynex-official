@@ -69,23 +69,36 @@
           <div class="col-12 col-md-6 text-md-right">
             <div class="q-gutter-x-lg text-caption">
               <a
-                href="#"
+                href="https://digynex.se/about.html"
+                target="_blank"
                 class="text-white hover-grey text-decoration-none transition-colors"
                 style="font-size: 13px"
-                >Documentation</a
+                >About Us</a
               >
 
               <a
-                href="#"
+                href="https://digynex.se/terms.html"
+                target="_blank"
                 class="text-white hover-grey text-decoration-none transition-colors"
                 style="font-size: 13px"
-                >Support</a
+                >Terms</a
+              >
+
+              <a
+                href="https://digynex.se/privacy.html"
+                target="_blank"
+                class="text-white hover-grey text-decoration-none transition-colors"
+                style="font-size: 13px"
+                >Privacy</a
               >
             </div>
           </div>
         </div>
         <div class="q-mt-md text-center text-caption q-pt-md border-top-light text-grey-8">
-          © 2026 DigyNex Systems. All rights reserved.
+          © 2026 DigyNex Systems. Official Domain | <span class="text-gold-gradient">digynex.se</span>
+          <div class="q-mt-sm" style="opacity: 0.6; letter-spacing: 1px; text-transform: uppercase; font-size: 10px;">
+            Ecosystem Architected by <a href="https://amila.digynex.se" target="_blank" class="text-white" style="text-decoration: none;">Amila</a>
+          </div>
         </div>
       </div>
     </q-footer>

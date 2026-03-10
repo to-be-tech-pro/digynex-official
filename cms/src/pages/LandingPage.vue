@@ -497,9 +497,9 @@
         </div>
         <div class="footer-links">
           <h4>Company</h4>
-          <a href="#">About Us</a>
-          <a href="#">Careers</a>
-          <a href="#">Privacy Policy</a>
+          <a href="https://digynex.se/about.html" target="_blank">About Us</a>
+          <a href="https://digynex.se/terms.html" target="_blank">Terms of Service</a>
+          <a href="https://digynex.se/privacy.html" target="_blank">Privacy Policy</a>
         </div>
         <div class="footer-contact">
           <h4>Connect</h4>
@@ -516,7 +516,7 @@
           <span class="gold-text">digynex.se</span>
         </p>
         <div class="developer-credit" style="margin-top: 15px; opacity: 0.5; font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase;">
-           Engineered by <a href="/portfolio/index.html" class="gold-text" style="text-decoration: none;">Amila</a>
+           Ecosystem Architected by <a href="https://amila.digynex.se" class="gold-text" style="text-decoration: none;" target="_blank">Amila</a>
         </div>
       </div>
     </footer>
