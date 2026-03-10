@@ -292,12 +292,14 @@ document.addEventListener("DOMContentLoaded", () => {
     addMessage(text, "user");
     chatInput.value = "";
     
-    const typingId = addTypingIndicator();
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 15000); // 15s timeout
     
     // Send to n8n Webhook - PRODUCTION
     fetch("https://n8n.digynex.se/webhook/f639f695-c06f-4bfa-8fcb-e971392f7966", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
+      signal: controller.signal,
       body: JSON.stringify({
         message: text,
         sessionId: chatSessionId,
@@ -306,6 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
       })
     })
     .then(async res => {
+      clearTimeout(timeoutId);
       console.log("Response status:", res.status);
       
       removeTypingIndicator(typingId);
@@ -341,23 +344,23 @@ document.addEventListener("DOMContentLoaded", () => {
       
       // If still no reply, use default
       if (!reply) {
-        reply = "I'm sorry, I couldn't process that. Please try again.";
+        reply = "Strategic sync detected. For faster assistance, please WhatsApp us: <a href='https://wa.me/46790522874' target='_blank' style='color: #fbbf24; text-decoration: underline;'>wa.me/46790522874</a>";
       }
       
       addMessage(reply, "bot");
     })
     .catch(err => {
+      clearTimeout(timeoutId);
       console.error("Chat error:", err);
-      console.error("Full error:", err.message);
       removeTypingIndicator(typingId);
-      addMessage("Connection error. Our experts are standing by while we sync with the server.", "bot");
+      addMessage("Sync error. Please connect directly via WhatsApp: <a href='https://wa.me/46790522874' target='_blank' style='color: #fbbf24; text-decoration: underline;'>wa.me/46790522874</a>", "bot");
     });
   };
 
   function addMessage(text, sender) {
     const div = document.createElement("div");
     div.className = `chat-msg ${sender}`;
-    div.innerText = text;
+    div.innerHTML = text;
     chatBody.appendChild(div);
     chatBody.scrollTop = chatBody.scrollHeight;
   }
