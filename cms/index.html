@@ -20,11 +20,11 @@
       rel="stylesheet"
     />
 
-    <link rel="icon" type="image/png" sizes="128x128" href="icons/favicon-128x128.png" />
-    <link rel="icon" type="image/png" sizes="96x96" href="icons/favicon-96x96.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png" />
-    <link rel="icon" type="image/ico" href="favicon.ico" />
+    <link rel="icon" type="image/x-icon" sizes="128x128" href="icons/favicon128x128.ico" />
+    <link rel="icon" type="image/x-icon" sizes="92x92" href="icons/favicon 92x92.ico" />
+    <link rel="icon" type="image/x-icon" sizes="32x32" href="icons/favicon 32x32.ico" />
+    <link rel="icon" type="image/x-icon" sizes="16x16" href="icons/favicon16x16.ico" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
   </head>
   <body>
     <!-- quasar:entry-point -->
@@ -132,11 +132,18 @@
           method: "POST", headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ message: text, sessionId: chatSessionId, source: "cms", language: langSelect.value })
         })
-        .then(res => res.json()).then(data => { addMessage(data.output || "Processed!", "bot"); })
+        .then(res => res.text()).then(txt => { 
+          try {
+            const data = JSON.parse(txt);
+            addMessage(data.output || data.message || "I'm here!", "bot");
+          } catch(e) {
+            addMessage(txt || "I'm here!", "bot");
+          }
+        })
         .catch(err => addMessage("Error connecting.", "bot"));
       }
       function addMessage(text, sender) {
-        const div = document.createElement("div"); div.className = `chat-msg ${sender}`;
+        const div = document.createElement("div"); div.className = 'chat-msg ' + sender;
         div.innerText = text; chatBody.appendChild(div); chatBody.scrollTop = chatBody.scrollHeight;
       }
     </script>

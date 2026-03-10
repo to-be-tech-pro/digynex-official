@@ -465,42 +465,28 @@ const fetchContacts = async () => {
 
 const handleNexusAiResponse = (content) => {
   generatingAi.value = true
-  setTimeout(async () => {
-    const apiKey = import.meta.env.VITE_GEMINI_API_KEY
-    let reply = 'Nexus system overloaded. Manual intervention required.'
-
-    if (apiKey) {
-      try {
-        const response = await fetch(
-          `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${apiKey}`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              contents: [
-                {
-                  parts: [
-                    {
-                      text: `You are the Nexus AI Orchestrator. Brief, professional, and slightly futuristic. User said: "${content}". Goal: Provide a quick, intelligent response.`,
-                    },
-                  ],
-                },
-              ],
-            }),
-          },
-        )
-        const data = await response.json()
-        if (data.candidates && data.candidates[0].content.parts[0].text) {
-          reply = data.candidates[0].content.parts[0].text.trim()
-        }
-      } catch (e) {
-        console.error('Gemini Error:', e)
-        reply = 'Strategic core offline. Please check system configurations.'
-      }
-    } else {
-      reply = 'AI Bridge not configured. Please add Gemini API keys to environment.'
+  
+  // Connect to the same powerful n8n AI Engine used in the public widgets
+  fetch("https://n8n.digynex.se/webhook/f639f695-c06f-4bfa-8fcb-e971392f7966", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      message: content,
+      sessionId: 'nexus-orchestrator-' + $q.localStorage.getItem('user_id'),
+      source: "cms-nexus-core",
+      language: "en"
+    })
+  })
+  .then(res => res.text())
+  .then(txt => {
+    let reply = "";
+    try {
+      const data = JSON.parse(txt);
+      reply = data.output || data.message || txt;
+    } catch {
+      reply = txt || "Strategic core response received but unparseable.";
     }
-
+    
     messages.value.push({
       id: Date.now(),
       sent: false,
@@ -508,7 +494,17 @@ const handleNexusAiResponse = (content) => {
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     })
     generatingAi.value = false
-  }, 1000)
+  })
+  .catch(err => {
+    console.error('Nexus AI Error:', err);
+    messages.value.push({
+      id: Date.now(),
+      sent: false,
+      text: "Connection to Nexus Core failed. Check orchestrator status.",
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    })
+    generatingAi.value = false
+  })
 }
 
 const fetchMessages = async (leadId) => {

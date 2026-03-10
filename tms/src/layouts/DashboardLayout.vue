@@ -150,8 +150,14 @@
 
     <!-- Sidebar (Drawer) -->
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered :width="260">
-      <div class="q-pa-lg q-mb-xs flex flex-center">
-        <div class="row items-center cursor-pointer" @click="$router.push('/dashboard')">
+      <div class="q-pa-lg q-mb-xs flex flex-center relative-position" style="min-height: 150px;">
+        <div class="nav-logo-3d-sidebar">
+          <div class="logo-inner">
+            <img src="/logo.svg" alt="DigyNex Logo" class="logo-face front">
+            <img src="/logo.svg" alt="DigyNex Logo" class="logo-face back">
+          </div>
+        </div>
+        <div class="row items-center cursor-pointer q-mt-md" @click="$router.push('/dashboard')">
           <div class="text-h5 text-weight-bolder text-gold-gradient tracking-tight font-heading">
             DigyNex
           </div>
@@ -297,7 +303,7 @@
               class="full-width text-left"
               no-caps
               align="left"
-              href="https://wa.me/"
+              href="https://wa.me/46790522874"
               target="_blank"
             >
               <template v-slot:default>
@@ -500,6 +506,54 @@ const handleLogout = async () => {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   color: #bf953f; /* Fallback */
+}
+
+/* 3D LOGO STYLES */
+.nav-logo-3d-sidebar {
+  position: absolute;
+  top: 10px;
+  width: 100px;
+  height: 100px;
+  perspective: 1000px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.logo-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: logo-spin-3d 10s linear infinite;
+}
+
+.logo-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-face.front {
+  transform: translateZ(1px);
+}
+
+.logo-face.back {
+  transform: rotateY(180deg) translateZ(1px);
+}
+
+.logo-face img {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 15px rgba(191, 149, 63, 0.2));
+}
+
+@keyframes logo-spin-3d {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
 }
 
 .bg-gold-gradient {

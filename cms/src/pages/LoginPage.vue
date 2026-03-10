@@ -21,11 +21,19 @@
             class="glass-panel q-pa-lg q-pa-md-xl rounded-xl shadow-24 border-glass text-center relative-position"
           >
             <!-- Logo -->
-            <div class="q-mb-xl cursor-pointer" @click="$router.push('/')">
-              <div class="text-h4 text-white text-weight-bold" style="letter-spacing: -1px">
-                DigyNex
+            <div class="q-mb-xl cursor-pointer flex flex-center relative-position" @click="$router.push('/')" style="min-height: 120px;">
+              <div class="nav-logo-3d">
+                <div class="logo-inner">
+                  <img src="/logo.svg" alt="DigyNex Logo" class="logo-face front">
+                  <img src="/logo.svg" alt="DigyNex Logo" class="logo-face back">
+                </div>
               </div>
-              <div class="text-caption text-grey-5 q-mt-xs">{{ platformTitle }}</div>
+              <div class="brand-text-wrap q-ml-xl">
+                <div class="text-h4 text-white text-weight-bold" style="letter-spacing: -1px; margin-left: 40px;">
+                  Digy<span class="text-gold-gradient">Nex</span>
+                </div>
+                <div class="text-caption text-grey-5 q-mt-xs" style="margin-left: 40px;">{{ platformTitle }}</div>
+              </div>
             </div>
 
             <h2 class="text-h5 text-weight-bold q-mb-md">Welcome Back</h2>
@@ -229,6 +237,56 @@ const handleLogin = async () => {
 
 .bg-emerald-gradient {
   background: linear-gradient(135deg, #10b981 0%, #059669 100%) !important;
+}
+
+/* 3D LOGO STYLES */
+.nav-logo-3d {
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 140px;
+  height: 140px;
+  perspective: 1000px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.logo-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: logo-spin-3d 10s linear infinite;
+}
+
+.logo-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-face.front {
+  transform: translateZ(1px);
+}
+
+.logo-face.back {
+  transform: rotateY(180deg) translateZ(1px);
+}
+
+.logo-face img {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 20px rgba(191, 149, 63, 0.3));
+}
+
+@keyframes logo-spin-3d {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
 }
 
 .btn-hover-lift {

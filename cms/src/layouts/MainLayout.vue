@@ -1,10 +1,16 @@
 <template>
   <q-layout view="hHh lpR fff" class="official-page-themed">
     <q-header class="glass-header" height-hint="98">
-      <q-toolbar class="container q-mx-auto q-py-sm q-px-md flex justify-between">
-        <div class="logo">
-          <router-link to="/" class="text-decoration-none text-white">
-            <span class="gold-text">Digy</span>Nex
+      <q-toolbar class="container q-mx-auto q-py-sm q-px-md flex justify-between items-center relative-position">
+        <div class="logo-wrapper">
+          <div class="nav-logo-3d">
+            <div class="logo-inner">
+              <img src="/logo.svg" alt="DigyNex Logo" class="logo-face front">
+              <img src="/logo.svg" alt="DigyNex Logo" class="logo-face back">
+            </div>
+          </div>
+          <router-link to="/" class="brand-name-link">
+            Digy<span class="gold-text">Nex</span>
           </router-link>
         </div>
 
@@ -36,7 +42,7 @@
     <q-footer class="main-footer">
       <div class="container footer-content q-mx-auto">
         <div class="footer-brand">
-          <div class="logo"><span class="gold-text">Digy</span>Nex</div>
+          <img src="/logo.svg" alt="DigyNex" class="footer-logo-main">
           <p class="text-grey-5 q-mt-sm">Global Leaders in IT Transformation.</p>
         </div>
         <div class="footer-links">
@@ -48,9 +54,9 @@
         <div class="footer-contact">
           <h4 class="text-white">Connect</h4>
           <div class="social-icons">
-            <a href="#"><i class="fa-brands fa-facebook-f"></i></a>
-            <a href="#"><i class="fa-brands fa-linkedin"></i></a>
-            <a href="#"><i class="fa-brands fa-github"></i></a>
+            <a href="https://facebook.com/digynex.se" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="https://www.linkedin.com/in/digynex-amila" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+            <a href="https://github.com/digynex" target="_blank"><i class="fa-brands fa-github"></i></a>
           </div>
         </div>
       </div>
@@ -87,11 +93,70 @@
   max-width: 1200px;
 }
 
-.logo {
-  font-size: 24px;
+/* 3D LOGO STYLES */
+.logo-wrapper {
+  display: flex;
+  align-items: center;
+  position: relative;
+  padding-left: 50px; /* Space for the 3D logo */
+}
+
+.nav-logo-3d {
+  position: absolute;
+  left: -40px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 120px;
+  height: 120px;
+  perspective: 1000px;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.logo-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: logo-spin-3d 10s linear infinite;
+}
+
+.logo-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-face.front {
+  transform: translateZ(1px);
+}
+
+.logo-face.back {
+  transform: rotateY(180deg) translateZ(1px);
+}
+
+.logo-face img {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 0 20px rgba(191, 149, 63, 0.3));
+}
+
+@keyframes logo-spin-3d {
+  from { transform: rotateY(0deg); }
+  to { transform: rotateY(360deg); }
+}
+
+.brand-name-link {
+  font-size: 26px;
   font-weight: 800;
   font-family: 'Outfit', sans-serif;
   letter-spacing: -1px;
+  text-decoration: none;
+  color: #f8fafc;
 }
 
 .gold-text {
@@ -150,6 +215,12 @@
   margin-bottom: 40px;
 }
 
+.footer-logo-main {
+  height: 60px;
+  width: auto;
+  margin-left: -10px;
+}
+
 .footer-links h4,
 .footer-contact h4 {
   font-size: 16px;
@@ -198,3 +269,4 @@
   text-decoration: none;
 }
 </style>
+

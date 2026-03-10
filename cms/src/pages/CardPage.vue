@@ -57,7 +57,7 @@
         </div>
       </div>
 
-      <a href="tel:46790522874" class="btn">
+      <a href="tel:+46790522874" class="btn">
         <i class="fa-solid fa-phone icon-gold"></i> Call Me
       </a>
       <a href="https://wa.me/46790522874" class="btn">
