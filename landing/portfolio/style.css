@@ -181,24 +181,51 @@ h1, h2, h3 {
   color: var(--primary-gold);
 }
 
-.nav-logo-svg {
+/* True 3D Rotating Logo (Original DigyNex Spec) */
+.nav-logo-3d-wrap {
   position: fixed;
-  top: -45px;
-  left: 0.5rem;
-  width: 200px;
-  height: 200px;
-  transform-style: preserve-3d;
-  animation: logo-spin 12s linear infinite;
-  filter: drop-shadow(0 0 55px rgba(212, 175, 55, 0.7));
+  top: 10px;
+  left: -20px;
+  width: 160px;
+  height: 160px;
+  perspective: 1000px;
   z-index: 99999;
   pointer-events: none;
-  opacity: 1 !important;
-  display: block !important;
+  animation: logo-float 6s ease-in-out infinite;
 }
 
-@keyframes logo-spin {
+.logo-inner {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  animation: logo-spin-3d 12s linear infinite;
+}
+
+.logo-face {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  filter: drop-shadow(0 0 45px rgba(212, 175, 55, 0.45));
+}
+
+.logo-face.front {
+  transform: translateZ(5px);
+}
+
+.logo-face.back {
+  transform: rotateY(180deg) translateZ(5px);
+}
+
+@keyframes logo-spin-3d {
   from { transform: rotateY(0deg); }
   to { transform: rotateY(360deg); }
+}
+
+@keyframes logo-float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
 }
 
 .hud-label #typewriter::after {
@@ -290,6 +317,20 @@ h1, h2, h3 {
   border: 1px solid rgba(212, 175, 55, 0.25);
 }
 
+.logo span {
+  color: #fff;
+  letter-spacing: 0.25em;
+  text-transform: uppercase;
+  font-weight: 700;
+  text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+}
+
+.gold-dot {
+  color: var(--primary-gold);
+  margin-left: 0.1em;
+  text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
+}
+
 .hero-content h1 {
   font-size: clamp(3.2rem, 10vw, 6.5rem);
   margin-bottom: 2rem;
@@ -299,17 +340,17 @@ h1, h2, h3 {
 }
 
 .hero-content p {
-  font-size: 1.5rem;
-  font-weight: 300;
+  max-width: 700px;
+  margin-bottom: 3.5rem;
+  font-size: 1.15rem;
+  line-height: 1.8;
   color: var(--text-muted);
-  max-width: 800px;
-  margin-bottom: 4rem;
-  line-height: 1.5;
 }
 
 .hero-actions {
   display: flex;
   gap: 1.5rem;
+  flex-wrap: wrap;
 }
 
 /* Buttons */
@@ -411,10 +452,21 @@ section {
   transform: translateY(-10px);
 }
 
-.vision-card i {
-  font-size: 2.5rem;
-  color: var(--primary);
+.vision-card h3 {
+  margin-bottom: 1.5rem;
+}
+
+.vision-icon {
+  width: 50px;
+  height: 50px;
+  color: var(--primary-gold);
   margin-bottom: 2rem;
+  transition: var(--transition);
+}
+
+.vision-card:hover .vision-icon {
+  transform: scale(1.1);
+  filter: drop-shadow(0 0 10px var(--primary-glow));
 }
 
 /* Tech Arsenal Grid */
