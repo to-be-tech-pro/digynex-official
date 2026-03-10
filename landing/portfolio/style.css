@@ -155,8 +155,9 @@ h1, h2, h3 {
   backdrop-filter: blur(12px);
   border: 1px solid var(--border);
   border-radius: 100px;
-  padding: 0.75rem 2.5rem;
+  padding: 0.5rem 2rem;
   z-index: 1000;
+  white-space: nowrap;
 }
 
 .nav-container {
@@ -184,11 +185,11 @@ h1, h2, h3 {
 /* True 3D Rotating Logo (Original DigyNex Spec) */
 .nav-logo-3d-wrap {
   position: fixed;
-  top: 10px;
-  left: -20px;
-  width: 160px;
-  height: 160px;
-  perspective: 1000px;
+  top: 5px;
+  left: 0;
+  width: 140px;
+  height: 140px;
+  perspective: 1200px;
   z-index: 99999;
   pointer-events: none;
   animation: logo-float 6s ease-in-out infinite;
@@ -207,15 +208,24 @@ h1, h2, h3 {
   width: 100%;
   height: 100%;
   backface-visibility: hidden;
-  filter: drop-shadow(0 0 45px rgba(212, 175, 55, 0.45));
+  filter: drop-shadow(0 0 35px rgba(212, 175, 55, 0.4));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.logo-face img {
+  width: 80%;
+  height: 80%;
+  object-fit: contain;
 }
 
 .logo-face.front {
-  transform: translateZ(5px);
+  transform: translateZ(10px);
 }
 
 .logo-face.back {
-  transform: rotateY(180deg) translateZ(5px);
+  transform: rotateY(180deg) translateZ(10px);
 }
 
 @keyframes logo-spin-3d {
@@ -319,10 +329,11 @@ h1, h2, h3 {
 
 .logo span {
   color: #fff;
-  letter-spacing: 0.25em;
+  letter-spacing: 0.15em;
   text-transform: uppercase;
   font-weight: 700;
   text-shadow: 0 0 15px rgba(255, 255, 255, 0.4);
+  display: inline-block;
 }
 
 .gold-dot {
