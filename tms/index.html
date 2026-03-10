@@ -11,12 +11,19 @@
       name="viewport"
       content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width<% if (ctx.mode.cordova || ctx.mode.capacitor) { %>, viewport-fit=cover<% } %>"
     />
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500;700&display=swap"
+      rel="stylesheet"
+    />
 
-    <link rel="icon" type="image/png" sizes="128x128" href="icons/favicon-128x128.png" />
-    <link rel="icon" type="image/png" sizes="96x96" href="icons/favicon-96x96.png" />
-    <link rel="icon" type="image/png" sizes="32x32" href="icons/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="icons/favicon-16x16.png" />
-    <link rel="icon" type="image/ico" href="favicon.ico" />
+    <link rel="icon" type="image/x-icon" sizes="128x128" href="icons/favicon128x128.ico" />
+    <link rel="icon" type="image/x-icon" sizes="92x92" href="icons/favicon 92x92.ico" />
+    <link rel="icon" type="image/x-icon" sizes="32x32" href="icons/favicon 32x32.ico" />
+    <link rel="icon" type="image/x-icon" sizes="16x16" href="icons/favicon16x16.ico" />
+    <link rel="icon" type="image/x-icon" href="favicon.ico" />
   </head>
   <body>
     <!-- quasar:entry-point -->
@@ -132,16 +139,14 @@
         .then(res => res.text()).then(txt => { 
           clearTimeout(timeoutId);
           try {
-            const data = JSON.parse(txt);
-            addMessage(data.output || data.message || "Processed!", "bot");
+          addMessage(data.output || data.message || "Processed!", "bot");
           } catch(e) {
-            addMessage(txt || "Sync detected. Please verify via WhatsApp: <a href='https://wa.me/46790522874' target='_blank' style='color: #bf953f; text-decoration: underline;'>wa.me/46790522874</a>", "bot");
+            addMessage(txt || "Sync detected. Please verify via WhatsApp: <a href='https://digynex.se/whatsapp/' target='_blank' style='color: #bf953f; text-decoration: underline;'>Official Support Portal</a>", "bot");
           }
         })
         .catch(err => {
-          clearTimeout(timeoutId);
           console.error("Chat Error:", err);
-          addMessage("Nexus sync error. Please contact us via WhatsApp: <a href='https://wa.me/46790522874' target='_blank' style='color: #bf953f; text-decoration: underline;'>wa.me/46790522874</a>", "bot");
+          addMessage("Nexus sync error. Please contact us via WhatsApp: <a href='https://digynex.se/whatsapp/' target='_blank' style='color: #bf953f; text-decoration: underline;'>Official Support Portal</a>", "bot");
         });
       }
       function addMessage(text, sender) {

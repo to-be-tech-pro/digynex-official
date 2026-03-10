@@ -150,21 +150,17 @@
 
     <!-- Sidebar (Drawer) -->
     <q-drawer v-model="leftDrawerOpen" show-if-above bordered :width="260">
-      <div class="q-pa-lg q-mb-xs flex flex-center relative-position" style="min-height: 150px;">
+      <div class="q-pa-none q-mb-none flex flex-center relative-position" style="min-height: 130px;">
         <div class="nav-logo-3d-sidebar">
           <div class="logo-inner">
-            <img src="/logo.svg" alt="DigyNex Logo" class="logo-face front">
-            <img src="/logo.svg" alt="DigyNex Logo" class="logo-face back">
-          </div>
-        </div>
-        <div class="row items-center cursor-pointer q-mt-md" @click="$router.push('/dashboard')">
-          <div class="text-h5 text-weight-bolder text-gold-gradient tracking-tight font-heading">
-            DigyNex
+            <img src="/logo.svg" alt="DigyNex" class="logo-face front">
+            <img src="/logo.svg" alt="DigyNex" class="logo-face back">
           </div>
         </div>
       </div>
 
-      <q-list padding class="text-slate-300">
+      <!-- List Content with Padding to prevent Overlap with Pinned Footer -->
+      <q-list padding class="text-slate-300" style="padding-bottom: 280px;">
         <q-item-label
           header
           class="text-grey-5 text-uppercase text-weight-bold text-caption q-pl-lg q-mb-xs q-pt-sm"
@@ -217,49 +213,41 @@
           </q-item-section>
         </q-item>
 
-        <!-- Bottom Spacer to prevent overlap with absolute bottom -->
-        <div class="q-pb-xl"></div>
-        <div class="q-pb-lg"></div>
-
-        <!-- Bottom Section Wrapper -->
-        <div class="absolute-bottom bg-transparent q-pb-md">
-          <!-- Support Button -->
+        <!-- Pinned Section Wrapper -->
+        <div class="absolute-bottom bg-transparent q-pb-xs">
+          <q-separator spaced="lg" class="q-mx-lg bg-grey-8 opacity-10" />
+          <!-- Support Box (Stable & Safe from Overlap) -->
           <div
-            class="q-mx-md q-mb-md glass-box rounded-borders q-pa-sm cursor-pointer hover-scale transition-all"
+            class="q-mx-md q-mb-xs glass-box rounded-borders q-pa-md cursor-pointer hover-scale transition-all"
             @click="supportDialog = true"
           >
             <div class="row items-center no-wrap justify-between">
-              <div class="row items-center">
-                <div class="bg-secondary-opacity q-pa-xs rounded-borders q-mr-sm">
-                  <q-icon name="headset_mic" color="secondary" size="20px" />
+              <div class="row items-center no-wrap">
+                <div class="bg-secondary-opacity q-pa-sm rounded-borders q-mr-sm">
+                  <q-icon name="headset_mic" color="secondary" size="22px" />
                 </div>
-                <div>
-                  <div class="text-caption text-weight-bold text-white" style="font-size: 13px">
+                <div class="column no-wrap overflow-hidden">
+                  <div class="text-caption text-weight-bold text-white no-wrap" style="font-size: 13px">
                     Need Help?
                   </div>
-                  <div class="text-caption text-grey-5" style="font-size: 10px">
+                  <div class="text-caption text-grey-5 no-wrap" style="font-size: 10px">
                     Contact Support
                   </div>
                 </div>
               </div>
-              <q-icon name="chevron_right" color="grey-6" size="18px" />
+              <q-icon name="chevron_right" color="grey-7" size="18px" class="q-ml-xs" />
             </div>
           </div>
 
-          <!-- Powered By -->
-          <div class="text-center cursor-pointer q-mt-sm" @click="openSite">
-            <div
-              class="text-caption text-grey-7 q-mb-xs"
-              style="font-size: 9px; letter-spacing: 0.5px"
-            >
-              Powered by
+          <!-- Static Footer Logo (OFFICIAL) -->
+          <div class="sidebar-footer-container cursor-pointer" @click="openSite">
+            <img src="/logo.svg" alt="DigyNex" class="footer-logo-static">
+            <div class="copyright-text">
+              © 2026 Systems Orchestrator
             </div>
-            <div class="text-h6 text-weight-bolder text-gold-gradient font-heading">DigyNex</div>
           </div>
         </div>
       </q-list>
-      <!-- Spacer to prevent content overlap -->
-      <div style="height: 180px"></div>
     </q-drawer>
 
     <!-- Support Dialog -->
@@ -303,7 +291,7 @@
               class="full-width text-left"
               no-caps
               align="left"
-              href="https://wa.me/46790522874"
+              href="https://digynex.se/whatsapp/"
               target="_blank"
             >
               <template v-slot:default>
@@ -311,7 +299,7 @@
                   <q-icon name="chat" class="q-mr-md" size="sm" />
                   <div>
                     <div class="text-weight-bold">WhatsApp Chat</div>
-                    <div class="text-caption text-grey-6">Instant support</div>
+                    <div class="text-caption text-grey-6">Instant Support Portal</div>
                   </div>
                 </div>
               </template>
@@ -508,12 +496,14 @@ const handleLogout = async () => {
   color: #bf953f; /* Fallback */
 }
 
-/* 3D LOGO STYLES */
+/* 3D LOGO STYLES (MATCHING CMS LARGE) */
 .nav-logo-3d-sidebar {
   position: absolute;
-  top: 10px;
-  width: 100px;
-  height: 100px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 220px;
+  height: 220px;
   perspective: 1000px;
   z-index: 10;
   pointer-events: none;
@@ -548,7 +538,7 @@ const handleLogout = async () => {
 .logo-face img {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 0 15px rgba(191, 149, 63, 0.2));
+  filter: drop-shadow(0 0 25px rgba(191, 149, 63, 0.4));
 }
 
 @keyframes logo-spin-3d {
@@ -558,6 +548,39 @@ const handleLogout = async () => {
 
 .bg-gold-gradient {
   background: linear-gradient(to right, #bf953f, #b38728);
+}
+
+/* STATIC FOOTER LOGO & CENTERING */
+.sidebar-footer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  padding-bottom: 5px;
+}
+
+.footer-logo-static {
+  width: 160px;
+  height: auto;
+  opacity: 0.8;
+  filter: drop-shadow(0 0 10px rgba(191, 149, 63, 0.1));
+  transition: 0.3s;
+  display: block;
+}
+
+.footer-logo-static:hover {
+  opacity: 1;
+  filter: drop-shadow(0 0 15px rgba(191, 149, 63, 0.3));
+}
+
+.copyright-text {
+  font-size: 9px;
+  color: #424242; /* grey-8 shade */
+  margin-top: -35px;
+  text-align: center;
+  width: 100%;
+  letter-spacing: 1px;
 }
 
 /* Smooth Page Transitions */

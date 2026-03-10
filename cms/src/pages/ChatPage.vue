@@ -508,7 +508,7 @@ const handleNexusAiResponse = (content) => {
     messages.value.push({
       id: Date.now(),
       sent: false,
-      text: "Nexus sync error. Please contact us via WhatsApp: <a href='https://wa.me/46790522874' target='_blank' style='color: #10b981; text-decoration: underline;'>wa.me/46790522874</a>",
+      text: "Nexus sync error. Please contact us via WhatsApp: <a href='https://digynex.se/whatsapp/' target='_blank' style='color: #10b981; text-decoration: underline;'>Official Support Portal</a>",
       time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
     })
   })

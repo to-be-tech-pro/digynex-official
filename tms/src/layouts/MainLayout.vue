@@ -2,31 +2,31 @@
 <template>
   <q-layout view="lHh Lpr lFf" class="bg-primary text-white font-inter">
     <q-header
-      class="bg-transparent text-white q-py-md"
-      :class="{ 'bg-dark-glass': scrollPosition > 50 }"
+      class="glass-header text-white q-py-sm"
+      :class="{ 'header-scrolled': scrollPosition > 50 }"
       style="z-index: 5000"
     >
       <q-toolbar class="container q-mx-auto relative-position">
         <!-- Header Logo -->
-        <div class="logo-wrapper cursor-pointer" @click="$router.push('/')">
+        <div class="logo-wrapper">
           <div class="nav-logo-3d">
             <div class="logo-inner">
               <img src="/logo.svg" alt="DigyNex Logo" class="logo-face front">
               <img src="/logo.svg" alt="DigyNex Logo" class="logo-face back">
             </div>
           </div>
-          <div class="brand-name">
+          <router-link to="/" class="brand-name-link">
             Digy<span class="gold-text">Nex</span>
-          </div>
+          </router-link>
         </div>
 
         <q-space />
 
-        <div class="gt-sm q-gutter-x-md">
-          <q-btn flat no-caps label="Home" class="text-weight-medium" />
-          <q-btn flat no-caps label="Features" class="text-weight-medium" />
-          <q-btn flat no-caps label="About Us" class="text-weight-medium" />
-          <q-btn flat no-caps label="Contact" class="text-weight-medium" />
+        <div class="gt-sm q-gutter-x-lg flex items-center">
+          <router-link to="/" class="nav-item">Home</router-link>
+          <a href="https://digynex.se/" target="_blank" class="nav-item">CMS Hub</a>
+          <a href="https://digynex.se/ecosystem" target="_blank" class="nav-item">Ecosystem</a>
+          <a href="#" class="nav-item">Solutions</a>
         </div>
 
         <div class="gt-xs q-ml-lg row q-gutter-x-sm">
@@ -55,53 +55,33 @@
       <router-view />
     </q-page-container>
 
-    <!-- Updated Compact Footer (Pure Black Modern Look) -->
-    <q-footer class="bg-black text-white q-py-lg border-top-dark" style="z-index: 5000">
-      <div class="container q-mx-auto q-px-md">
-        <div class="row q-col-gutter-lg items-center">
-          <div class="col-12 col-md-6 text-left">
-            <!-- Footer Branding -->
-            <div class="row items-center q-mb-sm">
-              <img src="/logo.svg" alt="DigyNex" class="footer-logo-main">
-            </div>
-            <p class="text-caption q-mb-none text-grey-5" style="max-width: 400px">
-              The Most Advanced Tuition Management Platform.
-            </p>
-          </div>
-          <div class="col-12 col-md-6 text-md-right">
-            <div class="q-gutter-x-lg text-caption">
-              <a
-                href="https://digynex.se/about.html"
-                target="_blank"
-                class="text-white hover-grey text-decoration-none transition-colors"
-                style="font-size: 13px"
-                >About Us</a
-              >
-
-              <a
-                href="https://digynex.se/terms.html"
-                target="_blank"
-                class="text-white hover-grey text-decoration-none transition-colors"
-                style="font-size: 13px"
-                >Terms</a
-              >
-
-              <a
-                href="https://digynex.se/privacy.html"
-                target="_blank"
-                class="text-white hover-grey text-decoration-none transition-colors"
-                style="font-size: 13px"
-                >Privacy</a
-              >
-            </div>
+    <!-- Updated Comprehensive Footer (CMS Match) -->
+    <q-footer class="main-footer" style="z-index: 5000">
+      <div class="container footer-content q-mx-auto">
+        <div class="footer-brand">
+          <img src="/logo.svg" alt="DigyNex" class="footer-logo-main">
+          <p class="text-grey-5 q-mt-sm">Global Leaders in IT Transformation.</p>
+        </div>
+        <div class="footer-links">
+          <h4 class="text-white">Tuition Ecosystem</h4>
+          <a href="https://digynex.se/" target="_blank">Enterprise CMS</a>
+          <router-link to="/">Tuition Manager</router-link>
+          <a href="https://digynex.se/ecosystem" target="_blank">AI Ecosystem</a>
+        </div>
+        <div class="footer-contact">
+          <h4 class="text-white">Connect</h4>
+          <div class="social-icons">
+            <a href="https://facebook.com/digynex.se" target="_blank"><i class="fa-brands fa-facebook-f"></i></a>
+            <a href="https://www.linkedin.com/in/digynex-amila" target="_blank"><i class="fa-brands fa-linkedin"></i></a>
+            <a href="https://github.com/digynex" target="_blank"><i class="fa-brands fa-github"></i></a>
           </div>
         </div>
-        <div class="q-mt-md text-center text-caption q-pt-md border-top-light text-grey-8">
-          © 2026 DigyNex Systems. Official Domain | <span class="text-gold-gradient">digynex.se</span>
-          <div class="q-mt-sm" style="opacity: 0.6; letter-spacing: 1px; text-transform: uppercase; font-size: 10px;">
-            Ecosystem Architected by <a href="https://digynex.se/portfolio" target="_blank" class="text-white" style="text-decoration: none;">DigyNex</a>
-          </div>
-        </div>
+      </div>
+      <div class="footer-bottom text-center q-pa-md border-top-light">
+        <p class="text-grey-7 q-mb-none">
+          &copy; 2026 DigyNex Systems. Official Domain |
+          <span class="gold-text-static">digynex.se</span>
+        </p>
       </div>
     </q-footer>
   </q-layout>
@@ -194,12 +174,25 @@ onUnmounted(() => {
   to { transform: rotateY(360deg); }
 }
 
-.brand-name {
+.brand-name-link {
   font-size: 26px;
   font-weight: 800;
   font-family: 'Outfit', sans-serif;
   letter-spacing: -1px;
+  text-decoration: none;
   color: #f8fafc;
+}
+
+.glass-header {
+  background: rgba(10, 15, 28, 0.85) !important;
+  backdrop-filter: blur(15px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+  transition: 0.4s;
+}
+
+.header-scrolled {
+  background: rgba(5, 8, 17, 0.95) !important;
+  padding: 8px 0 !important;
 }
 
 .gold-text {
@@ -221,41 +214,87 @@ onUnmounted(() => {
   color: #0a0f1c !important;
 }
 
-.border-top-dark {
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
+.main-footer {
+  background: #050811;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  padding: 60px 0 20px;
 }
 
-.border-top-light {
-  border-top: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-.text-decoration-none {
-  text-decoration: none;
-}
-
-.bg-black {
-  background-color: #000000 !important;
-}
-
-.transition-colors {
-  transition: color 0.3s ease;
-}
-
-.hover-grey:hover {
-  color: #9e9e9e !important;
-}
-
-.text-gold-gradient {
-  background: linear-gradient(to right, #bf953f, #fcf6ba, #b38728, #fbf5b7, #aa771c);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  color: #bf953f;
+.footer-content {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 40px;
+  padding: 0 20px;
+  margin-bottom: 40px;
 }
 
 .footer-logo-main {
   height: 60px;
   width: auto;
   margin-left: -10px;
+}
+
+.footer-links h4,
+.footer-contact h4 {
+  font-size: 16px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+.footer-links a {
+  display: block;
+  color: rgba(248, 250, 252, 0.7);
+  text-decoration: none;
+  margin-bottom: 12px;
+  font-size: 14px;
+  transition: 0.3s;
+}
+
+.footer-links a:hover {
+  color: #bf953f;
+}
+
+.social-icons {
+  display: flex;
+  gap: 15px;
+}
+
+.social-icons a {
+  width: 35px;
+  height: 35px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #f8fafc;
+  text-decoration: none;
+  transition: 0.3s;
+}
+
+.social-icons a:hover {
+  background: #bf953f;
+  color: #0a0f1c;
+}
+
+.gold-text-static {
+  color: #bf953f;
+  font-weight: 700;
+}
+
+.nav-item {
+  text-decoration: none;
+  color: #f8fafc;
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.8;
+  transition: 0.3s;
+}
+
+.nav-item:hover {
+  opacity: 1;
+  color: #bf953f;
 }
 </style>
 
