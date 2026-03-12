@@ -395,19 +395,39 @@ const handleReceiptUpload = async (file) => {
   if (!file) return
   scanningReceipt.value = true
   
-  // Here we would convert file to base64 and send to n8n
-  // For now, mocking the trigger
   $q.notify({
-    type: 'positive',
-    message: 'Receipt sent to n8n! AI categorization in progress.',
+    type: 'info',
+    message: 'Analyzing receipt with Gemini AI...',
     icon: 'auto_awesome'
   })
   
-  setTimeout(() => {
-    scanningReceipt.value = false
-    receiptScannerDialog.value = false
-    receiptFile.value = null
-  }, 2000)
+  const result = await n8nStore.scanExpenseReceipt(file)
+  
+  scanningReceipt.value = false
+  receiptScannerDialog.value = false
+  receiptFile.value = null
+
+  if (result) {
+    // Open Expense Dialog Pre-filled
+    expenseForm.value = {
+      category: result.category || '',
+      description: result.description || 'AI Extracted Receipt',
+      amount: result.amount || '',
+      date: result.date || new Date().toISOString().split('T')[0]
+    }
+    expenseDialog.value = true
+    $q.notify({
+      type: 'positive',
+      message: 'Receipt data extracted successfully!',
+      icon: 'check_circle'
+    })
+  } else {
+    $q.notify({
+      type: 'negative',
+      message: 'AI Scanning failed. Please enter details manually.',
+      icon: 'error'
+    })
+  }
 }
 
 const totalRevenueComputed = ref(0)
@@ -565,7 +585,7 @@ const savePayment = async () => {
     let studentId = null
     const { data: students } = await supabase
       .from('students')
-      .select('id')
+      .select('id, phone, parent_phone')
       .ilike('name', `%${form.value.studentName}%`)
       .eq('org_id', userOrgId.value)
       .limit(1)
@@ -585,6 +605,19 @@ const savePayment = async () => {
 
     $q.notify({ type: 'positive', message: `Payment recorded. (Fee: ${platformFee})` })
     
+    // Trigger n8n Receipt Notification
+    if (students && students.length > 0) {
+      n8nStore.triggerFeeAction({
+        name: form.value.studentName,
+        phone: students[0].phone || students[0].parent_phone, // We don't have this in SELECT above, we might need a quick fix, let's just pass student for now
+        org_id: userOrgId.value
+      }, {
+        type: 'receipt',
+        month: form.value.month,
+        amount: amount
+      })
+    }
+
     // Trigger Print
     printReceipt({
       student: form.value.studentName,
@@ -641,12 +674,15 @@ const sendReminder = async (row) => {
   }
   $q.loading.show({ message: 'Dispatching WhatsApp via n8n...' })
   
-  const ok = await n8nStore.triggerFeeReminder({
+  const ok = await n8nStore.triggerFeeAction({
     name: row.student,
     phone: row.phone,
     balance: row.amount,
     org_id: userOrgId.value
-  }, dueFilterMonth.value)
+  }, {
+    type: 'reminder',
+    month: dueFilterMonth.value
+  })
 
   $q.loading.hide()
   if (ok) {

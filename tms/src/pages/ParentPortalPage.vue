@@ -114,11 +114,13 @@ import { ref, onMounted } from 'vue'
 import { useRouter } from 'vue-router'
 import { useQuasar } from 'quasar'
 import { useAuthStore } from 'stores/auth'
+import { useN8nStore } from 'stores/n8n'
 import VueApexCharts from 'vue3-apexcharts'
 
 const Apexchart = VueApexCharts
 const $q = useQuasar()
 const authStore = useAuthStore()
+const n8nStore = useN8nStore()
 const router = useRouter()
 
 const studentId = ref('')
@@ -162,18 +164,26 @@ const viewReport = () => {
   }, 1000)
 }
 
-const sendFeedback = () => {
+const sendFeedback = async () => {
   if (authStore.isDemo) {
     showRegisterPrompt('send parent feedback')
     return
   }
   if (!parentFeedback.value) return
   feedbackLoading.value = true
-  setTimeout(() => {
-    feedbackLoading.value = false
+  
+  const ok = await n8nStore.sendParentFeedback({
+    student_id: studentId.value,
+    message: parentFeedback.value
+  })
+
+  feedbackLoading.value = false
+  if (ok) {
     $q.notify({ type: 'positive', message: 'Feedback sent! The teacher will be notified.' })
     parentFeedback.value = ''
-  }, 1000)
+  } else {
+    $q.notify({ type: 'negative', message: 'Failed to send feedback. Please try again later.' })
+  }
 }
 
 const showRegisterPrompt = (feature) => {

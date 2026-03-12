@@ -147,6 +147,9 @@
                   <q-item clickable v-close-popup @click="openIdCard(props.row)">
                     <q-item-section>Generate ID Card</q-item-section>
                   </q-item>
+                  <q-item clickable v-close-popup @click="generateStarPoster(props.row)">
+                    <q-item-section>Generate Star Poster</q-item-section>
+                  </q-item>
                   <q-separator />
                   <q-item
                     clickable
@@ -464,6 +467,7 @@ import { ref, onMounted, watch, computed } from 'vue'
 import { useQuasar, exportFile } from 'quasar'
 import { supabase } from 'boot/supabase'
 import { useAuthStore } from 'stores/auth'
+import { useN8nStore } from 'stores/n8n'
 import { useRouter, useRoute } from 'vue-router'
 import QrcodeVue from 'qrcode.vue'
 import { useSettingsStore } from 'stores/settings'
@@ -472,6 +476,7 @@ const $q = useQuasar()
 const router = useRouter()
 const route = useRoute()
 const authStore = useAuthStore()
+const n8nStore = useN8nStore()
 const settingsStore = useSettingsStore()
 
 const editDialog = ref(false)
@@ -485,6 +490,39 @@ const importFile = ref(null)
 const parsedStudents = ref([])
 const selectedStudentForID = ref(null)
 const selectedTemplate = ref('standard')
+
+const generateStarPoster = async (student) => {
+  if (authStore.isDemo) {
+    showRegisterPrompt('generate star posters')
+    return
+  }
+  
+  $q.dialog({
+    title: 'Generate Star Poster',
+    message: 'What is the achievement for this student?',
+    prompt: {
+      model: 'Top Performer - March',
+      type: 'text'
+    },
+    cancel: true,
+    persistent: true
+  }).onOk(async (achievement) => {
+    $q.loading.show({ message: 'Generating Poster via n8n...' })
+    const ok = await n8nStore.generateStarPoster({
+      student_name: student.name,
+      class_name: student.grade,
+      photo_url: student.photo_url || '',
+      achievement: achievement
+    })
+    $q.loading.hide()
+
+    if (ok) {
+      $q.notify({ type: 'positive', message: 'Poster generated and shared successfully!', icon: 'auto_awesome' })
+    } else {
+      $q.notify({ type: 'negative', message: 'Failed to generate poster.' })
+    }
+  })
+}
 
 // --- ADVANCED FILTERS ---
 const showFilters = ref(false)
