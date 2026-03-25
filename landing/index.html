@@ -102,11 +102,15 @@
               <!-- Animated UI Elements -->
               <div class="ui-cluster">
                 <div class="glass-element core-ui">
-                  <img
-                    src="ai-hero.webp"
-                    alt="DigyNex AI Assistant"
-                    class="ui-img"
-                  />
+                  <video 
+                    src="demo.mp4" 
+                    class="ui-img" 
+                    autoplay 
+                    muted 
+                    loop 
+                    style="width: 100%; height: 100%; object-fit: cover; border-radius: 12px;"
+                    poster="ai-hero.webp">
+                  </video>
                 </div>
                 <div class="floating-data dns-card">
                   <i class="fa-solid fa-microchip icon-gold gold-text"></i>
@@ -138,17 +142,62 @@
 
           <div class="product-tabs">
             <div class="tab-triggers">
-              <button class="tab-btn active" data-target="tuition">
+              <button class="tab-btn active" data-target="bi-360">
+                Enterprise 360
+              </button>
+              <button class="tab-btn" data-target="tuition">
                 Tuition Manager
               </button>
               <button class="tab-btn" data-target="cms">Enterprise CMS</button>
               <button class="tab-btn" data-target="fb-auto">
                 Facebook Nexus
               </button>
-              <button class="tab-btn" data-target="future">Future Labs</button>
             </div>
 
-            <div class="tab-content active" id="tuition">
+            <div class="tab-content active" id="bi-360">
+              <div class="product-grid">
+                <div class="product-info">
+                  <h3>Enterprise 360 BI Dashboard</h3>
+                  <p>
+                    The ultimate decision intelligence system. Advanced 
+                    financial forecasting, lead performance mapping, and 
+                    operational efficiency monitoring in one unified board.
+                  </p>
+                  <ul class="features-list">
+                    <li>
+                      <i class="fa-solid fa-check gold-text"></i> Real-time Profit Mapping
+                    </li>
+                    <li>
+                      <i class="fa-solid fa-check gold-text"></i> AI-Powered Forecasting
+                    </li>
+                    <li>
+                      <i class="fa-solid fa-check gold-text"></i> Multi-Platform Integration
+                    </li>
+                  </ul>
+                  <div class="cta-row">
+                    <a href="https://360.digynex.se" target="_blank" class="btn btn-gold">
+                      Launch 360 Portal
+                    </a>
+                    <button onclick="openLeadModal('Enterprise 360 BI')" class="btn btn-glass">
+                      Request Enterprise Plan
+                    </button>
+                  </div>
+                </div>
+                <div class="product-image">
+                  <div class="glass-mockup">
+                    <video 
+                      src="demo.mp4" 
+                      autoplay 
+                      muted 
+                      loop 
+                      style="width: 100%; border-radius: 8px;">
+                    </video>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="tab-content" id="tuition">
               <div class="product-grid">
                 <div class="product-info">
                   <h3>Elite Tuition Manager</h3>
@@ -587,7 +636,10 @@
         <h3>Client Access Portal</h3>
         <p>Select the portal you wish to access. You will be redirected to a secure login environment.</p>
         <div class="portal-links">
-          <a href="https://cms.digynex.se" class="btn btn-gold full-width" style="margin-bottom: 15px; text-decoration: none; display: block; text-align: center;">
+          <a href="https://360.digynex.se" class="btn btn-gold full-width" style="margin-bottom: 15px; text-decoration: none; display: block; text-align: center;">
+            <i class="fa-solid fa-chart-pie"></i> Enterprise 360 (BI Dashboard)
+          </a>
+          <a href="https://cms.digynex.se" class="btn btn-outline full-width" style="margin-bottom: 15px; text-decoration: none; display: block; text-align: center;">
             <i class="fa-solid fa-graduation-cap"></i> Tuition Manager (CMS)
           </a>
           <a href="https://tms.digynex.se" class="btn btn-outline full-width" style="text-decoration: none; display: block; text-align: center;">
