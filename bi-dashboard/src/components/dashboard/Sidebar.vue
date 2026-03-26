@@ -5,7 +5,7 @@
           <div class="p-1.5 bg-primary rounded-lg shadow-sm">
             <Layers class="w-5 h-5 text-white" />
           </div>
-          DigyNex<span class="text-primary font-light">DSS</span>
+          DigyNex<span class="text-primary font-light">360</span>
         </router-link>
       </div>
       
@@ -16,26 +16,26 @@
             <LayoutDashboard class="w-4 h-4 group-hover:scale-110 transition-transform" /> Executive Board
           </router-link>
           
-          <a href="#" @click.prevent="$emit('triggerToast', 'Sales Pivot module locked. Available in Scale-up Enterprise Tier.')" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-medium transition-colors group">
+          <router-link to="/sales-pivot" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-medium transition-colors group" active-class="bg-slate-900 text-white hover:bg-slate-800">
             <TrendingUp class="w-4 h-4 group-hover:text-primary transition-colors" /> Sales Pivot
-          </a>
-          <a href="#" @click.prevent="$emit('triggerToast', 'BI Reports engine is syncing with PostgreSQL Data Warehouse v1.4.')" class="flex items-center justify-between px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-medium transition-colors group">
+          </router-link>
+          <router-link to="/bi-reports" class="flex items-center justify-between px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-medium transition-colors group" active-class="bg-slate-900 text-white hover:bg-slate-800">
             <div class="flex items-center gap-3"><Brain class="w-4 h-4 group-hover:text-accent transition-colors" /> BI Reports</div>
             <span class="w-2 h-2 rounded-full bg-accent animate-pulse shadow-sm"></span>
-          </a>
+          </router-link>
         </nav>
 
         <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3 px-3">Operations</p>
         <nav class="space-y-1">
-          <a href="#" @click.prevent="$emit('triggerToast', 'Core Operations tracker in deployment stack.')" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-medium transition-colors">
+          <router-link to="/operations" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-medium transition-colors" active-class="bg-slate-900 text-white hover:bg-slate-800">
             <Briefcase class="w-4 h-4" /> Operations
-          </a>
-          <a href="#" @click.prevent="$emit('triggerToast', 'Finance Vault access restricted to Level 4 Authentication.')" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-medium transition-colors">
+          </router-link>
+          <router-link to="/finance" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-medium transition-colors" active-class="bg-slate-900 text-white hover:bg-slate-800">
             <Wallet class="w-4 h-4" /> Finance
-          </a>
-          <a href="#" @click.prevent="$emit('triggerToast', 'Organization Settings locked during active session sync.')" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-medium transition-colors mt-4 border-t border-slate-100 pt-5">
+          </router-link>
+          <router-link to="/settings" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-medium transition-colors mt-4 border-t border-slate-100 pt-5" active-class="bg-slate-900 text-white hover:bg-slate-800 border-t-0 mt-2 pt-2.5">
             <Settings class="w-4 h-4" /> Settings
-          </a>
+          </router-link>
         </nav>
       </div>
 

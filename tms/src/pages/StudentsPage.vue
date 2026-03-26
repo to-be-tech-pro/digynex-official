@@ -651,12 +651,12 @@ const openAddDialog = () => {
     return
   }
   // Check Limit
-  if (planType.value === 'free' && rows.value.length >= 10) {
+  if (planType.value === 'starter' && rows.value.length >= 100) {
     $q.dialog({
-      title: 'Plan Limit Reached',
+      title: 'Starter Limit Reached',
       message:
-        'You have reached the maximum of 10 students allowed on the Free plan. Upgrade to Growth or Pro.',
-      ok: { label: 'Upgrade Now', color: 'secondary', push: true },
+        'You have reached the maximum of 100 active records for your Starter plan. Please upgrade to the Business plan to keep growing.',
+      ok: { label: 'Explore Plans', color: 'primary', push: true },
       cancel: true,
     }).onOk(() => {
       router.push('/subscription')
@@ -664,12 +664,12 @@ const openAddDialog = () => {
     return
   }
 
-  if (planType.value === 'growth' && rows.value.length >= 100) {
+  if (planType.value === 'business' && rows.value.length >= 500) {
     $q.dialog({
-      title: 'Growth Limit Reached',
+      title: 'Business Limit Reached',
       message:
-        'You have reached the maximum of 100 students allowed on the Growth plan. Upgrade to Pro for unlimited access.',
-      ok: { label: 'Upgrade to Pro', color: 'emerald', push: true },
+        'You have reached the maximum of 500 active records for your Business plan. Upgrade to the Enterprise tier for uncapped scaling and advanced AI.',
+      ok: { label: 'View Enterprise Tier', color: 'primary', push: true },
       cancel: true,
     }).onOk(() => {
       router.push('/subscription')

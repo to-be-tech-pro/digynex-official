@@ -8,7 +8,7 @@
           <div class="p-1.5 bg-primary rounded-lg shadow-[0_0_15px_rgba(59,130,246,0.5)]">
             <Layers class="w-6 h-6 text-white" />
           </div>
-          DigyNex<span class="text-primary font-light">DSS</span>
+          DigyNex<span class="text-primary font-light">360</span>
         </div>
         
         <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
@@ -60,55 +60,20 @@
           </button>
         </div>
 
-        <!-- Dashboard Abstract Mockup (The "Screenshot") -->
+        <!-- Dashboard Video Thumbnail -->
         <div class="mt-20 relative mx-auto max-w-5xl group animate-[slideUp_1s_ease-out]">
           <div class="absolute -inset-1 bg-gradient-to-r from-primary via-accent to-blue-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
-          <div class="relative rounded-2xl bg-[#0f172a] border border-slate-700/50 shadow-2xl overflow-hidden flex flex-col h-[500px]">
-             <!-- Mockup Browser Header -->
-             <div class="h-10 bg-slate-900/80 border-b border-slate-800 flex items-center px-4 gap-2">
-               <div class="w-3 h-3 rounded-full bg-red-500/80"></div>
-               <div class="w-3 h-3 rounded-full bg-amber-500/80"></div>
-               <div class="w-3 h-3 rounded-full bg-emerald-500/80"></div>
+          <div class="relative w-full aspect-video rounded-2xl bg-[#0f172a] border border-slate-700/50 shadow-2xl overflow-hidden flex flex-col cursor-pointer group/video">
+             
+             <!-- Actual Demo Video with Poster (Commented out to pass build until YouTube link is ready) -->
+             <!-- <video class="absolute inset-0 w-full h-full object-cover z-20 group-hover/video:scale-[1.02] transition-transform duration-1000 bg-[#0f172a]" controls preload="metadata" poster="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop">
+                <source src="/demo.mp4" type="video/mp4" />
+                Your browser does not support the video tag.
+             </video> -->
+             <div class="absolute inset-0 bg-[#0f172a] flex items-center justify-center">
+                <p class="text-slate-500 text-sm italic">Video Demo Coming Soon...</p>
              </div>
-             <!-- Mockup content area -->
-             <div class="flex-1 p-6 flex gap-6 opacity-80 group-hover:opacity-100 transition-opacity duration-700 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')] bg-slate-900">
-               <!-- Left Nav Mock -->
-               <div class="w-48 hidden md:flex flex-col gap-4">
-                 <div class="h-8 bg-slate-800 rounded w-3/4 mb-4"></div>
-                 <div class="h-10 bg-primary/20 border border-primary/30 rounded-lg w-full"></div>
-                 <div class="h-10 bg-slate-800 rounded-lg w-full"></div>
-                 <div class="h-10 bg-slate-800 rounded-lg w-full"></div>
-               </div>
-               <!-- Main Content Mock -->
-               <div class="flex-1 flex flex-col gap-6">
-                 <!-- KPI Row Mock -->
-                 <div class="grid grid-cols-3 gap-4 h-32">
-                   <div class="col-span-2 bg-gradient-to-br from-slate-800 to-slate-900 rounded-xl border border-slate-700 p-4 flex flex-col justify-between relative overflow-hidden">
-                     <div class="h-4 bg-slate-700 rounded w-1/3"></div>
-                     <div class="h-10 bg-slate-600 rounded w-1/2"></div>
-                   </div>
-                   <div class="col-span-1 bg-slate-800 rounded-xl border border-slate-700 p-4"></div>
-                 </div>
-                 <!-- Chart Row Mock -->
-                 <div class="flex-1 bg-slate-800 rounded-xl border border-slate-700 relative overflow-hidden flex items-end p-4">
-                    <!-- Abstract Chart bars -->
-                    <div class="w-full h-full flex items-end justify-between gap-2 opacity-50 relative z-10">
-                      <div class="w-full bg-primary/40 rounded-t h-[40%]"></div>
-                      <div class="w-full bg-primary/40 rounded-t h-[60%]"></div>
-                      <div class="w-full bg-primary/60 rounded-t h-[50%]"></div>
-                      <div class="w-full bg-primary/80 rounded-t h-[80%]"></div>
-                      <div class="w-full bg-accent/60 rounded-t h-[100%]"></div>
-                    </div>
-                    <div class="absolute inset-0 bg-gradient-to-t from-slate-900 to-transparent z-20"></div>
-                 </div>
-               </div>
-             </div>
-             <!-- Play Button Overlay -->
-             <router-link to="/dashboard" class="absolute inset-0 z-30 flex items-center justify-center bg-slate-950/20 group-hover:bg-transparent transition-colors duration-500 cursor-pointer">
-                <div class="w-20 h-20 rounded-full bg-white/10 backdrop-blur-md border border-white/20 flex items-center justify-center text-white group-hover:scale-110 transition-transform duration-500 shadow-2xl">
-                  <Play class="w-8 h-8 ml-1" />
-                </div>
-             </router-link>
+
           </div>
         </div>
         
@@ -156,25 +121,78 @@
       </div>
     </section>
 
-    <!-- Bottom CTA -->
-    <section class="py-24 relative overflow-hidden">
-      <div class="absolute inset-0 bg-gradient-to-b from-[#020817] to-slate-900 -z-10"></div>
-      <div class="absolute bottom-0 left-1/2 -translate-x-1/2 w-full max-w-3xl h-1/2 bg-primary/10 blur-[100px] pointer-events-none -z-10"></div>
+    <!-- Footer Section (Legal & Contact) -->
+    <footer class="pt-24 pb-12 bg-[#020817] border-t border-white/5 relative overflow-hidden">
+      <!-- Glow effect for footer -->
+      <div class="absolute bottom-0 left-1/4 w-[400px] h-[200px] bg-primary/10 blur-[80px] -z-10"></div>
       
-      <div class="max-w-4xl mx-auto px-6 text-center">
-        <h2 class="text-4xl md:text-5xl font-black text-white mb-6 tracking-tight">Ready to upgrade your decision making?</h2>
-        <p class="text-slate-400 font-medium mb-10 text-lg">Join elite organizations scaling their operations with zero guesswork.</p>
-        <router-link to="/dashboard" class="inline-flex px-10 py-5 bg-white text-slate-900 hover:bg-slate-200 rounded-xl text-lg font-black transition-all shadow-[0_0_30px_rgba(255,255,255,0.15)] hover:shadow-[0_0_40px_rgba(255,255,255,0.25)] hover:-translate-y-1 items-center justify-center gap-2">
-          Initialize Demo Board <ArrowRight class="w-5 h-5" />
-        </router-link>
+      <div class="max-w-7xl mx-auto px-6">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+          <div class="col-span-1 md:col-span-1">
+            <div class="flex items-center gap-2 font-bold text-xl tracking-tight text-white mb-6">
+              <div class="p-1 bg-primary rounded shadow-[0_0_10px_rgba(59,130,246,0.3)]">
+                <Layers class="w-4 h-4 text-white" />
+              </div>
+              DigyNex<span class="text-primary font-light">360</span>
+            </div>
+            <p class="text-slate-500 text-sm leading-relaxed mb-6">
+              Empowering scaling enterprises with data-driven decision intelligence. Official part of the DigyNex Global IT Ecosystem.
+            </p>
+            <div class="flex items-center gap-4 text-slate-400">
+               <a href="https://facebook.com/digynex.se" target="_blank" class="hover:text-primary transition-colors"><i class="fa-brands fa-facebook-f text-lg"></i></a>
+               <a href="https://www.linkedin.com/in/digynex-amila" target="_blank" class="hover:text-primary transition-colors"><i class="fa-brands fa-linkedin text-lg"></i></a>
+               <a href="https://github.com/digynex" target="_blank" class="hover:text-primary transition-colors"><i class="fa-brands fa-github text-lg"></i></a>
+            </div>
+          </div>
+
+          <div>
+             <h4 class="text-white font-bold mb-6 text-sm uppercase tracking-widest">Platform</h4>
+             <ul class="space-y-4 text-slate-400 text-sm">
+               <li><a href="#features" class="hover:text-white transition-colors">Performance Engine</a></li>
+               <li><a href="#demo" class="hover:text-white transition-colors">Decision Mapping</a></li>
+               <li><a href="#pricing" class="hover:text-white transition-colors">Pricing Options</a></li>
+               <li><router-link to="/dashboard" class="hover:text-white transition-colors">Live Dashboard</router-link></li>
+             </ul>
+          </div>
+
+          <div>
+             <h4 class="text-white font-bold mb-6 text-sm uppercase tracking-widest">Company</h4>
+             <ul class="space-y-4 text-slate-400 text-sm">
+               <li><a href="https://digynex.se/about.html" class="hover:text-white transition-colors">About Us</a></li>
+               <li><a href="https://digynex.se/contact.html" class="hover:text-white transition-colors">Contact Expert</a></li>
+               <li><a href="https://digynex.se/portfolio/index.html" class="hover:text-white transition-colors">Success Stories</a></li>
+             </ul>
+          </div>
+
+          <div>
+             <h4 class="text-white font-bold mb-6 text-sm uppercase tracking-widest">Legal & Privacy</h4>
+             <ul class="space-y-4 text-slate-400 text-sm">
+               <li><a href="https://digynex.se/terms.html" class="hover:text-white transition-colors">Terms of Service</a></li>
+               <li><a href="https://digynex.se/privacy.html" class="hover:text-white transition-colors">Privacy Policy</a></li>
+               <li><a href="https://digynex.se/cookies.html" class="hover:text-white transition-colors">Cookie Policy</a></li>
+               <li><a href="https://digynex.se/refund.html" class="hover:text-white transition-colors">Refund Policy</a></li>
+             </ul>
+          </div>
+        </div>
+
+        <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-6">
+          <p class="text-slate-500 text-xs">
+            © 2026 DigyNex Systems 360 | Global Business Intelligence Ecosystem.
+          </p>
+          <div class="flex items-center gap-2 text-slate-600 text-[10px] uppercase tracking-widest">
+            <span>Powered by DigyNex AI Agents</span>
+            <span class="opacity-30">|</span>
+            <span>Sweden HQ</span>
+          </div>
+        </div>
       </div>
-    </section>
+    </footer>
 
   </div>
 </template>
 
 <script setup>
-import { Layers, ArrowRight, Play, Brain, LineChart, AlertTriangle } from 'lucide-vue-next'
+import { Layers, ArrowRight, Brain, LineChart, AlertTriangle } from 'lucide-vue-next'
 </script>
 
 <style scoped>

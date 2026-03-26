@@ -73,7 +73,7 @@ import AIInsights from '../components/dashboard/AIInsights.vue'
 import TargetBar from '../components/dashboard/TargetBar.vue'
 import DrilldownModal from '../components/dashboard/DrilldownModal.vue'
 
-import { fetchDashboardMetrics } from '../services/apiMock'
+import { fetchDashboardMetrics } from '../services/dashboardService'
 
 const showAlert = ref(false)
 const isLoading = ref(true)

@@ -7,10 +7,11 @@
           Choose the perfect plan for your institute.
         </p>
       </div>
-      <!-- Regional Toggle -->
-      <div class="glass-panel q-px-md q-py-sm rounded-borders border-glass shadow-lg">
-        <span class="text-weight-bold text-emerald">Region: </span>
-        <span class="text-uppercase text-white text-weight-bold"
+      <!-- Regional Tracking -->
+      <div class="bg-dark-drawer q-px-lg q-py-sm rounded-borders border-glass shadow-lg flex items-center">
+        <q-icon name="public" color="emerald" class="q-mr-sm" size="xs" />
+        <span class="text-weight-bold text-grey-5 q-mr-xs">Nexus Operating Region: </span>
+        <span class="text-emerald text-weight-bolder uppercase tracking-widest"
           >{{ currencyStore.countryCode }} ({{ currencyStore.currency }})</span
         >
       </div>
@@ -22,8 +23,11 @@
         <q-card class="full-height column no-shadow border-glass bg-dark-card hover-lift">
           <q-card-section class="q-pa-lg">
             <div class="text-overline text-grey-5 font-bold uppercase tracking-widest">STARTER</div>
-            <div class="text-h3 text-weight-bolder text-white q-mt-sm">Free</div>
-            <div class="text-caption text-grey-6 q-mb-lg">Forever free for small classes</div>
+            <div class="text-h4 text-weight-bolder text-white q-mt-sm font-numeric">
+              {{ currencyStore.format(currencyStore.pricing.starter) }}
+              <span class="text-body2 text-grey-6 font-regular">/ month</span>
+            </div>
+            <div class="text-caption text-grey-6 q-mb-lg">Core operations and CRM baseline</div>
 
             <q-separator dark class="q-mb-md opacity-20" />
 
@@ -43,7 +47,7 @@
               color="grey-6"
               label="Current Plan"
               class="full-width q-py-sm"
-              v-if="currentPlan === 'free'"
+              v-if="currentPlan === 'starter'"
               disable
             />
             <q-btn
@@ -52,34 +56,30 @@
               label="Select Starter"
               class="full-width q-py-sm q-px-xl"
               v-else
-              @click="changePlan('free')"
+              @click="changePlan('starter')"
             />
           </q-card-actions>
         </q-card>
       </div>
 
-      <!-- Growth Plan -->
+      <!-- Business Plan -->
       <div class="col-12 col-md-4 col-lg-3">
         <q-card class="full-height column no-shadow border-glass bg-dark-card hover-lift relative-position">
           <div class="absolute-top-right q-pa-sm">
             <q-badge color="blue-9" text-color="white" label="POPULAR" class="text-weight-bold" />
           </div>
           <q-card-section class="q-pa-lg">
-            <div class="text-overline text-blue-4 font-bold uppercase tracking-widest">GROWTH</div>
-            <div class="text-h4 text-weight-bolder text-white q-mt-sm">
-              {{
-                currencyStore.countryCode === 'LK' || currencyStore.countryCode === 'SL'
-                  ? '2.5%'
-                  : '5%'
-              }}
-              <span class="text-h6 text-grey-6 font-regular">/ txn</span>
+            <div class="text-overline text-blue-4 font-bold uppercase tracking-widest">BUSINESS</div>
+            <div class="text-h4 text-weight-bolder text-white q-mt-sm font-numeric">
+              {{ currencyStore.format(currencyStore.pricing.business) }}
+              <span class="text-body2 text-grey-6 font-regular">/ month</span>
             </div>
-            <div class="text-caption text-grey-6 q-mb-lg">Pay only when you grow</div>
+            <div class="text-caption text-grey-6 q-mb-lg">Scale with automation & advanced CRM</div>
 
             <q-separator dark class="q-mb-md opacity-20" />
 
             <q-list dense dark>
-              <q-item v-for="feature in growthFeatures" :key="feature" class="q-px-none">
+              <q-item v-for="feature in businessFeatures" :key="feature" class="q-px-none">
                 <q-item-section avatar style="min-width: 30px">
                   <q-icon name="check" color="blue-5" size="xs" />
                 </q-item-section>
@@ -94,49 +94,50 @@
               color="blue-7"
               label="Current Plan"
               class="full-width q-py-sm"
-              v-if="currentPlan === 'growth'"
+              v-if="currentPlan === 'business'"
               disable
             />
             <q-btn
               unelevated
               color="blue-7"
-              label="Upgrade to Growth"
+              label="Upgrade to Business"
               class="full-width q-py-sm"
               v-else
-              @click="changePlan('growth')"
+              @click="changePlan('business')"
             />
           </q-card-actions>
         </q-card>
       </div>
 
       <!-- Pro Plan -->
+      <!-- Enterprise Plan -->
       <div class="col-12 col-md-4 col-lg-3">
         <q-card
-          class="full-height column no-shadow border-emerald-glow bg-dark text-white transform-scale"
+          class="full-height column no-shadow border-emerald-glow bg-dark text-white transform-scale shadow-2xl"
         >
           <div class="absolute-top-right q-pa-sm">
             <q-badge
               color="emerald"
               text-color="white"
               label="RECOMMENDED"
-              class="text-weight-bold shadow-2"
+              class="text-weight-bold shadow-2 shadow-emerald-500/50"
             />
           </div>
           <q-card-section class="q-pa-lg">
-            <div class="text-overline text-emerald font-bold">PRO</div>
-            <div class="text-h4 text-weight-bolder q-mt-sm font-numeric">
-              {{ currencyStore.format(currencyStore.proPrice) }}
+            <div class="text-overline text-emerald font-bold tracking-widest">ENTERPRISE</div>
+            <div class="text-h4 text-weight-bolder text-white q-mt-sm font-numeric">
+              {{ currencyStore.format(currencyStore.pricing.enterprise) }}
               <span class="text-body2 text-grey-4 font-regular">/ month</span>
             </div>
             <div v-if="currencyStore.taxRate > 0" class="text-caption text-emerald q-mb-md">
-              + {{ (currencyStore.taxRate * 100).toFixed(0) }}% Tax ({{ currencyStore.format(currencyStore.proPrice * currencyStore.taxRate) }})
+              + {{ (currencyStore.taxRate * 100).toFixed(0) }}% Tax ({{ currencyStore.format(currencyStore.enterprisePrice - currencyStore.pricing.enterprise) }})
             </div>
-            <div class="text-caption text-grey-4 q-mb-lg" v-else>Unlimited power for large institutes</div>
+            <div class="text-caption text-grey-4 q-mb-lg" v-else>The ultimate AI Business OS for serious scale</div>
 
             <q-separator dark class="q-mb-md opacity-20" />
 
             <q-list dense>
-              <q-item v-for="feature in proFeatures" :key="feature" class="q-px-none">
+              <q-item v-for="feature in enterpriseFeatures" :key="feature" class="q-px-none">
                 <q-item-section avatar style="min-width: 30px">
                   <q-icon name="check" color="emerald" size="xs" />
                 </q-item-section>
@@ -150,13 +151,13 @@
               unelevated
               class="full-width q-py-sm bg-emerald text-white text-weight-bold"
               label="Current Plan"
-              v-if="currentPlan === 'pro'"
+              v-if="currentPlan === 'enterprise'"
               disable
             />
             <q-btn
               unelevated
               class="full-width q-py-sm bg-emerald text-white text-weight-bold hover-bright"
-              label="Upgrade to Pro"
+              label="Upgrade to Enterprise"
               v-else
               @click="openPaymentModal"
             />
@@ -190,7 +191,7 @@
               <q-separator dark class="q-my-md opacity-20" />
               <div class="text-caption text-grey-6">Amount Due</div>
               <div class="text-h5 text-weight-bolder text-emerald font-numeric">
-                {{ currencyStore.format(currencyStore.proPrice) }}
+                {{ currencyStore.format(currencyStore.pricing.enterprise) }}
               </div>
             </div>
 
@@ -213,7 +214,7 @@
           <!-- International Payment Flow -->
           <div v-else class="q-mt-sm fade-in text-center q-pb-lg">
             <div class="text-h4 text-weight-bolder text-emerald q-mb-md font-numeric">
-              {{ currencyStore.format(currencyStore.proPrice) }}
+              {{ currencyStore.format(currencyStore.pricing.enterprise) }}
               <span class="text-body2 text-grey-6 font-regular">/ month</span>
             </div>
             <p class="text-grey-5">Encrypted payment orchestration via Stripe Gateway.</p>
@@ -254,22 +255,25 @@ const receiptFile = ref(null)
 const loading = ref(false)
 const user = ref(null)
 
-const starterFeatures = ['Max 10 Students', 'Basic Dashboard', 'Manual Attendance']
-const growthFeatures = [
-  'Max 100 Students',
-  'QR Attendance',
-  'Manual & Stripe Payments',
-  'Email Support',
+const starterFeatures = ['Up to 100 Lead Records', 'Basic CRM Pipeline', 'Manual Interaction Logs']
+const businessFeatures = [
+  'Up to 500 Leads & Clients',
+  'Automated Lead Nurturing',
+  'Advanced Sales Analytics',
+  'Custom Workflow Hooks (n8n)',
 ]
-const proFeatures = [
-  'Unlimited Students',
-  '0% Commission',
-  'Advanced Analytics',
-  'Priority Support',
-  'Custom Branding',
+const enterpriseFeatures = [
+  'Unlimited Master CRM Access',
+  'AI Decision Support System',
+  'Full White-Labeling Ready',
+  'Priority Technical Concierge',
+  'Advanced API & Multi-Org Sync',
 ]
 
 onMounted(async () => {
+  // Initialize currency detection first
+  await currencyStore.initialize()
+  
   const {
     data: { user: authUser },
   } = await supabase.auth.getUser()
@@ -290,19 +294,14 @@ onMounted(async () => {
 })
 
 const changePlan = async (plan) => {
-  // Switching to Free or Growth usually happens instantly or via contact if downgrading logic is complex.
-  // For this MVP, we allow switching to 'free' or 'growth' easily (assuming no data limits violated yet, checking that would be next step).
   try {
-    if (plan === 'free' || plan === 'growth') {
-      // We should check limits here ideally, but for now just update.
-      // "If plan_type == 'growth' and count >= 100: Block addition" - this is enforcement.
-      // Changing plan itself might need checks.
-
+    if (plan === 'starter' || plan === 'business') {
       $q.dialog({
-        title: 'Confirm Change',
-        message: `Are you sure you want to switch to the ${plan} plan?`,
-        cancel: true,
+        title: 'Confirm Protocol Shift',
+        message: `Initialize transition to the ${plan.toUpperCase()} protocol? This will modify your operational tier and feature set.`,
+        cancel: { flat: true, color: 'grey-6', label: 'Hold' },
         persistent: true,
+        ok: { color: 'emerald', label: 'Confirm' }
       }).onOk(async () => {
         const { error } = await supabase
           .from('profiles')
@@ -310,11 +309,11 @@ const changePlan = async (plan) => {
           .eq('id', user.value.id)
         if (error) throw error
         currentPlan.value = plan
-        $q.notify({ type: 'positive', message: `Switched to ${plan} plan.` })
+        $q.notify({ type: 'positive', message: `Operational Tier: ${plan.toUpperCase()} Activated`, icon: 'sync' })
       })
     }
   } catch {
-    $q.notify({ type: 'negative', message: 'Failed to update plan.' })
+    $q.notify({ type: 'negative', message: 'Failed to update protocol status. Contact System Admin.' })
   }
 }
 
@@ -359,15 +358,15 @@ const processUpgrade = async () => {
       // Mocking successful stripe payment
       await new Promise((resolve) => setTimeout(resolve, 2000))
 
-      // Auto-upgrade to Pro for international mock
+      // Auto-upgrade for international mock
       const { error } = await supabase
         .from('profiles')
-        .update({ plan_type: 'pro', subscription_status: 'active' })
+        .update({ plan_type: 'enterprise', subscription_status: 'active' })
         .eq('id', user.value.id)
       if (error) throw error
 
-      currentPlan.value = 'pro'
-      $q.notify({ type: 'positive', message: 'Payment successful! Welcome to Pro.' })
+      currentPlan.value = 'enterprise'
+      $q.notify({ type: 'positive', message: 'Authorization successful! Welcome to Enterprise Tier.' })
       paymentModal.value = false
     }
   } catch (e) {
