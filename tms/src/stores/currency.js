@@ -6,11 +6,16 @@ export const useCurrencyStore = defineStore('currency', {
     countryCode: localStorage.getItem('user_country') || 'LK',
     currency: 'LKR',
     symbol: 'LKR',
-    // New Tiered Pricing Structure (Adaptive SaaS Model)
+    // Entry-level Sub-product Pricing (TMS SaaS Module)
     pricing: {
-      starter: 2500,
-      growth: 12000,
-      scale: 18000
+      starter: 19,
+      growth: 29,
+      scale: 79
+    },
+    setup: {
+      starter: 99,
+      growth: 199,
+      scale: 499
     },
     taxRate: 0,
     isLoaded: false,
@@ -48,38 +53,53 @@ export const useCurrencyStore = defineStore('currency', {
     },
 
     updateStateByCountry() {
-      // 🇱🇰 SRI LANKA - Local Fixed Strategy
+      // 🇱🇰 SRI LANKA - Sub-Product Entry Model
       if (this.countryCode === 'LK' || this.countryCode === 'SL') {
         this.currency = 'LKR'
         this.symbol = 'LKR'
         this.pricing = {
-          starter: 2500,
+          starter: 6000,
+          growth: 9000,
+          scale: 18000
+        }
+        this.setup = {
+          starter: 8000,
           growth: 12000,
           scale: 18000
         }
         this.taxRate = 0
       }
-      // 🇸🇪 SWEDEN / EU - Premium Core Region
+      // 🇸🇪 SWEDEN / EU - Premium Core Region (Sub-product)
       else if (this.countryCode === 'SE') {
         this.currency = 'SEK'
         this.symbol = 'kr'
         this.pricing = {
-          starter: 299,
-          growth: 799,
-          scale: 1499
+          starter: 199,
+          growth: 299,
+          scale: 799
         }
-        this.taxRate = 0.25 // Sweden VAT
+        this.setup = {
+          starter: 999,
+          growth: 1999,
+          scale: 4999
+        }
+        this.taxRate = 0.25
       }
-      // 🌎 GLOBAL / US DEFAULT - Unified SaaS Strategy
+      // 🌎 GLOBAL / US DEFAULT - Unified SaaS Strategy (Sub-product)
       else {
         this.currency = 'USD'
         this.symbol = '$'
         this.pricing = {
-          starter: 29,
-          growth: 79,
-          scale: 149
+          starter: 19,
+          growth: 29,
+          scale: 79
         }
-        this.taxRate = 0.05 // Global general duty/tax
+        this.setup = {
+          starter: 99,
+          growth: 199,
+          scale: 499
+        }
+        this.taxRate = 0.05
       }
     },
 

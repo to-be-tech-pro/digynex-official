@@ -21,17 +21,15 @@ The pricing is designed as a **Hybrid Model**: Full-Suite Platform Pricing vs. I
 ---
 
 ### 2. Sub-Product (Micro-SaaS) Entry Pricing
-*Targeting: Small businesses needing specific tools (CMS, TMS, FB Automation)*
+*Targeting: Individual modules (CMS, TMS, FB Nexus)*
 
-#### 📦 DigyNex CMS (cms.digynex.se)
-- **CMS Entry:** **$19** (Setup: $49)
-- **CMS Pro:** **$39** (Setup: $99)
-- *Upsell CTA: "Upgrade to Full Suite ($79)"*
+| Tier | Price (Monthly) | Setup Fee | Features |
+| :--- | :--- | :--- | :--- |
+| **STARTER** | **$19** | **$99** | Up to 100 Profiles, Basic CRM, 24/7 Monitoring. |
+| **GROWTH** ⭐ | **$29** | **$199** | Up to 500 Profiles, **Nexus AI Business Agent**, n8n. |
+| **SCALE** | **$79** | **$499** | Up to 2,000 Profiles, **Custom AI Agent**, White-Label. |
 
-#### 📦 DigyNex TMS (tms.digynex.se)
-- **TMS Entry:** **$29** (Setup: $69)
-- **TMS Pro:** **$49** (Setup: $129)
-- *Upsell CTA: "Upgrade to Full Suite ($79)"*
+*Upsell CTA: "Unlock the Full Suite for $149/mo (All-in-one)"*
 
 ---
 

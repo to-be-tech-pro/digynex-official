@@ -27,7 +27,10 @@
               {{ currencyStore.format(currencyStore.pricing.starter) }}
               <span class="text-body2 text-grey-6 font-regular">/ month</span>
             </div>
-            <div class="text-caption text-grey-6 q-mb-lg">Core operations and CRM baseline</div>
+            <div class="text-caption text-grey-5 text-weight-bold">
+              ONE-TIME SETUP: {{ currencyStore.format(currencyStore.setup.starter) }}
+            </div>
+            <div class="text-caption text-grey-6 q-mb-lg q-mt-sm">Core entry-level SaaS module</div>
 
             <q-separator dark class="q-mb-md opacity-20" />
 
@@ -62,24 +65,27 @@
         </q-card>
       </div>
 
-      <!-- Business Plan -->
+      <!-- Growth Plan -->
       <div class="col-12 col-md-4 col-lg-3">
         <q-card class="full-height column no-shadow border-glass bg-dark-card hover-lift relative-position">
           <div class="absolute-top-right q-pa-sm">
-            <q-badge color="blue-9" text-color="white" label="POPULAR" class="text-weight-bold" />
+            <q-badge color="blue-9" text-color="white" label="MOST POPULAR" class="text-weight-bold" />
           </div>
           <q-card-section class="q-pa-lg">
-            <div class="text-overline text-blue-4 font-bold uppercase tracking-widest">BUSINESS</div>
+            <div class="text-overline text-blue-4 font-bold uppercase tracking-widest">GROWTH</div>
             <div class="text-h4 text-weight-bolder text-white q-mt-sm font-numeric">
-              {{ currencyStore.format(currencyStore.pricing.business) }}
+              {{ currencyStore.format(currencyStore.pricing.growth) }}
               <span class="text-body2 text-grey-6 font-regular">/ month</span>
             </div>
-            <div class="text-caption text-grey-6 q-mb-lg">Scale with automation & advanced CRM</div>
+            <div class="text-caption text-blue-4 text-weight-bold">
+              ONE-TIME SETUP: {{ currencyStore.format(currencyStore.setup.growth) }}
+            </div>
+            <div class="text-caption text-grey-6 q-mb-lg q-mt-sm">Everything you need to scale fast</div>
 
             <q-separator dark class="q-mb-md opacity-20" />
 
             <q-list dense dark>
-              <q-item v-for="feature in businessFeatures" :key="feature" class="q-px-none">
+              <q-item v-for="feature in growthFeatures" :key="feature" class="q-px-none">
                 <q-item-section avatar style="min-width: 30px">
                   <q-icon name="check" color="blue-5" size="xs" />
                 </q-item-section>
@@ -94,23 +100,22 @@
               color="blue-7"
               label="Current Plan"
               class="full-width q-py-sm"
-              v-if="currentPlan === 'business'"
+              v-if="currentPlan === 'growth'"
               disable
             />
             <q-btn
               unelevated
               color="blue-7"
-              label="Upgrade to Business"
+              label="Upgrade to Growth"
               class="full-width q-py-sm"
               v-else
-              @click="changePlan('business')"
+              @click="changePlan('growth')"
             />
           </q-card-actions>
         </q-card>
       </div>
 
-      <!-- Pro Plan -->
-      <!-- Enterprise Plan -->
+      <!-- Scale Plan -->
       <div class="col-12 col-md-4 col-lg-3">
         <q-card
           class="full-height column no-shadow border-emerald-glow bg-dark text-white transform-scale shadow-2xl"
@@ -119,25 +124,25 @@
             <q-badge
               color="emerald"
               text-color="white"
-              label="RECOMMENDED"
-              class="text-weight-bold shadow-2 shadow-emerald-500/50"
+              label="UNLIMITED"
+              class="text-weight-bold"
             />
           </div>
           <q-card-section class="q-pa-lg">
-            <div class="text-overline text-emerald font-bold tracking-widest">ENTERPRISE</div>
+            <div class="text-overline text-emerald font-bold tracking-widest uppercase">SCALE</div>
             <div class="text-h4 text-weight-bolder text-white q-mt-sm font-numeric">
-              {{ currencyStore.format(currencyStore.pricing.enterprise) }}
+              {{ currencyStore.format(currencyStore.pricing.scale) }}
               <span class="text-body2 text-grey-4 font-regular">/ month</span>
             </div>
-            <div v-if="currencyStore.taxRate > 0" class="text-caption text-emerald q-mb-md">
-              + {{ (currencyStore.taxRate * 100).toFixed(0) }}% Tax ({{ currencyStore.format(currencyStore.enterprisePrice - currencyStore.pricing.enterprise) }})
+            <div class="text-caption text-emerald text-weight-bold">
+              ONE-TIME SETUP: {{ currencyStore.format(currencyStore.setup.scale) }}
             </div>
-            <div class="text-caption text-grey-4 q-mb-lg" v-else>The ultimate AI Business OS for serious scale</div>
+            <div class="text-caption text-grey-4 q-mb-lg q-mt-sm">Advanced AI and high-volume operations</div>
 
             <q-separator dark class="q-mb-md opacity-20" />
 
             <q-list dense>
-              <q-item v-for="feature in enterpriseFeatures" :key="feature" class="q-px-none">
+              <q-item v-for="feature in scaleFeatures" :key="feature" class="q-px-none">
                 <q-item-section avatar style="min-width: 30px">
                   <q-icon name="check" color="emerald" size="xs" />
                 </q-item-section>
@@ -151,13 +156,13 @@
               unelevated
               class="full-width q-py-sm bg-emerald text-white text-weight-bold"
               label="Current Plan"
-              v-if="currentPlan === 'enterprise'"
+              v-if="currentPlan === 'scale'"
               disable
             />
             <q-btn
               unelevated
               class="full-width q-py-sm bg-emerald text-white text-weight-bold hover-bright"
-              label="Upgrade to Enterprise"
+              label="Upgrade to Scale"
               v-else
               @click="openPaymentModal"
             />
@@ -255,19 +260,19 @@ const receiptFile = ref(null)
 const loading = ref(false)
 const user = ref(null)
 
-const starterFeatures = ['Up to 100 Lead Records', 'Basic CRM Pipeline', 'Manual Interaction Logs']
-const businessFeatures = [
-  'Up to 500 Leads & Clients',
-  'Automated Lead Nurturing',
-  'Advanced Sales Analytics',
-  'Custom Workflow Hooks (n8n)',
+const starterFeatures = ['Up to 100 Profile Capacity', 'Lead Capture & Basic CRM', 'Manual Verification Logs']
+const growthFeatures = [
+  'Up to 500 Profile Capacity',
+  'Nexus AI Business Agent',
+  'Lead Nurturing Automation',
+  'Automated n8n Workflows',
 ]
-const enterpriseFeatures = [
-  'Unlimited Master CRM Access',
-  'AI Decision Support System',
-  'Full White-Labeling Ready',
+const scaleFeatures = [
+  'Up to 2,000 Profile Capacity',
+  'Custom-Trained AI Agent',
+  'Full AI Decision Support',
+  'Corporate White-Labeling',
   'Priority Technical Concierge',
-  'Advanced API & Multi-Org Sync',
 ]
 
 onMounted(async () => {
@@ -295,7 +300,7 @@ onMounted(async () => {
 
 const changePlan = async (plan) => {
   try {
-    if (plan === 'starter' || plan === 'business') {
+    if (plan === 'starter' || plan === 'growth') {
       $q.dialog({
         title: 'Confirm Protocol Shift',
         message: `Initialize transition to the ${plan.toUpperCase()} protocol? This will modify your operational tier and feature set.`,
@@ -344,7 +349,7 @@ const processUpgrade = async () => {
 
       const { error } = await supabase.from('payment_proofs').insert({
         user_id: user.value.id,
-        amount: currencyStore.proPrice,
+        amount: currencyStore.pricing.scale,
         currency: currencyStore.currency,
         receipt_url: receiptUrl,
         status: 'pending', // Admin must approve
@@ -361,12 +366,12 @@ const processUpgrade = async () => {
       // Auto-upgrade for international mock
       const { error } = await supabase
         .from('profiles')
-        .update({ plan_type: 'enterprise', subscription_status: 'active' })
+        .update({ plan_type: 'scale', subscription_status: 'active' })
         .eq('id', user.value.id)
       if (error) throw error
 
-      currentPlan.value = 'enterprise'
-      $q.notify({ type: 'positive', message: 'Authorization successful! Welcome to Enterprise Tier.' })
+      currentPlan.value = 'scale'
+      $q.notify({ type: 'positive', message: 'Authorization successful! Welcome to Scale Tier.' })
       paymentModal.value = false
     }
   } catch (e) {
