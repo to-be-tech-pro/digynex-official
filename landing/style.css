@@ -1742,7 +1742,20 @@ input:checked + .slider:before {
 }
 
 .comparison-table tr:hover td {
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(255, 255, 255, 0.02); /* Very subtle row hover */
+}
+
+.column-highlight {
+  background: rgba(191, 149, 63, 0.08) !important;
+  transition: 0.3s;
+}
+
+.comparison-table td.gold-text {
+  transition: 0.3s;
+}
+
+.comparison-table td:hover {
+  background: rgba(191, 149, 63, 0.12) !important;
   color: var(--white);
 }
 

@@ -204,11 +204,8 @@ document.addEventListener("DOMContentLoaded", () => {
     btn.disabled = true;
 
     setTimeout(() => {
-      alert(
-        "Welcome back, " +
-          user +
-          "! Redirecting to your secure dashboard structure.",
-      );
+      console.log("Portal Access Attempt:", user);
+      alert("Authorization Required: Redirecting to secure portal environment...");
       // Actual Redirect to the Tuition Manager Portal
       window.location.href = "https://tms.digynex.se";
       btn.innerText = "Secure Entry";
@@ -481,6 +478,28 @@ document.addEventListener("DOMContentLoaded", () => {
     item.classList.toggle('active');
   };
 
-  // Run on load
+  // --- COLUMN HIGHLIGHT LOGIC ---
+  const matrixCells = document.querySelectorAll('.comparison-table td, .comparison-table th');
+  matrixCells.forEach(cell => {
+    cell.addEventListener('mouseover', () => {
+      const colIdx = cell.cellIndex;
+      if (colIdx === 0) return; // Don't highlight labels
+      const table = cell.closest('table');
+      if (!table) return;
+      table.querySelectorAll(`tr td:nth-child(${colIdx + 1}), tr th:nth-child(${colIdx + 1})`).forEach(c => {
+        c.classList.add('column-highlight');
+      });
+    });
+    cell.addEventListener('mouseout', () => {
+      const colIdx = cell.cellIndex;
+      const table = cell.closest('table');
+      if (!table) return;
+      table.querySelectorAll(`tr td:nth-child(${colIdx + 1}), tr th:nth-child(${colIdx + 1})`).forEach(c => {
+        c.classList.remove('column-highlight');
+      });
+    });
+  });
+
+  // Run initializers
   initializePricing();
 });

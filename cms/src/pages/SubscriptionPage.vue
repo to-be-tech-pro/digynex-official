@@ -289,8 +289,8 @@ const starterFeatures = ['Up to 100 Profile Capacity', 'Lead Capture & Basic CRM
 const growthFeatures = [
   'Up to 500 Profile Capacity',
   'Nexus AI Business Agent',
+  'Facebook Nexus & n8n Sync',
   'Lead Nurturing Automation',
-  'Automated n8n Workflows',
 ]
 const scaleFeatures = [
   'Up to 2,000 Profile Capacity',
