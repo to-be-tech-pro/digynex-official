@@ -6,7 +6,12 @@
       <TopHeader @toggleMenu="isMobileMenuOpen = !isMobileMenuOpen" @triggerToast="triggerToast" />
 
       <div class="flex-1 overflow-y-auto p-4 sm:p-8 custom-scrollbar">
-        <div class="mb-8 flex items-center justify-between">
+        <div v-if="isLoading" class="flex-1 flex flex-col items-center justify-center h-full gap-4 text-center">
+             <div class="w-10 h-10 border-4 border-slate-200 border-t-emerald-500 rounded-full animate-spin"></div>
+             <p class="text-sm font-black text-slate-500 uppercase tracking-widest">Synthesizing Ledger Insights...</p>
+        </div>
+
+        <div v-else class="animate-[slideDown_0.4s_ease-out]">
           <div>
             <h1 class="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
               <Wallet class="w-6 h-6 text-emerald-500" /> Financial Intelligence Vault
@@ -27,8 +32,8 @@
             <div class="bg-gradient-to-br from-slate-900 to-slate-800 p-8 rounded-3xl text-white shadow-xl relative overflow-hidden group">
                 <div class="absolute -right-4 -top-4 bg-white/5 w-32 h-32 rounded-full blur-2xl group-hover:scale-125 transition-transform duration-700"></div>
                 <div class="relative z-10">
-                   <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Operational Runway</p>
-                   <h2 class="text-4xl font-black tracking-tighter mb-4">$842.1K</h2>
+                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-2">Operational Runway</p>
+                   <h2 class="text-4xl font-black tracking-tighter mb-4">${{ runwayDisplay }}</h2>
                    <div class="flex items-center gap-2 text-[11px] font-bold text-emerald-400 bg-emerald-400/10 w-fit px-2 py-1 rounded-md">
                         <ArrowUpRight class="w-3 h-3" /> SUSTAINABLE
                    </div>
@@ -36,23 +41,23 @@
             </div>
 
              <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                <div>
+                 <div>
                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Burn Rate (Monthly)</p>
-                   <h2 class="text-3xl font-black text-slate-900">$12.4K</h2>
+                   <h2 class="text-3xl font-black text-slate-900">${{ burnRateDisplay }}</h2>
                 </div>
                 <div class="h-1.5 bg-slate-100 rounded-full mt-6 overflow-hidden">
-                    <div class="h-full bg-red-500" style="width: 42%"></div>
+                    <div class="h-full bg-red-500" :style="`width: ${Math.min(100, (summary.expense/20000)*100)}%`"></div>
                 </div>
                 <p class="text-[11px] font-bold text-slate-400 mt-2">42% of Allocation used</p>
             </div>
 
              <div class="bg-white p-8 rounded-3xl border border-slate-200 shadow-sm flex flex-col justify-between">
-                <div>
+                 <div>
                    <p class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-1">Gross Profit Margin</p>
-                   <h2 class="text-3xl font-black text-slate-900">74.2%</h2>
+                   <h2 class="text-3xl font-black text-slate-900">{{ summary.margin }}%</h2>
                 </div>
                 <div class="h-1.5 bg-slate-100 rounded-full mt-6 overflow-hidden">
-                    <div class="h-full bg-primary" style="width: 74%"></div>
+                    <div class="h-full bg-emerald-500" :style="`width: ${summary.margin}%`"></div>
                 </div>
                 <p class="text-[11px] font-bold text-slate-400 mt-2">Targeted: 70% Bench</p>
             </div>
@@ -97,6 +102,7 @@
                     </tbody>
                 </table>
             </div>
+            </div>
         </div>
       </div>
     </main>
@@ -111,26 +117,46 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { Wallet, Calendar, Plus, ArrowUpRight, ArrowDownRight, MoreHorizontal, Bell, X } from 'lucide-vue-next'
+import { ref, onMounted, computed } from 'vue'
+import { Wallet, Calendar, Plus, ArrowUpRight, ArrowDownRight, MoreHorizontal, Bell, X, Loader2 } from 'lucide-vue-next'
 import Sidebar from '../components/dashboard/Sidebar.vue'
 import TopHeader from '../components/dashboard/TopHeader.vue'
+import { fetchFinanceLedger, fetchFinancialSummary } from '../services/financeService'
 
 const isMobileMenuOpen = ref(false)
+const isLoading = ref(true)
 const toastState = ref({ show: false, message: '' })
+const ledger = ref([])
+const summary = ref({ revenue: 0, expense: 0, profit: 0, margin: 0 })
 
 const triggerToast = (msg) => {
   toastState.value = { show: true, message: msg }
   setTimeout(() => { toastState.value.show = false }, 3000)
 }
 
-const ledger = [
-    { desc: 'Monthly AWS Cloud Billing', id: 'INV-02941', cat: 'Tech Infrastructure', val: '1,240', date: 'Mar 24, 2026', type: 'Out' },
-    { desc: 'DigyNex 360 - Enterprise SaaS Repay', id: 'PAY-4819', cat: 'Course Fees', val: '12,850', date: 'Mar 22, 2026', type: 'In' },
-    { desc: 'Premium Marketing Distribution', id: 'ADV-9902', cat: 'Marketing', val: '800', date: 'Mar 21, 2026', type: 'Out' },
-    { desc: 'Strategic Consulting Fee', id: 'CON-1102', cat: 'Services', val: '4,500', date: 'Mar 20, 2026', type: 'In' },
-    { desc: 'Office Lease & Maintenance', id: 'RENT-119', cat: 'Fixed Cost', val: '2,000', date: 'Mar 15, 2026', type: 'Out' }
-]
+onMounted(async () => {
+    try {
+        const [ledgerData, summaryData] = await Promise.all([
+            fetchFinanceLedger(),
+            fetchFinancialSummary()
+        ]);
+        ledger.value = ledgerData;
+        summary.value = summaryData;
+    } catch (err) {
+        triggerToast("Failed to sync financial data vault.")
+    } finally {
+        isLoading.value = false;
+    }
+})
+
+// Calculate operational runway based on profit (Simplified for demo)
+const runwayDisplay = computed(() => {
+    return (summary.value.profit / 1000).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "K";
+})
+
+const burnRateDisplay = computed(() => {
+    return (summary.value.expense / 1000).toLocaleString(undefined, { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + "K";
+})
 </script>
 
 <style scoped>

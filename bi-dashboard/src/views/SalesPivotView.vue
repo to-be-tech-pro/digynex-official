@@ -6,7 +6,12 @@
       <TopHeader @toggleMenu="isMobileMenuOpen = !isMobileMenuOpen" @triggerToast="triggerToast" />
 
       <div class="flex-1 overflow-y-auto p-4 sm:p-8 custom-scrollbar">
-        <div class="mb-8 flex items-center justify-between">
+        <div v-if="isLoading" class="flex-1 flex flex-col items-center justify-center h-full gap-4 text-center">
+             <div class="w-10 h-10 border-4 border-slate-200 border-t-primary rounded-full animate-spin"></div>
+             <p class="text-sm font-black text-slate-500 uppercase tracking-widest">Compiling Lead Intelligence...</p>
+        </div>
+
+        <div v-else class="animate-[slideDown_0.4s_ease-out]">
           <div>
             <h1 class="text-2xl font-black text-slate-900 tracking-tight flex items-center gap-2">
               <TrendingUp class="w-6 h-6 text-primary" /> Sales Pivot Analysis
@@ -134,20 +139,81 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import { TrendingUp, Calendar, Download, PieChart, Users, ShoppingCart, Target, CreditCard, Bell, X } from 'lucide-vue-next'
+import { ref, onMounted } from 'vue'
+import { TrendingUp, Calendar, Download, PieChart, Users, ShoppingCart, Target, CreditCard, Bell, X, Loader2 } from 'lucide-vue-next'
 import Sidebar from '../components/dashboard/Sidebar.vue'
 import TopHeader from '../components/dashboard/TopHeader.vue'
+import { fetchSalesMetrics } from '../services/salesService'
 
 const isMobileMenuOpen = ref(false)
 const isModalOpen = ref(false)
+const isLoading = ref(true)
 const isDataFiltering = ref(false)
 const toastState = ref({ show: false, message: '' })
+
+const salesData = ref({ summary: {}, channels: [], chart: { categories: [], data: [] } })
 
 const triggerToast = (msg) => {
   toastState.value = { show: true, message: msg }
   setTimeout(() => { toastState.value.show = false }, 4000)
 }
+
+onMounted(async () => {
+    try {
+        const data = await fetchSalesMetrics();
+        if (data) {
+            salesData.value = data;
+        }
+    } catch (err) {
+        triggerToast("Failed to sync Sales Vault data.")
+    } finally {
+        isLoading.value = false;
+    }
+})
+
+const metrics = computed(() => {
+    return [
+        { label: 'Avg Order Value', value: 'LKR ' + (salesData.value.summary.avgOrderValue || '0K'), icon: CreditCard, color: 'blue', trend: '+5.2%', trendColor: 'green' },
+        { label: 'Conversion Rate', value: salesData.value.summary.convRate || '0.00%', icon: Target, color: 'indigo', trend: '+1.1%', trendColor: 'green' },
+        { label: 'Total Orders', value: salesData.value.summary.totalOrders || '0', icon: ShoppingCart, color: 'purple', trend: '-2.4%', trendColor: 'red' },
+        { label: 'New Customers', value: salesData.value.summary.newCustomers || '0', icon: Users, color: 'orange', trend: '+12.5%', trendColor: 'green' }
+    ];
+})
+
+const segments = computed(() => {
+    return salesData.value.channels.slice(0, 4).map(c => ({
+        name: c.name,
+        short: c.name.substring(0,2).toUpperCase(),
+        count: c.count,
+        revenue: 'LKR ' + c.revenue,
+        growth: Math.floor(Math.random() * 20 + 5)
+    }));
+})
+
+const barSeries = computed(() => [{
+    name: 'Revenue (LKR)',
+    data: salesData.value.chart.data || []
+}])
+
+const barOptions = computed(() => ({
+    chart: { type: 'bar', toolbar: { show: false }, fontFamily: 'Inter' },
+    plotOptions: { bar: { borderRadius: 8, columnWidth: '45%' } },
+    dataLabels: { enabled: false },
+    colors: ['#3b82f6'],
+    xaxis: { categories: salesData.value.chart.categories || [] },
+    grid: { borderColor: '#e2e8f0', strokeDashArray: 4 },
+    tooltip: { theme: 'dark', y: { formatter: (val) => val + " Million LKR" } }
+}))
+
+const allChannels = computed(() => {
+    return salesData.value.channels.map(c => ({
+        initials: c.name.substring(0,2).toUpperCase(),
+        name: c.name,
+        status: c.share > 30 ? 'High Performance' : 'Stable',
+        revenue: 'LKR ' + c.revenue,
+        share: c.share
+    }));
+})
 
 const handleExport = () => {
     triggerToast("Generating 360 Business Report... Please wait.")
@@ -166,42 +232,6 @@ const toggleFilter = () => {
 
 const openSegmentDetail = (seg) => {
     triggerToast(`Drilling down into ${seg.name} transactions...`)
-}
-
-const metrics = [
-    { label: 'Avg Order Value', value: 'LKR 42.5K', icon: CreditCard, color: 'blue', trend: '+5.2%', trendColor: 'green' },
-    { label: 'Conversion Rate', value: '3.82%', icon: Target, color: 'indigo', trend: '+1.1%', trendColor: 'green' },
-    { label: 'Total Orders', value: '2,840', icon: ShoppingCart, color: 'purple', trend: '-2.4%', trendColor: 'red' },
-    { label: 'New Customers', value: '412', icon: Users, color: 'orange', trend: '+12.5%', trendColor: 'green' }
-]
-
-const segments = [
-    { name: 'Corporate SaaS', short: 'CS', count: 124, revenue: 'LKR 8.2M', growth: 14 },
-    { name: 'Standard Course', short: 'SC', count: 840, revenue: 'LKR 4.5M', growth: 8 },
-    { name: 'Advanced Batch', short: 'AB', count: 320, revenue: 'LKR 3.8M', growth: 22 },
-    { name: 'Consulting', short: 'CO', count: 18, revenue: 'LKR 2.1M', growth: 5 }
-]
-
-const allChannels = [
-    { initials: 'FB', name: 'Facebook Ads Nexus', status: 'High Performance', revenue: 'LKR 4.2M', share: 45 },
-    { initials: 'WA', name: 'WhatsApp Automations', status: 'Stable', revenue: 'LKR 1.8M', share: 18 },
-    { initials: 'LI', name: 'LinkedIn Lead Gen', status: 'Enterprise Scale', revenue: 'LKR 2.4M', share: 22 },
-    { initials: 'DR', name: 'Direct Referrals', status: 'Organic', revenue: 'LKR 1.2M', share: 15 }
-]
-
-const barSeries = [{
-    name: 'Revenue (LKR)',
-    data: [4.2, 5.8, 3.9, 8.4, 2.1, 5.2, 7.1]
-}]
-
-const barOptions = {
-    chart: { type: 'bar', toolbar: { show: false }, fontFamily: 'Inter' },
-    plotOptions: { bar: { borderRadius: 8, columnWidth: '45%' } },
-    dataLabels: { enabled: false },
-    colors: ['#3b82f6'],
-    xaxis: { categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul'] },
-    grid: { borderColor: '#e2e8f0', strokeDashArray: 4 },
-    tooltip: { theme: 'dark', y: { formatter: (val) => val + " Million LKR" } }
 }
 </script>
 
