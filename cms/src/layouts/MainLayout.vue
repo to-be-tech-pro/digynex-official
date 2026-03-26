@@ -22,6 +22,7 @@
         </div>
 
         <div class="nav-actions row items-center q-gutter-x-md">
+          <q-btn flat no-caps label="🚀 Upgrade" href="https://digynex.se/pricing" target="_blank" class="gold-text-static text-weight-bolder gt-sm" />
           <q-btn flat no-caps label="Sign In" to="/login" class="text-white gt-xs" />
           <q-btn
             unelevated

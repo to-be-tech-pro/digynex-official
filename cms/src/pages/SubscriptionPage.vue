@@ -171,6 +171,31 @@
       </div>
     </div>
 
+    <!-- Upsell Section: Full Ecosystem -->
+    <div class="row q-mt-xl justify-center scale-up">
+      <div class="col-12 col-lg-9">
+        <q-card class="bg-dark-drawer border-glass-gold q-pa-xl text-center relative-position overflow-hidden border-glass">
+          <div class="absolute-top-right bg-emerald" style="width: 200px; height: 200px; filter: blur(120px); opacity: 0.1; transform: translate(50%, -50%);"></div>
+          
+          <div class="row items-center q-col-gutter-lg">
+            <div class="col-12 col-md-8 text-left text-white">
+              <h2 class="text-h4 text-weight-bolder q-my-none">Experience <span class="gold-text uppercase">DigyNex 360</span></h2>
+              <p class="text-grey-4 text-subtitle1 q-mt-md">
+                Unify your entire business logic. Includes **Facebook Nexus Automation**, 
+                Advanced BI Dashboards, and Custom-Trained AI Agents for your whole team.
+              </p>
+            </div>
+            <div class="col-12 col-md-4">
+              <q-btn unelevated class="bg-gold-gradient text-dark text-weight-bolder full-width q-py-md hover-lift" 
+                label="Unlock Full Suite ($149/mo)" rounded 
+                target="_blank" href="https://digynex.se/pricing" />
+              <div class="text-caption text-grey-5 q-mt-sm uppercase tracking-widest text-weight-bold">Saves 40% vs individual modules</div>
+            </div>
+          </div>
+        </q-card>
+      </div>
+    </div>
+
     <q-dialog v-model="paymentModal" backdrop-filter="blur(10px)">
       <q-card style="min-width: 500px; border-radius: 20px" class="bg-dark-card border-glass text-white">
         <q-card-section class="q-pa-lg">

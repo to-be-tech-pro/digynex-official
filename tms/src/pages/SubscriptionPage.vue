@@ -172,6 +172,31 @@
       </div>
     </div>
 
+    <!-- Upsell Section: Full Ecosystem -->
+    <div class="row q-mt-xl justify-center">
+      <div class="col-12 col-md-10">
+        <q-card class="bg-dark text-white q-pa-xl shadow-2xl border-emerald-glow overflow-hidden relative-position">
+          <div class="absolute-top-right bg-emerald" style="width: 150px; height: 150px; filter: blur(100px); opacity: 0.2; transform: translate(30%, -30%);"></div>
+          
+          <div class="row items-center q-col-gutter-lg">
+            <div class="col-12 col-md-8">
+              <h2 class="text-h4 text-weight-bolder q-my-none">Unlock <span class="text-emerald uppercase">DigyNex 360</span></h2>
+              <p class="text-grey-4 text-subtitle1 q-mt-md">
+                Master your entire business presence. Includes the complete **Facebook Nexus Automation** system, 
+                Centralized BI Dashboards, and Dedicated AI Agents.
+              </p>
+            </div>
+            <div class="col-12 col-md-4">
+              <q-btn unelevated class="bg-emerald text-white text-weight-bolder full-width q-py-md hover-lift" 
+                label="Full Suite Access ($149)" rounded 
+                target="_blank" href="https://digynex.se/pricing" />
+              <div class="text-caption text-grey-5 q-mt-sm text-center uppercase tracking-widest text-weight-bold">Save 40% on Bundle</div>
+            </div>
+          </div>
+        </q-card>
+      </div>
+    </div>
+
     <!-- Payment Modal for Pro -->
     <q-dialog v-model="paymentModal" persistent>
       <q-card style="min-width: 500px">

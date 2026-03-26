@@ -30,6 +30,7 @@
         </div>
 
         <div class="gt-xs q-ml-lg row q-gutter-x-sm">
+          <q-btn flat no-caps label="🚀 Upgrade" href="https://digynex.se/pricing" target="_blank" class="gold-text-static text-weight-bolder gt-sm q-mr-md" />
           <q-btn
             flat
             rounded
