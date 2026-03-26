@@ -6,13 +6,21 @@ export const useCurrencyStore = defineStore('currency', {
     countryCode: localStorage.getItem('user_country') || 'LK',
     currency: 'LKR',
     symbol: 'LKR',
-    proPrice: 15000,
+    // New Tiered Pricing Structure (Master Core)
+    pricing: {
+      starter: 2500,
+      business: 12000,
+      enterprise: 18000
+    },
     taxRate: 0,
     isLoaded: false,
   }),
 
   getters: {
-    totalProPrice: (state) => state.proPrice * (1 + state.taxRate),
+    // Basic price getters with tax
+    starterPrice: (state) => state.pricing.starter * (1 + state.taxRate),
+    businessPrice: (state) => state.pricing.business * (1 + state.taxRate),
+    enterprisePrice: (state) => state.pricing.enterprise * (1 + state.taxRate),
   },
 
   actions: {
@@ -20,7 +28,6 @@ export const useCurrencyStore = defineStore('currency', {
       if (this.isLoaded) return
 
       try {
-        // Try multiple APIs for reliability
         const res = await axios
           .get('https://ipapi.co/json/')
           .catch(() => axios.get('https://ip-api.com/json/'))
@@ -41,27 +48,37 @@ export const useCurrencyStore = defineStore('currency', {
     },
 
     updateStateByCountry() {
+      // 🇱🇰 SRI LANKA - Master Localized Strategy
       if (this.countryCode === 'LK' || this.countryCode === 'SL') {
         this.currency = 'LKR'
         this.symbol = 'LKR'
-        this.proPrice = 15000
-        this.taxRate = 0 // SL default
-      } else if (this.countryCode === 'SE') {
+        this.pricing = {
+          starter: 2500,
+          business: 12000,
+          enterprise: 18000
+        }
+        this.taxRate = 0
+      } 
+      // 🇸🇪 SWEDEN / EU - Premium Region
+      else if (this.countryCode === 'SE') {
         this.currency = 'SEK'
         this.symbol = 'kr'
-        this.proPrice = 750
+        this.pricing = {
+          starter: 299,
+          business: 899,
+          enterprise: 1499
+        }
         this.taxRate = 0.25 // Sweden VAT
-      } else if (['IN', 'PK', 'BD', 'ID', 'PH', 'VN'].includes(this.countryCode)) {
-        // Asian Markets
+      } 
+      // 🌎 GLOBAL / US DEFAULT - Premium Unified Strategy
+      else {
         this.currency = 'USD'
         this.symbol = '$'
-        this.proPrice = 49
-        this.taxRate = 0.15 // Asian Digital Tax Average
-      } else {
-        // International Default
-        this.currency = 'USD'
-        this.symbol = '$'
-        this.proPrice = 49
+        this.pricing = {
+          starter: 29,
+          business: 89,
+          enterprise: 149
+        }
         this.taxRate = 0.05 // Global general duty/tax
       }
     },
