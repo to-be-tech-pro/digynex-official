@@ -382,4 +382,61 @@ document.addEventListener("DOMContentLoaded", () => {
     const el = document.getElementById(id);
     if (el) el.remove();
   }
+
+  // --- MARKET SENSITIVE PRICING LOGIC ---
+  const pricingData = {
+    LK: {
+      currency: "LKR",
+      starter: "2,500",
+      business: "12,000",
+      enterprise: "18,000",
+      marketName: "Sri Lanka (Local)"
+    },
+    GLOBAL: {
+      currency: "USD",
+      starter: "29",
+      business: "89",
+      enterprise: "149",
+      marketName: "Global Premium"
+    }
+  };
+
+  async function initializePricing() {
+    console.log("Detecting market...");
+    const marketIndicator = document.getElementById("detected-market");
+    
+    try {
+      const response = await fetch("https://ipapi.co/json/");
+      const data = await response.json();
+      const countryCode = data.country_code;
+      
+      const market = (countryCode === "LK" || countryCode === "SL") ? "LK" : "GLOBAL";
+      updatePricingUI(pricingData[market]);
+      
+      if (marketIndicator) {
+        marketIndicator.innerText = `Nexus Operating Region: ${pricingData[market].marketName}`;
+      }
+    } catch (error) {
+      console.warn("Market detection failed, defaulting to Global.");
+      updatePricingUI(pricingData.GLOBAL);
+      if (marketIndicator) {
+        marketIndicator.innerText = "Nexus Operating Region: Global Premium";
+      }
+    }
+  }
+
+  function updatePricingUI(config) {
+    const tiers = ['starter', 'business', 'enterprise'];
+    
+    tiers.forEach(tier => {
+      const priceEl = document.getElementById(`${tier}-price`);
+      const curEl = document.getElementById(`${tier}-currency`);
+      
+      if (priceEl) priceEl.innerText = config[tier];
+      if (curEl) curEl.innerText = config.currency;
+    });
+  }
+
+  // Run on load
+  initializePricing();
 });

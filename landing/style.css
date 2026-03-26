@@ -1407,11 +1407,149 @@ html {
   letter-spacing: 0.5px;
 }
 
-/* Mobile Adjustments */
-@media (max-width: 480px) {
-  .chat-window {
-    width: calc(100vw - 40px);
-    height: 80vh;
-    right: -10px;
+/* --- PRICING SECTION --- */
+.pricing {
+  padding: 120px 0;
+  background: var(--midnight);
+  position: relative;
+}
+
+.market-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(191, 149, 63, 0.1);
+  border: 1px solid rgba(191, 149, 63, 0.2);
+  padding: 8px 20px;
+  border-radius: 50px;
+  margin-top: 20px;
+  color: var(--liquid-gold);
+  font-size: 13px;
+  font-weight: 600;
+  letter-spacing: 1px;
+}
+
+.pricing-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 30px;
+  margin-top: 60px;
+}
+
+.pricing-card {
+  padding: 50px 40px;
+  border-radius: 30px;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  transition: 0.5s cubic-bezier(0.2, 0.8, 0.2, 1);
+  position: relative;
+  overflow: hidden;
+}
+
+.pricing-card:hover {
+  transform: translateY(-15px);
+  border-color: var(--liquid-gold);
+  box-shadow: 0 40px 100px rgba(0,0,0,0.6);
+}
+
+.pricing-card.featured {
+  background: linear-gradient(145deg, rgba(20, 27, 43, 0.95), rgba(10, 15, 28, 1));
+  border: 2px solid var(--liquid-gold);
+  transform: scale(1.05);
+  z-index: 10;
+}
+
+.pricing-card.featured:hover {
+  transform: scale(1.07) translateY(-15px);
+}
+
+.featured-badge {
+  position: absolute;
+  top: 20px;
+  right: -35px;
+  background: var(--gold-gradient);
+  color: var(--deep-navy);
+  padding: 8px 45px;
+  font-size: 10px;
+  font-weight: 800;
+  transform: rotate(45deg);
+  letter-spacing: 1px;
+}
+
+.p-header {
+  margin-bottom: 30px;
+}
+
+.p-tier {
+  font-size: 12px;
+  font-weight: 800;
+  color: var(--grey-dim);
+  display: block;
+  margin-bottom: 15px;
+}
+
+.p-price {
+  display: flex;
+  align-items: baseline;
+  gap: 5px;
+  margin-bottom: 10px;
+}
+
+.p-price .currency {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--liquid-gold);
+}
+
+.p-price .amount {
+  font-size: 48px;
+  font-weight: 800;
+  font-family: 'Outfit', sans-serif;
+  color: var(--white);
+}
+
+.p-price small {
+  font-size: 14px;
+  color: var(--grey-dim);
+}
+
+.p-desc {
+  font-size: 14px;
+  color: var(--grey-light);
+  line-height: 1.5;
+}
+
+.p-features {
+  list-style: none;
+  margin-bottom: 40px;
+  flex-grow: 1;
+}
+
+.p-features li {
+  margin-bottom: 15px;
+  font-size: 14px;
+  color: var(--grey-light);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.p-features i {
+  font-size: 16px;
+  opacity: 0.8;
+}
+
+/* Mobile Adjustments for Pricing */
+@media (max-width: 968px) {
+  .pricing-grid {
+    grid-template-columns: 1fr;
+    max-width: 450px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  .pricing-card.featured {
+    transform: scale(1);
+    order: -1;
   }
 }
