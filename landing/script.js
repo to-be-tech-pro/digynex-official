@@ -78,11 +78,20 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   window.openDemoModal = function () {
+    const videoId = "kLF0Z1wYRKw";
+    const iframe = document.getElementById("demoVideoFrame");
+    if (iframe) {
+      iframe.src = `https://www.youtube.com/embed/${videoId}?autoplay=1&rel=0&mute=1`;
+    }
     document.getElementById("videoModal").classList.add("active");
     document.body.style.overflow = "hidden";
   };
 
   window.closeDemoModal = function () {
+    const iframe = document.getElementById("demoVideoFrame");
+    if (iframe) {
+      iframe.src = "";
+    }
     document.getElementById("videoModal").classList.remove("active");
     document.body.style.overflow = "auto";
   };

@@ -55,25 +55,21 @@
           <router-link to="/dashboard" class="w-full sm:w-auto px-8 py-4 bg-primary hover:bg-blue-600 text-white rounded-xl text-base font-black transition-all shadow-[0_0_30px_rgba(59,130,246,0.3)] hover:shadow-[0_0_40px_rgba(59,130,246,0.5)] hover:-translate-y-1 flex items-center justify-center gap-2 group">
             Explore Executive Dashboard <ArrowRight class="w-4 h-4 group-hover:translate-x-1 transition-transform" />
           </router-link>
-          <button class="w-full sm:w-auto px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl text-base font-bold transition-all backdrop-blur-sm">
-            Watch Presentation
+          <button @click="openDemo" class="w-full sm:w-auto px-8 py-4 bg-white/5 hover:bg-white/10 border border-white/10 text-white rounded-xl text-base font-bold transition-all backdrop-blur-sm flex items-center justify-center gap-2">
+            <Play class="w-4 h-4 text-primary" /> Watch Demo Presentation
           </button>
         </div>
 
         <!-- Dashboard Video Thumbnail -->
-        <div class="mt-20 relative mx-auto max-w-5xl group animate-[slideUp_1s_ease-out]">
+        <div @click="openDemo" class="mt-20 relative mx-auto max-w-5xl group animate-[slideUp_1s_ease-out] cursor-pointer">
           <div class="absolute -inset-1 bg-gradient-to-r from-primary via-accent to-blue-600 rounded-2xl blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
-          <div class="relative w-full aspect-video rounded-2xl bg-[#0f172a] border border-slate-700/50 shadow-2xl overflow-hidden flex flex-col cursor-pointer group/video">
-             
-             <!-- Actual Demo Video with Poster (Commented out to pass build until YouTube link is ready) -->
-             <!-- <video class="absolute inset-0 w-full h-full object-cover z-20 group-hover/video:scale-[1.02] transition-transform duration-1000 bg-[#0f172a]" controls preload="metadata" poster="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop">
-                <source src="/demo.mp4" type="video/mp4" />
-                Your browser does not support the video tag.
-             </video> -->
+          <div class="relative w-full aspect-video rounded-2xl bg-[#0f172a] border border-slate-700/50 shadow-2xl overflow-hidden flex flex-col group/video">
              <div class="absolute inset-0 bg-[#0f172a] flex items-center justify-center">
-                <p class="text-slate-500 text-sm italic">Video Demo Coming Soon...</p>
+                <div class="z-30 w-16 h-16 bg-primary rounded-full flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                   <Play class="w-6 h-6 text-white fill-white" />
+                </div>
+                <img src="https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop" class="absolute inset-0 w-full h-full object-cover opacity-30 group-hover:opacity-50 transition-opacity" />
              </div>
-
           </div>
         </div>
         
@@ -378,6 +374,22 @@
     </div>
 
     </div>
+    
+    <!-- Video Demo Modal -->
+    <div v-if="showDemoModal" class="fixed inset-0 z-[300] bg-slate-950/90 backdrop-blur-xl flex items-center justify-center p-4">
+       <div class="relative w-full max-w-5xl aspect-video rounded-3xl overflow-hidden border border-white/10 shadow-[0_0_100px_rgba(59,130,246,0.2)]">
+          <button @click="closeDemo" class="absolute top-4 right-4 z-40 p-2 bg-black/50 hover:bg-black rounded-full text-white transition-colors">
+             <X class="w-6 h-6" />
+          </button>
+          <iframe 
+            :src="`https://www.youtube.com/embed/${videoId}?autoplay=1&mute=1&rel=0`" 
+            class="w-full h-full" 
+            frameborder="0" 
+            allow="autoplay; encrypted-media" 
+            allowfullscreen>
+          </iframe>
+       </div>
+    </div>
 </template>
 
 <script setup>
@@ -419,6 +431,16 @@ const openFeature = (key) => {
 }
 
 const contactMessage = ref('')
+const showDemoModal = ref(false)
+const videoId = ref('kLF0Z1wYRKw')
+
+const openDemo = () => {
+  showDemoModal.value = true
+}
+
+const closeDemo = () => {
+  showDemoModal.value = false
+}
 
 const requestSetup = () => {
   if (activeFeature.value) {

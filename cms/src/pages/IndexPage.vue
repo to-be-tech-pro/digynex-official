@@ -49,7 +49,6 @@
                 no-caps
                 class="q-px-xl text-weight-bold btn-hover-lift shadow-10"
               />
-              <!-- 'Watch Demo' Hidden for now until video is ready
               <q-btn
                 outline
                 rounded
@@ -62,7 +61,6 @@
                 class="q-px-xl text-weight-bold btn-hover-lift text-emerald-btn"
                 @click="openVideo"
               />
-              -->
             </div>
 
             <!-- Download Actions -->
@@ -263,7 +261,6 @@
       </div>
     </section>
 
-    <!-- Video Modal Hidden
     <q-dialog
       v-model="showVideo"
       backdrop-filter="blur(8px) brightness(60%)"
@@ -283,28 +280,25 @@
         </q-card-section>
       </q-card>
     </q-dialog>
-    -->
   </q-page>
 </template>
 
 <script setup>
-import { onMounted } from 'vue'
+import { ref, onMounted } from 'vue'
 import axios from 'axios'
 
-// const showVideo = ref(false)
-// const videoUrl = ref(null)
+const showVideo = ref(false)
+const videoUrl = ref(null)
 
-/*
 const openVideo = () => {
   // SaaS Level Fix: Autoplay logic with mute for browser policy compliance
-  videoUrl.value = 'https://www.youtube.com/embed/dQw4w9WgXcQ?rel=0&autoplay=1&mute=1&playsinline=1'
+  videoUrl.value = 'https://www.youtube.com/embed/kLF0Z1wYRKw?rel=0&autoplay=1&mute=1&playsinline=1'
   showVideo.value = true
 }
 
 const stopVideo = () => {
   videoUrl.value = null
 }
-*/
 
 const openDownload = (platform) => {
   console.log('Download for:', platform) // Just to use the variable and avoid lint error, or remove it.
