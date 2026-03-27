@@ -215,6 +215,64 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 2000);
   };
 
+  // Partnership Program Logic
+  window.openPartnerModal = function () {
+    const modal = document.getElementById("partnerModal");
+    modal.classList.add("active");
+    document.body.style.overflow = "hidden";
+    // Reset state if already used
+    document.getElementById("partnerSuccessMsg").style.display = "none";
+    document.querySelector("#partnerModal form").style.display = "block";
+  };
+
+  window.closePartnerModal = function () {
+    document.getElementById("partnerModal").classList.remove("active");
+    document.body.style.overflow = "auto";
+  };
+
+  window.handlePartnerRegistration = function (e) {
+    e.preventDefault();
+    const btn = document.getElementById("partnerSubmitBtn");
+    const successMsg = document.getElementById("partnerSuccessMsg");
+    const form = e.target;
+    
+    const partnerData = {
+      name: document.getElementById("p_name").value,
+      email: document.getElementById("p_email").value,
+      country: document.getElementById("p_country").value,
+      phone: document.getElementById("p_phone").value,
+      company: document.getElementById("p_company").value,
+      type: "Partner Registration",
+      timestamp: new Date().toISOString()
+    };
+
+    btn.innerText = "Processing Application...";
+    btn.disabled = true;
+
+    // Send to n8n Partner Webhook
+    fetch("https://n8n.digynex.se/webhook/partner-registration", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(partnerData),
+    })
+    .finally(() => {
+      // Show success either way for better UX (n8n will swallow errors or we handle them later)
+      form.style.display = "none";
+      successMsg.style.display = "block";
+      
+      // Auto close after 5 seconds to return to site
+      setTimeout(() => {
+        closePartnerModal();
+        // Reset form for next time
+        form.reset();
+        form.style.display = "block";
+        successMsg.style.display = "none";
+        btn.innerText = "Apply to Join Program";
+        btn.disabled = false;
+      }, 5000);
+    });
+  };
+
   // vCard Download Logic
   window.downloadVCard = function () {
     const vCardData =

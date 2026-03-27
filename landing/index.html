@@ -809,6 +809,7 @@
         <div class="footer-links">
           <h4>Company</h4>
           <a href="about.html">About Us</a>
+          <a href="javascript:void(0)" onclick="openPartnerModal()" class="gold-text" style="font-weight: 800;">Partnership Program</a>
           <a href="terms.html">Terms of Service</a>
           <a href="privacy.html">Privacy Policy</a>
           <a href="cookies.html">Cookie Policy</a>
@@ -859,6 +860,41 @@
             <i class="fa-brands fa-whatsapp"></i> Chat on WhatsApp (Instant)
           </a>
         </form>
+      </div>
+    </div>
+
+    <!-- Partnership Modal -->
+    <div id="partnerModal" class="modal-overlay">
+      <div class="modal-card">
+        <button class="close-btn" onclick="closePartnerModal()">&times;</button>
+        <div class="modal-header-icon" style="text-align: center; font-size: 3rem; margin-bottom: 1rem;"><i class="fa-solid fa-handshake gold-text"></i></div>
+        <h3>Global Partnership Program</h3>
+        <p>Join the DigyNex ecosystem and earn commissions for strategic referrals.</p>
+        <form class="lead-form" onsubmit="handlePartnerRegistration(event)">
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+             <input type="text" id="p_name" placeholder="Full Name" required style="width: 100%;" />
+             <input type="email" id="p_email" placeholder="Official Email" required style="width: 100%;" />
+          </div>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 10px;">
+             <input type="text" id="p_country" placeholder="Country" required style="width: 100%;" />
+             <input type="tel" id="p_phone" placeholder="WhatsApp Number" required style="width: 100%;" />
+          </div>
+          <input type="text" id="p_company" placeholder="Company / Brand (Optional)" style="margin-top: 10px; width: 100%;" />
+          
+          <div style="text-align: left; margin: 15px 0;">
+             <label style="font-size: 11px; display: flex; align-items: start; gap: 8px; cursor: pointer;">
+                <input type="checkbox" required style="width: auto !important; margin-top: 3px;">
+                <span>I agree to the <a href="terms.html" target="_blank" class="gold-text">Partnership Rules & Commission Agreement</a>. I understand that I will be contacted via email if selected for the program.</span>
+             </label>
+          </div>
+
+          <button type="submit" id="partnerSubmitBtn" class="btn btn-gold full-width">
+            Apply to Join Program
+          </button>
+        </form>
+        <div id="partnerSuccessMsg" style="display: none; margin-top: 20px; color: #bf953f; font-weight: 800; font-size: 13px; text-align: center;">
+           ✓ Application Sent. Our team will review your profile and contact you via email if selected for our network.
+        </div>
       </div>
     </div>
 

@@ -60,14 +60,14 @@
                     </td>
                     <td class="px-4 py-5 text-right">
                         <div class="flex items-center justify-end gap-2">
-                           <button 
-                             @click="$emit('openAssets', wo)"
-                             class="p-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-lg hover:bg-primary hover:text-white transition-all shadow-sm relative text-[10px] font-black uppercase tracking-widest flex items-center gap-2"
-                             title="External Resources & Blueprints"
-                           >
-                             <Link class="w-3.5 h-3.5" /> Assets
-                             <span v-if="wo.asset_links?.length" class="absolute -top-1 -right-1 w-3 h-3 bg-slate-900 text-white text-[7px] flex items-center justify-center rounded-full font-black border border-white">{{ wo.asset_links.length }}</span>
-                           </button>
+                            <button 
+                              @click="$emit('openAssets', wo)"
+                              class="px-3 py-2 bg-indigo-50/50 text-indigo-600 border border-indigo-100 rounded-xl hover:bg-indigo-600 hover:text-white transition-all shadow-sm relative text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 group/vault"
+                              title="Digital Document Vault"
+                            >
+                              <Paperclip class="w-3 h-3 group-hover/vault:rotate-12 transition-transform" /> Vault
+                              <span v-if="wo.asset_links?.length" class="absolute -top-1 -right-1 w-2.5 h-2.5 bg-indigo-600 text-white text-[7px] flex items-center justify-center rounded-full font-black border border-white">{{ wo.asset_links.length }}</span>
+                            </button>
                            <button 
                              @click="$emit('downloadPDF', { data: wo, type: 'WO' })"
                              class="p-2 bg-slate-50 text-slate-400 border border-slate-100 rounded-lg hover:bg-slate-100 hover:text-slate-600 transition-all"
@@ -109,7 +109,7 @@
 </template>
 
 <script setup>
-import { Zap, Clock, Check, FileText, UserPlus, Layout, Download } from 'lucide-vue-next'
+import { Zap, Clock, Check, FileText, UserPlus, Layout, Download, Paperclip } from 'lucide-vue-next'
 import { brandingStore } from '../../services/brandingService'
 
 defineProps({

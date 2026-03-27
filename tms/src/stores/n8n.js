@@ -75,7 +75,7 @@ export const useN8nStore = defineStore('n8n', {
       try {
         const formData = new FormData()
         formData.append('file', imageFile)
-        
+
         const response = await axios.post(this.expenseScannerWebhook, formData, {
           headers: { 'Content-Type': 'multipart/form-data' }
         })

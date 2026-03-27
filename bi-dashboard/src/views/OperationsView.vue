@@ -17,7 +17,7 @@
                    <p class="text-[11px] font-black text-primary uppercase tracking-widest hidden sm:block">Level 4 Strategic Clearance</p>
                 </div>
             </div>
-            <div class="flex items-center gap-3 bg-white p-1 rounded-2xl border border-slate-200 shadow-sm">
+            <div v-if="authStore.user.role !== 'subcontractor'" class="flex items-center gap-3 bg-white p-1 rounded-2xl border border-slate-200 shadow-sm">
                 <button 
                     v-for="t in ['Intelligence', 'Business Workflow']" :key="t"
                     @click="activeTab = t"
@@ -27,7 +27,11 @@
                     {{ t }}
                 </button>
             </div>
+            <div v-else class="px-4 py-2 bg-primary/10 text-primary border border-primary/20 rounded-xl text-[10px] font-black uppercase tracking-widest">
+                {{ brandingStore.labels.fulfillment }} Portal
+            </div>
         </div>
+
 
         <div v-if="activeTab === 'Intelligence'" class="animate-[slideIn_0.4s_ease-out]">
             <!-- OPERATIONS METRICS GRID -->
@@ -217,10 +221,10 @@
       <div class="bg-white w-full max-w-lg rounded-[2.5rem] shadow-2xl relative z-10 overflow-hidden animate-[modalSlide_0.3s_ease-out] border border-slate-200">
         <div class="p-8 border-b border-slate-100 flex items-center justify-between bg-slate-50/10">
           <div class="flex items-center gap-4">
-            <div class="p-3 bg-primary/10 rounded-2xl text-primary"><Globe class="w-6 h-6" /></div>
+            <div class="p-3 bg-primary/10 rounded-2xl text-primary shadow-2xl shadow-primary/20"><Paperclip class="w-6 h-6" /></div>
             <div>
-              <h2 class="text-xs font-black text-slate-900 uppercase tracking-widest">Asset Sync Control</h2>
-              <p class="text-[10px] text-slate-400 font-bold mt-1">Managed Resource Pointers for {{ targetAssetItem.entity_type }}</p>
+              <h2 class="text-xs font-black text-slate-900 uppercase tracking-widest italic">Digital Document Vault</h2>
+              <p class="text-[10px] text-slate-400 font-bold mt-1">Managed Resource Registry for {{ targetAssetItem.entity_type }}</p>
             </div>
           </div>
           <button @click="isAssetModalOpen = false" class="p-2 hover:bg-slate-100 rounded-xl transition-colors"><X class="w-4 h-4 text-slate-400" /></button>
@@ -280,6 +284,7 @@ import POTable from '../components/operations/POTable.vue'
 import WOTable from '../components/operations/WOTable.vue'
 import ActivityTimeline from '../components/operations/ActivityTimeline.vue'
 import { brandingStore } from '../services/brandingService'
+import { authStore } from '../services/authService'
 import { supabase } from '../services/supabase'
 import { generatePDF } from '../utils/pdfGenerator'
 import { addNotification, logActivity } from '../services/notificationService'
@@ -330,6 +335,7 @@ const addAssetLink = async () => {
         triggerToast(`Strategic Asset Linked: ${newAsset.value.name} committed to cloud manifest.`)
         targetAssetItem.value.asset_links = updatedLinks
         newAsset.value = { name: '', url: '' }
+        isAssetModalOpen.value = false // Auto-close for smoother UX
         fetchOperationalData()
         
         // Log it
@@ -351,14 +357,27 @@ const removeAssetLink = async (assetId) => {
 }
 
 onMounted(async () => {
+    if (authStore.user.role === 'subcontractor') {
+        activeTab.value = 'Business Workflow'
+    }
     fetchOperationalData()
 })
 
 const fetchOperationalData = async () => {
-    const { data: pos } = await supabase.from('purchase_orders').select('*').order('created_at', { ascending: false })
-    activePOs.value = pos || []
+    // 1. Fetch POs (Admins only see full list, hide from Subcontractors)
+    if (authStore.user.role !== 'subcontractor') {
+        const { data: pos } = await supabase.from('purchase_orders').select('*').order('created_at', { ascending: false })
+        activePOs.value = pos || []
+    }
     
-    const { data: wos } = await supabase.from('work_orders').select('*, po_id(*)').order('created_at', { ascending: false })
+    // 2. Fetch WOs with Role-Based Filter
+    let query = supabase.from('work_orders').select('*, po_id(*)').order('created_at', { ascending: false })
+    
+    if (authStore.user.role === 'subcontractor') {
+        query = query.eq('assigned_subcontractor', authStore.user.name)
+    }
+
+    const { data: wos } = await query
     activeWOs.value = wos || []
 }
 

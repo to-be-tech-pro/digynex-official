@@ -41,6 +41,11 @@ const router = createRouter({
       component: OperationsView
     },
     {
+      path: '/crm',
+      name: 'crm',
+      component: () => import('../views/CRMView.vue')
+    },
+    {
       path: '/settings',
       name: 'settings',
       component: SettingsView

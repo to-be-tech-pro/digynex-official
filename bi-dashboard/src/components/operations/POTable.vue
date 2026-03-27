@@ -44,10 +44,10 @@
                         <div class="flex items-center justify-end gap-2">
                            <button 
                              @click="$emit('openAssets', po)"
-                             class="p-2 bg-slate-50 text-slate-400 border border-slate-100 rounded-lg hover:bg-slate-100 hover:text-primary transition-all shadow-sm relative"
-                             title="External Assets & Blueprints"
+                             class="p-2 bg-slate-50 text-slate-400 border border-slate-100 rounded-lg hover:bg-slate-100 hover:text-primary transition-all shadow-sm relative group/vault"
+                             title="Digital Document Vault"
                            >
-                             <Globe class="w-4 h-4" />
+                             <Paperclip class="w-4 h-4 group-hover/vault:rotate-12 transition-transform" />
                              <span v-if="po.asset_links?.length" class="absolute -top-1 -right-1 w-3 h-3 bg-primary text-white text-[7px] flex items-center justify-center rounded-full font-black border border-white">{{ po.asset_links.length }}</span>
                            </button>
                            <button 
@@ -87,7 +87,7 @@
 </template>
 
 <script setup>
-import { FileText, Plus, Users, CheckCircle, Zap, ArrowRightLeft } from 'lucide-vue-next'
+import { FileText, Plus, Users, CheckCircle, Zap, ArrowRightLeft, Paperclip } from 'lucide-vue-next'
 import { brandingStore } from '../../services/brandingService'
 
 defineProps({

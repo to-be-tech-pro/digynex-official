@@ -176,56 +176,53 @@ The Finance page is an **Executive Decision Vault** for managing multi-tenant li
 
 ---
 
-### 8. Organizational Control (Settings)
+#### 🔐 8-A. Personnel Identity Hub (New Phase 10 Core)
+- **High-Density Identity Indexing:** A specialized sub-module in Settings for managing 50+ corporate identities (CEO, Manager, Staff, Finance, Subcontractor).
+- **Identity Filters (Clustering):** Real-time filtering by Access Cluster (Executives, Operations, Finance, Contractors) for rapid management of large teams.
+- **Inline Identity Sync:** Direct inline editing of display names and crypto-verified UUID generation for cross-app (CSM/TSM) synchronization.
+- **Executive-Only Controls:** User creation and role modification strictly restricted to CEO and Manager roles via recursive-protected DB policies.
 
-The Settings module provides central governance over branding, localization, and security protocols.
+---
 
-#### 🏢 Global Branding & Localization
-- **Product Identity Management:** Direct control over the enterprise name (DigyNex 360) and version suffix, reflected instantly across the entire multi-tenant dashboard.
-- **Reactive Currency Synchronization:** A centralized `brandingStore` ensures that switching between **LKR, SEK, USD, or EUR** propagates real-time updates to all financial data points—including KPI cards, interactive charts, and ledger audit logs—eliminating cold-coded prefixes and ensuring global operational alignment.
-- **State Persistence:** UI-aware initialization in the Settings module ensures user preferences are remembered and correctly rendered between navigation cycles.
+### 9. Industry Adaptation (Universal Labeling v2.0)
 
-#### 🛡️ Security Governance
-- **Audit Granularity:** Real-time selection of Security Audit Log levels (Minimal, Standard, Strict) to balance performance and compliance.
-- **Transactional Persistence:** Premium save sequence ensuring global business rules are locked and propagated across the cloud ecosystem.
+DigyNex 360 is now a **Multi-Industry Operating System**. Terminology adapts instantly based on the "Industry Vertical" toggle in Settings.
 
-### 9. THE STRATEGIC CORE FLOW (SERVICE & PROJECT OPS)
+- **Project Mode:** Optimized for Construction, Law, and Engineering (PO, WO, Client).
+- **Service Mode:** Optimized for IT, Marketing, and Support (Tickets, Leads, Partner).
+- **Education Mode:** Optimized for Academies and Tuition Centers (Academy Hub, Student, Course Fee).
+- **Reactive Terminology:** The `brandingStore.labels` object propagates these terminology shifts to all UI headers, charts, and sidebar elements without latency.
 
-DigyNex 360 acts as a **Managed Services Workflow Engine**, transitioning Purchase Orders into verified Invoices.
+---
 
-#### 📝 Purchase Order (PO) Module
-- **Input Context:** Client Name, PO Number, Total Project Budget, Start Date.
-- **Approval Gate:** Once "Approved," it is eligible for WO Conversion.
+### 10. Strategic CRM Directory (Partner Index)
 
-#### ⚙️ Work Order (WO) Transformation
-- **Logic:** Each PO can spawn one or more Work Orders.
-- **Control:** Assign a **Project Supervisor (Admin)** and a **Subcontractor / Technician (from CMS)**.
-- **Visibility:** Real-time budget consumption vs. assignment metrics.
+The CRM page now functions as a **Dual-Sided Directory** for external stakeholder management.
 
-#### 📑 Operational Invoicing (Lightweight)
-- **Generation:** Once a WO is marked "Completed" by the subcontractor.
-- **Financial Link:** The invoice amount is auto-synced back to the **BI Ledger** for revenue reporting.
-- **Tracking:** Paid vs. Unpaid status management.
+- **Partner Indexing:** Dedicated tabs for "Strategic Partners" (Clients) and "Subcontractors" (Contractors).
+- **Inbound Sync:** Direct Supabase ingestion with activity logging for when a new partner is indexed.
+- **Search Engine:** High-speed filtering by Name, Industry sector, or verification status.
 
 ---
 
 ## 📅 DEVELOPMENT MILESTONES
 
-- [x] **Phase 1:** Update `landing/` HTML/CSS/JS with the Figma-inspired Pricing UI. (READY)
-- [x] **Phase 2:** Implement Interactive BI Dashboard (Executive Board). (READY)
-- [x] **Phase 3:** Finalize Sales Pivot Analysis (READY)
-- [x] **Phase 4:** Develop BI Intelligence Reports (READY)
-- [x] **Phase 5:** Finalize Operational Efficiency view (READY)
-- [x] **Phase 6:** Develop Financial Intelligence Vault (READY)
-- [x] **Phase 7:** Implement Organizational Settings and Global Currency Synchronization. (READY)
-- [ ] **Phase 8:** Strategic Work-Order Automation (PO → WO → Invoice Flow). (IN PROGRESS 🚀)
-- [ ] **Phase 9:** Synchronize `tms` and `cms` stores (`currency.js`) with the new global pricing keys.
-- [ ] **Phase 10:** Develop simplified sub-product pricing sections for CMS and TMS pages.
-- [ ] **Phase 11:** Link all sub-pages back to the Main Platform Pricing for Upselling.
+- [x] **Phase 1-9:** Initial Architecture, Dashboards, and Financial Vault. (READY)
+- [x] **Phase 10:** Strict RBAC Security Enforcement (Route & Action Protection). (DONE ✅)
+- [x] **Phase 11:** Personnel Identity Hub & ULS v2.0 (Industry Adaptation). (DONE ✅)
+- [x] **Milestone 12-A**: Partner Program Ecosystem (DB + RBAC + Referral Trigger).
+- [ ] **Milestone 12-B**: n8n Webhook Integration for Partners, Leads, and Operations.
+- [x] **Milestone 12-C**: Public Partnership Registration Portal (Landing Page + Validation).
+- [ ] **Phase 13:** Document Vault (Secure PDF Storage implementation).
+- [ ] **Phase 14:** Widgetized Workspace (User-customizable dashboard layouts).
+- [ ] **Phase 15:** Synchronize `tms` and `cms` stores (`currency.js`) with the new global pricing keys.
+- [ ] **Phase 12:** Personalized Dashboard Workspace (Widget Management).
+- [ ] **Phase 13:** Synchronize `tms` and `cms` stores (`currency.js`) with the new global pricing keys.
 
 ---
 
 ## 🔗 AUXILIARY DOCUMENTATION REFERENCE
+- [Official Security Ledger](DIGYNEX_OFFICIAL_SECURITY_GUIDANCE.md)
 - [Agent Rules File](.agent_rules.md)
 - [Master AI Prompt](DIGYNEX_MASTER_PROMPT.md)
 - [N8N Automation Guide](N8N_AUTOMATION_GUIDE.md)

@@ -1,4 +1,4 @@
-import { reactive, computed } from 'vue'
+import { reactive } from 'vue'
 
 const common = {
     revenue: 'Revenue',
@@ -40,12 +40,10 @@ export const brandingStore = reactive({
   productSuffix: '360',
   currency: 'LKR',
   orgType: 'Project',
+  labels: labelsByOrgType.Project,
   planTier: 'Business',
   
-  // Computed Labels based on current orgType
-  labels: computed(() => labelsByOrgType[brandingStore.orgType] || labelsByOrgType.Project),
-
-  // Organization Details
+  // Default Branding
   companyName: 'DigyNex Head Office',
   address: 'No 45, High-Performance Tech Hub, Colombo, Sri Lanka',
   contactEmail: 'operations@digynex.se',
@@ -58,6 +56,7 @@ export const brandingStore = reactive({
 export const setBranding = (data) => {
   if (data.org_type) {
     brandingStore.orgType = data.org_type;
+    brandingStore.labels = labelsByOrgType[data.org_type] || labelsByOrgType.Project;
   }
   Object.assign(brandingStore, data)
 }

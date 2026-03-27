@@ -5,9 +5,16 @@
             <Menu class="w-5 h-5" />
           </button>
           <div class="hidden sm:block">
-             <h1 class="text-xl font-black text-slate-800 tracking-tight">Q1 Executive Outlook</h1>
-             <p class="text-[11px] text-slate-500 font-bold uppercase tracking-widest mt-0.5">Decision Intelligence Platform</p>
+             <div class="flex items-center gap-3">
+               <h1 class="text-xl font-black text-slate-800 tracking-tight transition-all duration-300">{{ brandingStore.labels.dashboardTitle }}</h1>
+               <span class="px-2 py-0.5 bg-slate-900 text-white rounded text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 animate-in fade-in zoom-in duration-500">
+                  <ShieldCheck class="w-3 h-3 text-emerald-400" />
+                  {{ authStore.roleLabels[authStore.user.role] }}
+               </span>
+             </div>
+             <p class="text-[11px] text-slate-500 font-bold uppercase tracking-widest mt-0.5 italic opacity-70">{{ brandingStore.productName }} Enterprise Node</p>
           </div>
+
         </div>
         
         <div class="flex items-center gap-3 sm:gap-6">
@@ -84,8 +91,11 @@
 
 <script setup>
 import { ref, onMounted, onUnmounted } from 'vue'
-import { Menu, Bell, Download, AlertTriangle, Database, Zap, Sparkles, FileText, CheckCircle, Info } from 'lucide-vue-next'
+import { Menu, Bell, Download, AlertTriangle, Database, Zap, Sparkles, FileText, CheckCircle, Info, ShieldCheck } from 'lucide-vue-next'
 import { notificationsStore, unreadCount, fetchNotifications, markAsRead } from '../../services/notificationService'
+import { authStore } from '../../services/authService'
+import { brandingStore } from '../../services/brandingService'
+
 
 const emit = defineEmits(['toggleMenu', 'triggerToast'])
 

@@ -128,3 +128,127 @@ INSERT INTO purchase_orders (po_number, client_name, amount, budget_limit, descr
 
 INSERT INTO work_orders (po_id, name, assigned_supervisor, assigned_subcontractor, status, budget_allocation) VALUES
 ((SELECT id FROM purchase_orders WHERE po_number = 'PO-2026-001'), 'Infra Sharding Execution', 'Amila Supervisor', 'TechNode Solutions', 'in_progress', 400000.00);
+
+-- =========================================================================
+-- Phase 9: Strategic Service BOS Add-ons (RBAC & Project Costing)
+-- =========================================================================
+
+-- 6. Organizations Table (Enterprise Identity & Branding)
+CREATE TABLE IF NOT EXISTS organizations (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    name TEXT NOT NULL,
+    slug TEXT UNIQUE NOT NULL,
+    org_type VARCHAR(50) DEFAULT 'Project' CHECK (org_type IN ('Project', 'Service', 'Education')),
+    primary_color TEXT DEFAULT '#3b82f6',
+    logo_url TEXT,
+    contact_email TEXT,
+    address TEXT,
+    tax_id TEXT,
+    website TEXT,
+    plan_tier VARCHAR(50) DEFAULT 'Business',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE organizations ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow public read for organizations" ON organizations FOR SELECT USING (true);
+
+-- 7. RBAC: User Roles (Explicitly requested for Admin/Staff/Subcontractor)
+CREATE TABLE IF NOT EXISTS user_roles (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    user_id UUID REFERENCES auth.users ON DELETE CASCADE,
+    role TEXT CHECK (role IN ('admin', 'staff', 'subcontractor')) DEFAULT 'staff',
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL,
+    UNIQUE(user_id)
+);
+
+ALTER TABLE user_roles ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow owners to read their own role" ON user_roles FOR SELECT USING (auth.uid() = user_id);
+
+-- 8. Audit Trail (History)
+CREATE TABLE IF NOT EXISTS activity_logs (
+    id UUID DEFAULT uuid_generate_v4() PRIMARY KEY,
+    entity_type VARCHAR(50) NOT NULL, -- 'po', 'wo', 'invoice'
+    entity_id UUID NOT NULL,
+    action VARCHAR(100) NOT NULL, -- 'created', 'status_changed', 'deleted'
+    details JSONB DEFAULT '{}'::jsonb,
+    performed_by TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+ALTER TABLE activity_logs ENABLE ROW LEVEL SECURITY;
+CREATE POLICY "Allow authenticated users to read logs" ON activity_logs FOR SELECT USING (true);
+
+-- 9. Structural Updates for Project Costing & Document Vault
+ALTER TABLE purchase_orders ADD COLUMN IF NOT EXISTS document_url TEXT;
+ALTER TABLE invoices ADD COLUMN IF NOT EXISTS document_url TEXT;
+ALTER TABLE work_orders ADD COLUMN IF NOT EXISTS cost_amount DECIMAL(15, 2) DEFAULT 0.00;
+
+-- 10. Net Profit Automation: Trigger to log Expense in bi_transactions when WO is 'completed'
+-- This logic ensures Net Profit (Revenue - Cost) is reflected in the BI Dashboard
+CREATE OR REPLACE FUNCTION log_wo_expense_on_complete()
+RETURNS trigger AS $$
+BEGIN
+  -- We only log the expense if the WO status moves to 'completed'
+  IF NEW.status = 'completed' AND (OLD.status IS NULL OR OLD.status != 'completed') THEN
+    INSERT INTO bi_transactions (transaction_date, amount, type, category, description)
+    VALUES (
+      CURRENT_DATE,
+      COALESCE(NEW.cost_amount, 0),
+      'expense',
+      'subcontractor_payment',
+      'Project Cost Fulfillment: ' || NEW.name
+    );
+  END IF;
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+DROP TRIGGER IF EXISTS trg_log_wo_expense ON work_orders;
+CREATE TRIGGER trg_log_wo_expense
+  AFTER UPDATE OF status ON work_orders
+  FOR EACH ROW
+  EXECUTE PROCEDURE log_wo_expense_on_complete();
+
+-- 11. User Profiles & Personnel Hub (Finalized RBAC)
+CREATE TABLE IF NOT EXISTS public.profiles (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    name TEXT,
+    email TEXT UNIQUE,
+    role TEXT CHECK (role IN ('ceo', 'manager', 'staff', 'finance', 'subcontractor')) DEFAULT 'staff',
+    status TEXT DEFAULT 'Active',
+    avatar TEXT,
+    created_at TIMESTAMP WITH TIME ZONE DEFAULT timezone('utc'::text, now()) NOT NULL
+);
+
+-- Enable RLS
+ALTER TABLE public.profiles ENABLE ROW LEVEL SECURITY;
+
+-- Policy: Everyone can view profiles (needed for mentions/collaboration)
+DROP POLICY IF EXISTS "Public profiles are viewable by everyone." ON public.profiles;
+CREATE POLICY "Public profiles are viewable by everyone." ON public.profiles
+FOR SELECT USING (true);
+
+-- Policy: Allow CEOs and Managers to perform full CRUD on personnel
+DROP POLICY IF EXISTS "Admins can manage profiles" ON public.profiles;
+CREATE POLICY "Admins can manage profiles" ON public.profiles
+FOR ALL USING (
+    EXISTS (
+        SELECT 1 FROM public.profiles
+        WHERE id = auth.uid() AND (role = 'ceo' OR role = 'manager')
+    )
+) WITH CHECK (
+    EXISTS (
+        SELECT 1 FROM public.profiles
+        WHERE id = auth.uid() AND (role = 'ceo' OR role = 'manager')
+    )
+);
+
+-- Seed Initial Administrator
+INSERT INTO public.profiles (id, name, email, role, status)
+VALUES ('00000000-0000-0000-0000-000000000000', 'Amila Global Admin', 'admin@digynex.se', 'ceo', 'Active')
+ON CONFLICT (email) DO NOTHING;
+
+-- Seed initial HQ Organization
+INSERT INTO public.organizations (name, slug, org_type, primary_color) 
+VALUES ('DigyNex HQ', 'digynex-hq', 'Project', '#3b82f6')
+ON CONFLICT (slug) DO NOTHING;

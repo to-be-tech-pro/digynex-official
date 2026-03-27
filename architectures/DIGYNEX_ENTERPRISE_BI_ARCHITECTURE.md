@@ -37,30 +37,53 @@
 *   **The Advisory Engine (AI Insight):** Custom LLM prompts evaluate recent performance dips and highlight them for management review.
 *   **The Control Center (The Dashboard):** The final output—where CEOs and Managers see only what they need to make decisions in a visually premium, friction-free interface.
 
-## 5. 🚀 Product Architecture
+## 5. 🚀 Product Architecture & Module Definitions
 **Concept:** Multi-Tenant SaaS Engine built for commercial syndication.
 
-*   **Tenant Mapping:** Utilizing `org_id` schemas to onboard hundreds of independent companies onto a single codebase maintaining strict tenant-level data isolation.
-*   **Role-Based Access Control (RBAC):** 
-    *   *Super Admin:* Full system control.
-    *   *Executive:* Full financial analytics, forecasting, and macro P&L.
-    *   *Manager:* Region-level operational metrics only (Read-mostly).
-    *   *Clerk:* Lite transaction entry and basic invoice generation (Write-only).
+### A. Personnel Cluster (Identity Management) 👥
+*   **Purpose:** High-density directory for managing 50+ organizational identities.
+*   **Clusters:** Executives (CEO/Manager), Operations (Staff), Finance, and Contractors (Subcontractors).
+*   **Features:** Real-time role propagation, inline display name editing, and crypto-secured UUID identity indexing.
+*   **Security:** CEO/Manager-only access for creating and modifying identities.
+
+### B. Universal Labeling System (ULS) v2.0 🏷️
+*   **Purpose:** Instant white-labeling and industry terminology adaptation.
+*   **Modes:** 
+    *   **Project Mode:** Focused on "Clients" and "Milestones".
+    *   **Service Mode:** Focused on "Lead Generation" and "Tickets".
+    *   **Education Mode:** Focused on "Academy Hub", "Tuition Dashboard", and "Students".
+*   **Reactivity:** 全 UI terminologies (Header, Sidebar, Charts) update instantly via `brandingStore` without page refresh.
+
+### C. Strategic Partner Hub (CRM Lite) 🏢
+*   **Purpose:** Unified directory for external stakeholders (Clients, Partners, Subcontractors).
+*   **Features:** Direct ingestion via Modal, contact indexing, and activity log integration for partner history.
+
+### D. Active Operations Flow (PO to Invoice) ⚙️
+*   **Flow:** Purchase Order (PO) → Work Order (WO) → Invoice.
+*   **Automation:** Marking a Work Order as "Completed" triggers an automated expense log in the BI Transactions ledger for real-time Net Profit calculation.
+
+### E. Role-Based Access Control (RBAC) Hierarchy 🔐
+*   **Executive Board:** Strictly restricted to **CEO** and **Managers**.
+*   **Sales Pivot / BI Reports:** Hidden from **Staff** and **Subcontractors**.
+*   **Operations:** Focused view for Staff to manage tactical execution.
 
 ---
 
-## 🔐 6. Governance, Security & Reliability Layer
-*Enterprise systems are defined by stability, not just features. This layer guarantees uptime, compliance, and disaster recovery.*
+## 🔐 6. Governance & Reliability
+*   **Authentication:** JWT-based session management with real-time profile lookup.
+*   **Security (RLS):** Recursive-protected Postgres Policies (is_admin helper) ensuring strict data-level isolation.
+*   **Audit Logging:** Immutable `activity_logs` for every status change in the PO/WO lifecycle.
 
-*   **Authentication & Access Flow:** Strict JWT-based session management integrated deeply with Supabase Auth instances.
-*   **API Security & Encryption:** All payloads travel over TLS/SSL (HTTPS). Data-at-rest encryption applied to PII (Personally Identifiable Information). Row-Level Security (RLS) policies completely hard-lock table access from unauthorized token scopes.
-*   **Compliance:** GDPR-ready data architectures enforcing comprehensive data privacy, consent, and retention management.
-*   **Audit Logging:** Every configuration change, deletion, and financial mutation triggers an immutable logging event (Who did What, When, and from where).
-*   **Full-Stack Observability & Backup:** Automated daily database dumps. Deep integration across Metrics (CPU/DB load), Logs, and Traces (e.g., Sentry), ensuring instant alerting to administrative channels upon anomalies.
+---
 
-## ⚡ 7. Performance & Optimization Layer
-*Building for high-throughput scaling without ballooning operational costs.*
+## 🚀 7. Production Roadmap (Q1 2026)
+*   **Document Vault (v1):** Secure PDF/Image storage via Supabase Storage buckets for PO/Invoice compliance. (PENDING)
+*   **Net Profit Automation v2:** Advanced ROI calculations based on hourly subcontractor rates vs PO value. (PENDING)
+*   **n8n Webhook Integration:** Connection of all "Add" actions to external CRM/TMS automation nodes. (PENDING)
+*   **Strategic Reporting Hub:** High-fidelity PDF export for BI Executive Summaries. (PENDING)
 
-*   **Query Optimization:** Using heavily indexed PostgreSQL columns to ensure pivot-table aggregations return sub-100ms responses, regardless of dataset size.
-*   **API Caching Mechanisms:** Read-heavy GET requests (e.g., historical chart data) functionally passed through edge caching layers to mitigate database overload.
-*   **Load Balancing Readiness:** The stateless Vue.js frontend is deployed onto Edge networks (Vercel/Netlify CDN), guaranteeing rapid TTFB (Time To First Byte) globally.
+---
+
+## ⚡ 8. Performance & Optimization Layer
+*   **Edge Hydration:** Stateless UI deployed on Vercel/Netlify for global low-latency access.
+*   **Security Definer Functions:** Optimized DB roles to bypass RLS recursion for high-speed permission checks.
