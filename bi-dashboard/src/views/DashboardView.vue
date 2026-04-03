@@ -75,6 +75,41 @@
 
           <div class="grid grid-cols-1 lg:grid-cols-4 gap-4 md:gap-6">
             <MainChart v-if="layoutConfig.mainChart" :chartData="dashboardData.charts" @nodeClicked="handleNodeClick" @triggerToast="triggerToast" />
+            
+            <!-- PROJECT-WISE P&L AUDIT (NEW STRATEGIC WIDGET) -->
+            <div v-if="layoutConfig.projectPnL" class="lg:col-span-2 bg-white rounded-[2.5rem] border border-slate-200 shadow-sm p-8 flex flex-col min-h-[400px] animate-[slideUp_0.4s_ease-out]">
+                <div class="flex items-center justify-between mb-8">
+                    <h3 class="text-xs font-black text-slate-900 uppercase tracking-widest italic flex items-center gap-2">
+                        <BarChart3 class="w-4 h-4 text-primary" /> Strategic Project P&L Audit
+                    </h3>
+                    <router-link to="/projects" class="text-[9px] font-black text-primary uppercase tracking-widest hover:underline flex items-center gap-1">
+                        Open Nexus <Layers class="w-3 h-3" />
+                    </router-link>
+                </div>
+                <div class="space-y-5">
+                    <div v-for="p in dashboardData.projectPnL" :key="p.id" class="flex items-center justify-between p-4 bg-slate-50/50 rounded-2xl border border-slate-100 hover:border-primary/20 transition-all group">
+                        <div class="flex items-center gap-4">
+                            <div class="p-2.5 bg-white rounded-xl shadow-sm border border-slate-100 group-hover:bg-primary group-hover:text-white transition-all">
+                                <span class="text-[10px] font-black italic">P{{ p.id.split('-')[1] }}</span>
+                            </div>
+                            <div>
+                                <h4 class="text-[11px] font-black text-slate-900 uppercase italic">{{ p.name }}</h4>
+                                <p class="text-[8px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">ID: {{ p.id }}</p>
+                            </div>
+                        </div>
+                        <div class="text-right">
+                            <div class="flex items-center gap-2 justify-end">
+                                <span class="text-[11px] font-black text-slate-900 tabular-nums">{{ p.profit > 0 ? '+' : '' }}{{ (p.profit / 1000).toFixed(1) }}k</span>
+                                <TrendingUp v-if="p.profit > 0" class="w-3 h-3 text-emerald-500" />
+                            </div>
+                            <p class="text-[8px] font-black uppercase tracking-widest mt-1" :class="p.roi > 35 ? 'text-emerald-500' : 'text-slate-400'">
+                                ROI: {{ p.roi }}%
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <AIInsights v-if="layoutConfig.aiInsights" :insights="dashboardData.insights" @triggerToast="triggerToast" @drillDown="handleNodeClick" />
           </div>
 
@@ -122,7 +157,7 @@
 
 <script setup>
 import { ref, onMounted, reactive } from 'vue'
-import { AlertTriangle, Bell, X, Settings2, Layout } from 'lucide-vue-next'
+import { AlertTriangle, Bell, X, Settings2, Layout, TrendingUp, BarChart3, PieChart, Layers } from 'lucide-vue-next'
 
 import Sidebar from '../components/dashboard/Sidebar.vue'
 import TopHeader from '../components/dashboard/TopHeader.vue'
@@ -149,6 +184,7 @@ const isCustomizing = ref(false)
 const layoutConfig = reactive({
   kpiCards: true,
   mainChart: true,
+  projectPnL: true,
   aiInsights: true,
   targetBar: true
 })
@@ -168,6 +204,11 @@ onMounted(async () => {
   const targetKpis = data.kpis;
   
   dashboardData.value.kpis = { revenue: 0, profit: 0, cashFlow: 0, expenses: 0, targetProgress: 0 };
+  dashboardData.value.projectPnL = [
+    { id: 'P-001', name: 'Port City Phase L4', profit: 420000, roi: 42.5 },
+    { id: 'P-002', name: 'Nordic Logistics Hub', profit: 185000, roi: 18.2 },
+    { id: 'P-003', name: 'Island Tea High-Speed', profit: 92000, roi: 31.8 }
+  ];
   dashboardData.value.charts = data.charts;
   dashboardData.value.insights = data.insights;
   isLoading.value = false;

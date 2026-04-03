@@ -18,11 +18,11 @@ export const authStore = reactive({
   
   can: (module) => {
     const permissions = {
-      ceo: ['dashboard', 'sales', 'bi', 'operations', 'crm', 'finance', 'settings'],
-      manager: ['dashboard', 'bi', 'operations', 'crm', 'sales'],
-      staff: ['operations'],
-      finance: ['dashboard', 'finance', 'bi', 'crm'],
-      subcontractor: ['operations']
+      ceo: ['dashboard', 'sales', 'bi', 'operations', 'crm', 'finance', 'settings', 'projects'],
+      manager: ['dashboard', 'bi', 'operations', 'crm', 'sales', 'projects'],
+      staff: ['operations', 'projects'],
+      finance: ['dashboard', 'finance', 'bi', 'crm', 'projects'],
+      subcontractor: ['operations', 'projects']
     }
     
     const access = permissions[authStore.user.role]

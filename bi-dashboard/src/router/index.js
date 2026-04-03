@@ -41,6 +41,11 @@ const router = createRouter({
       component: OperationsView
     },
     {
+      path: '/projects',
+      name: 'projects',
+      component: () => import('../views/ProjectNexusView.vue')
+    },
+    {
       path: '/crm',
       name: 'crm',
       component: () => import('../views/CRMView.vue')

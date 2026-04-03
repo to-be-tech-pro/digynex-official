@@ -14,7 +14,11 @@
         <div v-if="authStore.can('dashboard')">
           <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3 px-3">Intelligence</p>
           <nav class="space-y-1 mb-8">
-            <router-link to="/dashboard" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-medium transition-all group" active-class="bg-slate-900 text-white hover:bg-slate-800">
+            <router-link to="/" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-medium transition-all group" active-class="bg-slate-900 text-white hover:bg-slate-800" exact>
+              <Home class="w-4 h-4 group-hover:scale-110 transition-transform" /> Portal Root
+            </router-link>
+            
+            <router-link v-if="authStore.can('dashboard')" to="/dashboard" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-medium transition-all group" active-class="bg-slate-900 text-white hover:bg-slate-800">
               <LayoutDashboard class="w-4 h-4 group-hover:scale-110 transition-transform" /> Executive Board
             </router-link>
             
@@ -27,8 +31,9 @@
               <span class="w-2 h-2 rounded-full bg-accent animate-pulse shadow-sm"></span>
             </router-link>
 
-            <router-link v-if="authStore.can('sales')" to="/sales-nexus" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-medium transition-colors group" active-class="bg-slate-900 text-white hover:bg-slate-800">
-              <Target class="w-4 h-4 group-hover:text-indigo-600 transition-colors" /> AI Social Nexus
+            <router-link to="/sales-nexus" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-medium transition-all group relative z-30" active-class="bg-slate-900 text-white hover:bg-slate-800 shadow-sm">
+              <Zap class="w-4 h-4 group-hover:scale-110 transition-transform text-slate-400 group-hover:text-primary" /> 
+              <span class="flex-1 text-left">AI Social Viral Hub</span>
             </router-link>
           </nav>
         </div>
@@ -37,6 +42,9 @@
         <div>
           <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-3 px-3">Operations</p>
           <nav class="space-y-1">
+            <router-link v-if="authStore.can('projects')" to="/projects" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-medium transition-colors group" active-class="bg-slate-900 text-white hover:bg-slate-800">
+              <Layers class="w-4 h-4 group-hover:text-primary transition-colors" /> Project Nexus
+            </router-link>
             <router-link v-if="authStore.can('operations')" to="/operations" class="flex items-center gap-3 px-3 py-2.5 text-slate-600 hover:bg-slate-50 hover:text-slate-900 rounded-lg font-medium transition-colors" active-class="bg-slate-900 text-white hover:bg-slate-800">
               <Briefcase class="w-4 h-4" /> Operations
             </router-link>
@@ -71,9 +79,22 @@
 </template>
 
 <script setup>
-import { Layers, LayoutDashboard, TrendingUp, Brain, Briefcase, Wallet, Settings, ChevronRight, Users, Target } from 'lucide-vue-next'
+import { Layers, LayoutDashboard, TrendingUp, Brain, Briefcase, Wallet, Settings, ChevronRight, Users, Target, Home, Zap } from 'lucide-vue-next'
 import { authStore } from '../../services/authService'
 import { brandingStore } from '../../services/brandingService'
 
 defineEmits(['toggleMenu', 'triggerToast'])
 </script>
+
+<style scoped>
+.custom-scrollbar::-webkit-scrollbar {
+  width: 4px;
+}
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 10px;
+}
+</style>

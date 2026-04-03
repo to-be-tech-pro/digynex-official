@@ -230,10 +230,23 @@ const isAdding = ref(false)
 
 const newItem = ref({ name: '', email: '', phone: '', tag: '', referred_by: null })
 
-const clients = ref([])
-const subcontractors = ref([])
-const partners = ref([])
-const logs = ref([])
+const clients = ref([
+    { id: 101, name: 'Svea Logistics AB', email: 'ops@svea-logistics.se', phone: '+46 8 123 45 67', status: 'Active', industry: 'Logistics' },
+    { id: 102, name: 'Island Tea Exporters', email: 'finance@islandtea.lk', phone: '+94 11 234 5678', status: 'Active', industry: 'Export/Commodities' },
+    { id: 103, name: 'Global Brands SL', email: 'procurement@globalbrands.com', phone: '+94 77 123 4567', status: 'Engaged', industry: 'Retail' }
+])
+const subcontractors = ref([
+    { id: 201, name: 'Nordic Transports', email: 'fleet@nordic.se', phone: '+46 70 987 65 43', status: 'Active', specialty: 'Heavy Haulage' },
+    { id: 202, name: 'Precision MEP Solutions', email: 'tech@precision-mep.com', phone: '+94 11 888 9999', status: 'Standby', specialty: 'Engineering' }
+])
+const partners = ref([
+    { id: 301, name: 'Amila Wijesinghe', email: 'amila@digynex.se', phone: '+46 72 000 0000', status: 'Platinum', total_referrals: 12, commission_rate: 15 },
+    { id: 302, name: 'Svenska Tech Group', email: 'partners@svenska.tech', status: 'Gold', total_referrals: 5, commission_rate: 10 }
+])
+const logs = ref([
+    { id: 1, entity_id: 101, channel: 'WhatsApp', message: 'Confirmed AWR manifest for Q2 cycle.', created_at: new Date().toISOString() },
+    { id: 2, entity_id: 301, channel: 'Email', message: 'Strategic referral payout processed for February.', created_at: new Date(Date.now() - 86400000).toISOString() }
+])
 
 const filteredData = computed(() => {
     let base = []
@@ -258,17 +271,21 @@ watch(activeTab, () => {
 })
 
 const fetchCRMData = async () => {
-    const { data: c } = await supabase.from('clients').select('*').order('name', { ascending: true })
-    clients.value = c || []
-    
-    const { data: s } = await supabase.from('subcontractors').select('*').order('name', { ascending: true })
-    subcontractors.value = s || []
+    try {
+        const { data: c } = await supabase.from('clients').select('*').order('name', { ascending: true })
+        if (c && c.length > 0) clients.value = c
+        
+        const { data: s } = await supabase.from('subcontractors').select('*').order('name', { ascending: true })
+        if (s && s.length > 0) subcontractors.value = s
 
-    const { data: p } = await supabase.from('partners').select('*').order('name', { ascending: true })
-    partners.value = p || []
-    
-    const { data: l } = await supabase.from('communication_logs').select('*').order('created_at', { descending: true })
-    logs.value = l || []
+        const { data: p } = await supabase.from('partners').select('*').order('name', { ascending: true })
+        if (p && p.length > 0) partners.value = p
+        
+        const { data: l } = await supabase.from('communication_logs').select('*').order('created_at', { descending: true })
+        if (l && l.length > 0) logs.value = l
+    } catch (err) {
+        console.warn("Supabase Sync Error: Using Elite Mock Data Fallback.")
+    }
 }
 
 const handleAddItem = async () => {

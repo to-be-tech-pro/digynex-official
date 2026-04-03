@@ -60,6 +60,10 @@ const routes = [
         component: () => import('pages/RevenuePage.vue'),
       },
       {
+        path: 'viral-hub',
+        component: () => import('pages/ViralHubPage.vue'),
+      },
+      {
         path: 'nexus',
         component: () => import('pages/NexusPage.vue'),
       },

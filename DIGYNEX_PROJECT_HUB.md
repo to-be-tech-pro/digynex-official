@@ -140,21 +140,49 @@ The BI Reports page is a **Centralized Automation Workstation** for scheduling a
 
 ---
 
-### 6. Operational Efficiency (Infrastructure Monitor)
+### 6. Operations Command Hub (Tactical AI Engine)
 
-The Operations page is a **Live Performance Dashboard** for monitoring system health, worker latency, and AI optimization protocols.
+The Operations page is now a **High-Performance Tactical Hub** focused on forensic financial matching and real-time production logging. Strategic management has been moved to Project Nexus.
 
-#### 📡 Real-time Heartbeat
-- **KPI Monitoring:** Drill-down access to Platform Uptime, Lead Response Latacy, and Workload Density.
-- **Sub-System Monitoring:** Status indicators for critical nodes including Supabase, n8n Cloud, and Global CDNs.
+#### 📡 Forensic AI Matching (Matching Agent)
+- **PO/Invoice Matcher:** A high-speed interface that uses AI heuristics to reconcile Inbound Invoices with Active Purchase Orders.
+- **Anomaly Detection:** Specifically flags matching confidence levels (Matched vs. Anomaly) to prevent ledger discrepancies.
+- **Reconciliation Workstation:** Drill-down access for validating matched transactions and committing them to the final financial ledger.
 
-#### ⚡ AI Efficiency Pulse
-- **Optimization Engine:** An interactive workstation that detects latency spikes and suggests core-sharding protocol adjustments.
-- **Execution Lifecycle:** A state-managed optimization sequence that rebalances worker throughput and stabilizes system latency (Target: 12ms).
+#### 📊 Daily Operational Log
+- **Lifecycle Pulse:** A real-time timeline of operational events (PO Issued, WO Converted, Invoice Synced).
+- **Process Integrity:** Tracks the immediate "Outcome" of daily tasks to maintain a high level of operational sovereignty.
 
-#### 📊 Throughput & Process Audit
-- **Multi-threaded Monitor:** Area charts visualizing global throughput flux across distributed workers (Worker A, B, C).
-- **Workflow Log Auditor:** A detailed manifest of the latest process identifier executions (Subscription Batches, Edge Syncs, Hub Relays) with specific request success rates.
+#### ⚡ AI Efficiency Protocols
+- **Platform Heartbeat:** Real-time monitoring of Platform Uptime, Response Latency, and System Saturation.
+- **Multi-threaded Sharding:** An interactive workstation that rebalances worker throughput to maintain a target 12ms latency.
+
+---
+
+### 11. Project Nexus (Strategic Portfolio Hub) 🌟
+
+Project Nexus is the **Executive Command Center** for long-term portfolio strategy, high-volume ingestion, and board-level financial auditing.
+
+#### 🧠 Strategic Intelligence
+- **Milestone Matrix:** A high-density KPI grid tracking Budget Burn Rate, Schedule Variance, and AI Risk Factors across the entire project ecosystem.
+- **ROI Manifest:** Real-time projection of Project ROI based on live financial commitment levels.
+
+#### 🏗️ Advanced Milestone Health
+- **Phase Execution Pulse:** A hierarchical view of project phases (Civil, Structural, MEP) with live physical completion vs. budget burn synchronization.
+- **Critical Path Pulse:** AI-driven health monitoring that flags potential delays before they impact the final delivery manifest.
+
+#### 📈 Portfolio Analytics (MS Project Integration)
+- **Executive Variance Pulse:** Granular cost variance charts (Actual vs. Baseline) for high-stakes financial auditing.
+- **Strategic Burn Projection:** Extrapolation of resource consumption velocity to estimate final project outcomes.
+
+#### 📂 Bulk Ingest Hub (Document Sovereignty)
+- **Enterprise Ingestion:** Optimized for **10,000+ line-item manifests** (CSV/PDF).
+- **AI Mapping Engine:** Automatically maps external AWR/Item codes to internal Work Breakdown Structures (WBS) with 98% confidence.
+- **Dual Context:** Supports both Inbound Client POs and Inbound Subcontractor manifests.
+
+#### ⚖️ Financial Manifest & SCV Audit
+- **Strategic Cost Variance (SCV):** A high-fidelity auditing interface for reconciling top-level project budgets with operational expenditure.
+- **Ledger Ingestion:** Bulk-commit strategic expenses to the P&L with specific project-context attribution.
 
 ---
 
@@ -205,19 +233,51 @@ The CRM page now functions as a **Dual-Sided Directory** for external stakeholde
 
 ---
 
+## 📑 MASTER TAB & FUNCTIONALITY MANIFEST (2026 EDITION)
+
+This section provides the **Definitive Operational Map** of every tab across the DigyNex 360 BOS.
+
+### A. 📊 BI Dashboard (Executive Board)
+*   **Main Pulse:** Real-time KPI summary (Revenue, Net Profit, Growth).
+*   **Sales Pivot:** Granular breakdown of marketing channel efficiency.
+*   **Finance Insights:** Liquidity monitoring and P&L auditing.
+*   **Reports Hub:** Automated generation of AI-augmented business intelligence.
+
+### B. 🌟 Project Nexus (Strategic Hub)
+*   **Strategic Intelligence:** High-level KPI grid for portfolio-wide budget, risk, and schedule health.
+*   **Advanced Milestone Health:** Phase-by-phase physical completion vs. budget burn synchronization.
+*   **Portfolio Analytics:** Comparative cost variance and resource burn projections (Baseline vs. Actual).
+*   **Bulk Ingest Hub:** High-volume manifest ingestion (10k+ items) with autonomous AWR/WBS mapping.
+*   **Financial Manifest:** Strategic ledger ingestion for project-level P&L auditing.
+
+### C. ⚙️ Operations Command (Tactical Engine)
+*   **Forensic AI Matching:** Real-time reconciliation of Inbound Invoices against Active Purchase Orders.
+*   **Operational Log:** Live lifecycle pulse tracking the outcome of every PO/WO interaction.
+*   **System Heartbeat:** Infrastructure health, latency sharding, and worker throughput optimization.
+
+### D. 📜 Project CRM (Stakeholder Directory)
+*   **Strategic Partners:** Managing high-value client relationships with integrated lead attribution.
+*   **Subcontractor Registry:** Registry of 50+ specialized contractors with automated performance scorecards.
+*   **Inbound Hub:** Audit trail for new partner applications coming from `digynex.se`.
+
+### E. 👥 Personnel Identity (Security Gate)
+*   **Identity Management:** Executive-only control over Staff, Manager, and Subcontractor roles.
+*   **RBAC Enforcement:** Visual indicators of active security clusters to prevent unauthorized access.
+
+---
+
 ## 📅 DEVELOPMENT MILESTONES
 
 - [x] **Phase 1-9:** Initial Architecture, Dashboards, and Financial Vault. (READY)
 - [x] **Phase 10:** Strict RBAC Security Enforcement (Route & Action Protection). (DONE ✅)
 - [x] **Phase 11:** Personnel Identity Hub & ULS v2.0 (Industry Adaptation). (DONE ✅)
-- [x] **Milestone 12-A**: Partner Program Ecosystem (DB + RBAC + Referral Trigger).
-- [ ] **Milestone 12-B**: n8n Webhook Integration for Partners, Leads, and Operations.
-- [x] **Milestone 12-C**: Public Partnership Registration Portal (Landing Page + Validation).
-- [ ] **Phase 13:** Document Vault (Secure PDF Storage implementation).
-- [ ] **Phase 14:** Widgetized Workspace (User-customizable dashboard layouts).
-- [ ] **Phase 15:** Synchronize `tms` and `cms` stores (`currency.js`) with the new global pricing keys.
-- [ ] **Phase 12:** Personalized Dashboard Workspace (Widget Management).
-- [ ] **Phase 13:** Synchronize `tms` and `cms` stores (`currency.js`) with the new global pricing keys.
+- [x] **Phase 12-A**: Partner Program Ecosystem (DB + RBAC + Referral Trigger). (DONE ✅)
+- [ ] **Phase 12-B**: n8n Webhook Integration for Partners, Leads, and Operations.
+- [x] **Phase 12-C**: Public Partnership Registration Portal (Landing Page + Validation). (DONE ✅)
+- [x] **Phase 13**: Project Nexus Strategic Hub (Bulk Ingest + SCV Audit). (DONE ✅)
+- [ ] **Phase 14**: Widgetized Workspace (User-customizable dashboard layouts).
+- [ ] **Phase 15**: Multi-Currency Live Integration (USD/LKR/SEK).
+- [ ] **Phase 16**: TeaAI Visual Grading Pipeline (Agri-Tech Pilot).
 
 ---
 

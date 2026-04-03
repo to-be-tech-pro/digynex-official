@@ -337,6 +337,7 @@ const managementLinks = [
   { title: 'Deals & Flow', icon: 'view_kanban', link: '/cms/portal/sales' },
   { title: 'Live Nexus', icon: 'forum', link: '/cms/portal/chat' },
   { title: 'Enterprise Clients', icon: 'business', link: '/cms/portal/clients' },
+  { title: 'Viral Hub (Lead Engine)', icon: 'auto_awesome', link: '/cms/portal/viral-hub' },
   { title: 'Fiscal Intelligence', icon: 'payments', link: '/cms/portal/revenue' },
   { title: 'Nexus Billing', icon: 'receipt_long', link: '/cms/portal/subscription' },
   { title: 'Nexus Control Center', icon: 'psychology', link: '/cms/portal/nexus' },
