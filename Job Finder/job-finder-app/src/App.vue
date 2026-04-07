@@ -1005,17 +1005,17 @@ onUnmounted(() => {
          </div>
       </Transition>
 
-      <div v-if="!isManualFormOpen && !isLinkedInModalOpen" class="absolute bottom-[67px] left-0 right-0 flex flex-col items-center z-[990] pointer-events-none">
+      <div v-if="!isManualFormOpen && !isLinkedInModalOpen" class="absolute bottom-[63px] left-0 right-0 flex flex-col items-center z-[990] pointer-events-none">
         <div class="flex items-center gap-2.5 opacity-40">
            <span class="text-[8px] font-black text-white/40 uppercase tracking-[0.2em]">{{ t('footer.poweredBy') }}</span>
            <img src="/digynex-icon.png" alt="DigyNex" class="h-3 w-auto object-contain opacity-50" />
            <span class="text-[9px] font-black text-[#C1A172] uppercase tracking-[0.1em]">DigyNex</span>
         </div>
-        <p class="text-[6.5px] font-black text-white/20 tracking-[0.5em] uppercase mt-1 italic">{{ t('footer.engine') }} • {{ t('footer.version') }}</p>
+        <p class="text-[6.5px] font-black text-white/20 tracking-[0.5em] uppercase mt-[2px] italic">{{ t('footer.engine') }} • {{ t('footer.version') }}</p>
       </div>
 
       <nav v-if="!isManualFormOpen && !isLinkedInModalOpen" 
-           class="absolute bottom-5 left-1/2 -translate-x-1/2 w-[80%] max-w-[280px] bg-[#0A2647]/50 backdrop-blur-3xl px-6 py-1.5 rounded-[2.5rem] flex items-center justify-around shadow-[0_45px_100px_-25px_rgba(0,0,0,0.6)] z-[1000] border border-white/10 ring-1 ring-white/10 transition-all">
+           class="absolute bottom-4 left-1/2 -translate-x-1/2 w-[80%] max-w-[280px] bg-[#0A2647]/50 backdrop-blur-3xl px-6 py-1.5 rounded-[2.5rem] flex items-center justify-around shadow-[0_45px_100px_-25px_rgba(0,0,0,0.6)] z-[1000] border border-white/10 ring-1 ring-white/10 transition-all">
         <div v-for="(icon, key) in { dashboard: LayoutDashboard, applications: FileText, matches: Star, profile: User }" :key="key" 
              @click="setTab(key)"
              class="flex flex-col items-center gap-0.5 group cursor-pointer relative active:scale-90 transition-all py-0.5">
