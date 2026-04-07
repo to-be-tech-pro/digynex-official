@@ -1,0 +1,48 @@
+{
+  "header": {
+    "title": "Kariyer Hızlandırma",
+    "subtitle": "Engine",
+    "welcome": "Hoş geldin, Amila!",
+    "progress": "İlerleme Özeti",
+    "globalSuite": "Global Suite"
+  },
+  "stats": {
+    "activeApps": "Aktif Başvuru",
+    "aiMatches": "AI Eşleşme",
+    "skillScore": "Yetenek Puanı"
+  },
+  "actions": {
+    "sync": "AI Verileri Senkronize Ediliyor"
+  },
+  "sections": {
+    "tracking": "Başvuru Takibi",
+    "analytics": "AI-Eşleştirme Analitiği"
+  },
+  "table": {
+    "company": "Şirket",
+    "role": "Rol",
+    "status": "Durum",
+    "date": "Tarih"
+  },
+  "pipeline": {
+    "applied": "Başvuruldu",
+    "review": "İnceleme",
+    "interview": "Mülakat",
+    "offer": "Teklif"
+  },
+  "analytics": {
+    "topMatches": "En İyi Eşleşmeler",
+    "skillGap": "Yetenek Analizi"
+  },
+  "footer": {
+    "poweredBy": "Destekleyen",
+    "engine": "Küresel Keşif Motoru",
+    "version": "Master V6.0"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "applications": "Başvurular",
+    "matches": "Eşleşmeler",
+    "profile": "Profil"
+  }
+}

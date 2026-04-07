@@ -1,0 +1,48 @@
+{
+  "header": {
+    "title": "Karriereaccelerering",
+    "subtitle": "Engine",
+    "welcome": "Velkommen, Amila!",
+    "progress": "Din oversigt over fremskridt",
+    "globalSuite": "Global Suite"
+  },
+  "stats": {
+    "activeApps": "Aktive apps",
+    "aiMatches": "AI matches",
+    "skillScore": "Skill score"
+  },
+  "actions": {
+    "sync": "Synkroniserer AI-data"
+  },
+  "sections": {
+    "tracking": "Ansøgningssporing",
+    "analytics": "AI-matching analyse"
+  },
+  "table": {
+    "company": "Virksomhed",
+    "role": "Rolle",
+    "status": "Status",
+    "date": "Dato"
+  },
+  "pipeline": {
+    "applied": "Anvendt",
+    "review": "Gennemgang",
+    "interview": "Interview",
+    "offer": "Tilbud"
+  },
+  "analytics": {
+    "topMatches": "Top job matches",
+    "skillGap": "Færdighedsanalyse"
+  },
+  "footer": {
+    "poweredBy": "Leveret af",
+    "engine": "Global UpptDagelser",
+    "version": "Master V6.0"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "applications": "Ansøgninger",
+    "matches": "Match",
+    "profile": "Profil"
+  }
+}

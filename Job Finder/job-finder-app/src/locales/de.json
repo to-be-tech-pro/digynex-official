@@ -1,0 +1,57 @@
+{
+  "header": {
+    "title": "Karriere-Beschleunigung",
+    "subtitle": "Engine",
+    "welcome": "Willkommen, Amila!",
+    "progress": "Deine Fortschrittsübersicht",
+    "globalSuite": "Global Suite"
+  },
+  "stats": {
+    "activeApps": "Aktive Apps",
+    "aiMatches": "KI-Matches",
+    "skillScore": "Skill-Score"
+  },
+  "actions": {
+    "sync": "KI-Daten werden synchronisiert"
+  },
+  "sections": {
+    "tracking": "Bewerbungsverfolgung",
+    "analytics": "KI-Match-Analyse"
+  },
+  "table": {
+    "company": "Unternehmen",
+    "role": "Position",
+    "status": "Status",
+    "date": "Datum"
+  },
+  "pipeline": {
+    "applied": "Beworben",
+    "review": "Überprüfung",
+    "interview": "Interview",
+    "offer": "Angebot"
+  },
+  "analytics": {
+    "topMatches": "Top KI-Übereinstimmungen",
+    "skillGap": "Fähigkeitsanalyse"
+  },
+  "profile": {
+    "title": "Expertenprofil",
+    "cvTitle": "Lebenslauf-Verwaltung",
+    "cvUpload": "CV hochladen",
+    "viewCV": "CV anzeigen",
+    "interestsTitle": "Top 5 Berufsfelder",
+    "fieldsPlaceholder": "Bereich hinzufügen...",
+    "save": "Profil speichern"
+  },
+  "footer": {
+    "poweredBy": "Präsentiert von",
+    "engine": "Global Discovery Automatik",
+    "version": "Master V6.0"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "applications": "Bewerbungen",
+    "matches": "Matches",
+    "profile": "Profil"
+  }
+}

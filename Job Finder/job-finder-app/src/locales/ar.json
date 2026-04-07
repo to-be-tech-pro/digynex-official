@@ -1,0 +1,48 @@
+{
+  "header": {
+    "title": "تسريع المسار المهني",
+    "subtitle": "Engine",
+    "welcome": "أهلاً بك، أميلا!",
+    "progress": "نظرة عامة على تقدمك",
+    "globalSuite": "Global Suite"
+  },
+  "stats": {
+    "activeApps": "طلبات نشطة",
+    "aiMatches": "توافق ذكي",
+    "skillScore": "تقييم المهارات"
+  },
+  "actions": {
+    "sync": "مزامنة بيانات الذكاء الاصطناعي"
+  },
+  "sections": {
+    "tracking": "تتبع الطلبات",
+    "analytics": "تحليلات التوافق الذكي"
+  },
+  "table": {
+    "company": "الشركة",
+    "role": "الدور",
+    "status": "الحالة",
+    "date": "التاريخ"
+  },
+  "pipeline": {
+    "applied": "مقدم",
+    "review": "مراجعة",
+    "interview": "مقابلة",
+    "offer": "عرض"
+  },
+  "analytics": {
+    "topMatches": "أفضل التوافقات",
+    "skillGap": "تحليل فجوة المهارات"
+  },
+  "footer": {
+    "poweredBy": "بدعم من",
+    "engine": "محرك الاستكشاف العالمي",
+    "version": "Master V6.0"
+  },
+  "nav": {
+    "dashboard": "لوحة القيادة",
+    "applications": "الطلبات",
+    "matches": "التوافقات",
+    "profile": "الملف الشخصي"
+  }
+}

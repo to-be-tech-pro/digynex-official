@@ -1,0 +1,48 @@
+{
+  "header": {
+    "title": "Ускорение карьера",
+    "subtitle": "Engine",
+    "welcome": "Добро пожаловать, Амила!",
+    "progress": "Ваш прогресс",
+    "globalSuite": "Global Suite"
+  },
+  "stats": {
+    "activeApps": "Активные заявки",
+    "aiMatches": "AI матчи",
+    "skillScore": "Уровень навыков"
+  },
+  "actions": {
+    "sync": "Синхронизация данных ИИ"
+  },
+  "sections": {
+    "tracking": "Отслеживание заявок",
+    "analytics": "Аналитика ИИ матчей"
+  },
+  "table": {
+    "company": "Компания",
+    "role": "Роль",
+    "status": "Статус",
+    "date": "Дата"
+  },
+  "pipeline": {
+    "applied": "Подано",
+    "review": "Проверка",
+    "interview": "Интервью",
+    "offer": "Оффер"
+  },
+  "analytics": {
+    "topMatches": "Лучшие совпадения",
+    "skillGap": "Анализ компетенций"
+  },
+  "footer": {
+    "poweredBy": "Создано",
+    "engine": "Глобальный поисковик",
+    "version": "Master V6.0"
+  },
+  "nav": {
+    "dashboard": "Панель",
+    "applications": "Заявки",
+    "matches": "Совпадения",
+    "profile": "Профиль"
+  }
+}

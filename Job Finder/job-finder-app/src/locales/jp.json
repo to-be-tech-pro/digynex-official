@@ -1,0 +1,48 @@
+{
+  "header": {
+    "title": "キャリア加速",
+    "subtitle": "Engine",
+    "welcome": "アミラさん、ようこそ！",
+    "progress": "進捗概要",
+    "globalSuite": "Global Suite"
+  },
+  "stats": {
+    "activeApps": "応募中",
+    "aiMatches": "AIマッチ",
+    "skillScore": "スキルスコア"
+  },
+  "actions": {
+    "sync": "AIデータを同期中"
+  },
+  "sections": {
+    "tracking": "応募トラッキング",
+    "analytics": "AIマッチング分析"
+  },
+  "table": {
+    "company": "企業",
+    "role": "職種",
+    "status": "ステータス",
+    "date": "日付"
+  },
+  "pipeline": {
+    "applied": "応募済み",
+    "review": "審査中",
+    "interview": "面接",
+    "offer": "内定"
+  },
+  "analytics": {
+    "topMatches": "上位マッチング",
+    "skillGap": "スキルギャップ分析"
+  },
+  "footer": {
+    "poweredBy": "提供",
+    "engine": "グローバル発見エンジン",
+    "version": "Master V6.0"
+  },
+  "nav": {
+    "dashboard": "ダッシュボード",
+    "applications": "応募",
+    "matches": "マッチング",
+    "profile": "プロフィール"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "header": {
+    "title": "커리어 가속",
+    "subtitle": "Engine",
+    "welcome": "환영합니다, Amila님!",
+    "progress": "진행 상황 개요",
+    "globalSuite": "Global Suite"
+  },
+  "stats": {
+    "activeApps": "지원 중",
+    "aiMatches": "AI 매칭",
+    "skillScore": "기술 점수"
+  },
+  "actions": {
+    "sync": "AI 데이터 동기화 중"
+  },
+  "sections": {
+    "tracking": "지원 추적",
+    "analytics": "AI 매칭 분석"
+  },
+  "table": {
+    "company": "기업",
+    "role": "직무",
+    "status": "상태",
+    "date": "날짜"
+  },
+  "pipeline": {
+    "applied": "지원 완료",
+    "review": "검토",
+    "interview": "면접",
+    "offer": "합격"
+  },
+  "analytics": {
+    "topMatches": "상위 매칭",
+    "skillGap": "기술 격차 분석"
+  },
+  "footer": {
+    "poweredBy": "제공",
+    "engine": "글로벌 발견 엔진",
+    "version": "Master V6.0"
+  },
+  "nav": {
+    "dashboard": "대시보드",
+    "applications": "지원",
+    "matches": "매칭",
+    "profile": "프로필"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "header": {
+    "title": "Carrièreversnelling",
+    "subtitle": "Engine",
+    "welcome": "Welkom, Amila!",
+    "progress": "Je voortgangsoverzicht",
+    "globalSuite": "Global Suite"
+  },
+  "stats": {
+    "activeApps": "Actieve apps",
+    "aiMatches": "AI matches",
+    "skillScore": "Skill score"
+  },
+  "actions": {
+    "sync": "AI-gegevens synchroniseren"
+  },
+  "sections": {
+    "tracking": "Sollicitaties bijhouden",
+    "analytics": "AI-matching analyse"
+  },
+  "table": {
+    "company": "Bedrijf",
+    "role": "Rol",
+    "status": "Status",
+    "date": "Datum"
+  },
+  "pipeline": {
+    "applied": "Toegepast",
+    "review": "Review",
+    "interview": "Gesprek",
+    "offer": "Aanbod"
+  },
+  "analytics": {
+    "topMatches": "Top job matches",
+    "skillGap": "Vaardighedsanalyse"
+  },
+  "footer": {
+    "poweredBy": "Mogelijk gemaakt door",
+    "engine": "Globale Ontdekkingsmotor",
+    "version": "Master V6.0"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "applications": "Sollicitaties",
+    "matches": "Matches",
+    "profile": "Profiel"
+  }
+}

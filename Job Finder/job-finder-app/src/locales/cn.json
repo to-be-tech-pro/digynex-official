@@ -1,0 +1,48 @@
+{
+  "header": {
+    "title": "职业加速",
+    "subtitle": "Engine",
+    "welcome": "欢迎，Amila！",
+    "progress": "您的进度概览",
+    "globalSuite": "Global Suite"
+  },
+  "stats": {
+    "activeApps": "正在申请",
+    "aiMatches": "AI 匹配",
+    "skillScore": "技能评分"
+  },
+  "actions": {
+    "sync": "同步 AI 数据"
+  },
+  "sections": {
+    "tracking": "申请跟踪",
+    "analytics": "AI 匹配分析"
+  },
+  "table": {
+    "company": "公司",
+    "role": "职位",
+    "status": "状态",
+    "date": "日期"
+  },
+  "pipeline": {
+    "applied": "已申请",
+    "review": "审查",
+    "interview": "面试",
+    "offer": "录用"
+  },
+  "analytics": {
+    "topMatches": "最佳匹配职位",
+    "skillGap": "技能差距分析"
+  },
+  "footer": {
+    "poweredBy": "由...提供",
+    "engine": "全球发现引擎",
+    "version": "Master V6.0"
+  },
+  "nav": {
+    "dashboard": "控制面板",
+    "applications": "申请",
+    "matches": "匹配",
+    "profile": "个人资料"
+  }
+}

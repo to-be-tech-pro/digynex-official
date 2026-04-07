@@ -1,0 +1,48 @@
+{
+  "header": {
+    "title": "Acleração de Carreira",
+    "subtitle": "Engine",
+    "welcome": "Bem-vindo, Amila!",
+    "progress": "Visão geral do progresso",
+    "globalSuite": "Global Suite"
+  },
+  "stats": {
+    "activeApps": "Apps ativos",
+    "aiMatches": "Match IA",
+    "skillScore": "Avaliação"
+  },
+  "actions": {
+    "sync": "Sincronizando dados de IA"
+  },
+  "sections": {
+    "tracking": "Rastreamento de candidaturas",
+    "analytics": "Analítica de matching IA"
+  },
+  "table": {
+    "company": "Empresa",
+    "role": "Cargo",
+    "status": "Status",
+    "date": "Data"
+  },
+  "pipeline": {
+    "applied": "Aplicado",
+    "review": "Revisão",
+    "interview": "Entrevista",
+    "offer": "Oferta"
+  },
+  "analytics": {
+    "topMatches": "Melhores correspondências",
+    "skillGap": "Análise de competências"
+  },
+  "footer": {
+    "poweredBy": "Desenvolvido por",
+    "engine": "Motor de Descoberta Global",
+    "version": "Master V6.0"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "applications": "Candidaturas",
+    "matches": "Matches",
+    "profile": "Perfil"
+  }
+}

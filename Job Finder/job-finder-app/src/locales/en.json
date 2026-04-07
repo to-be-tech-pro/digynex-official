@@ -1,0 +1,86 @@
+{
+  "header": {
+    "title": "Career Acceleration",
+    "subtitle": "Engine",
+    "welcome": "Welcome, Amila!",
+    "progress": "Your Progress Overview",
+    "globalSuite": "Global Suite"
+  },
+  "stats": {
+    "activeApps": "Active Apps",
+    "aiMatches": "AI Matches",
+    "skillScore": "Skill Score"
+  },
+  "actions": {
+    "sync": "Syncing Neural Data"
+  },
+  "sections": {
+    "tracking": "Application Tracking",
+    "analytics": "AI-Matching Analytics"
+  },
+  "table": {
+    "company": "Company",
+    "role": "Role",
+    "status": "Status",
+    "date": "Date"
+  },
+  "pipeline": {
+    "applied": "Applied",
+    "review": "Review",
+    "interview": "Interview",
+    "offer": "Offer",
+    "rejected": "Rejected",
+    "archived": "Archived"
+  },
+  "analytics": {
+    "topMatches": "Top Job Matches",
+    "skillGap": "Skill Gap Analysis"
+  },
+  "apps": {
+    "title": "Active Submissions",
+    "searchPlaceholder": "Search by Name, Role, or Date...",
+    "filterAll": "All",
+    "filterPending": "Pending",
+    "filterInterview": "Interview",
+    "filterOffers": "Offers",
+    "filterArchived": "Archived",
+    "location": "Location",
+    "appliedDate": "Applied on",
+    "matchScore": "Match Score",
+    "viewDetails": "View Details",
+    "loadMore": "Show More Applications"
+  },
+  "notifications": {
+    "newUpdate": "New Status Update Received",
+    "viewAll": "View All Notifications"
+  },
+  "profile": {
+    "title": "Expert Profile",
+    "cvTitle": "CV Management",
+    "cvUpload": "Upload Professional CV",
+    "viewCV": "View Current CV",
+    "interestsTitle": "Top 5 Fields of Interest",
+    "fieldsPlaceholder": "Add a job field...",
+    "save": "Save Global Profile",
+    "tailor": "Tailor Global CV",
+    "viewMatch": "View Job Pulse"
+  },
+  "matches": {
+    "discoveryHub": "AI Discovery Hub",
+    "instantTailor": "Instant Tailor",
+    "applicantsCount": "{count}+ Applicants",
+    "matchStrength": "Match Strength",
+    "posted": "Posted {time}"
+  },
+  "footer": {
+    "poweredBy": "Powered by",
+    "engine": "Global Discovery Engine",
+    "version": "Master V6.0"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "applications": "Applications",
+    "matches": "Matches",
+    "profile": "Profile"
+  }
+}

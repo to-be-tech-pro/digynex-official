@@ -1,0 +1,57 @@
+{
+  "header": {
+    "title": "Karriäraxeleration",
+    "subtitle": "Engine",
+    "welcome": "Välkommen, Amila!",
+    "progress": "Din framstegsöversikt",
+    "globalSuite": "Global Suite"
+  },
+  "stats": {
+    "activeApps": "Aktiva appar",
+    "aiMatches": "AI-matchningar",
+    "skillScore": "Färdighetsnivå"
+  },
+  "actions": {
+    "sync": "Synkroniserar AI-data"
+  },
+  "sections": {
+    "tracking": "Ansökningsspårning",
+    "analytics": "AI-matchningsanalys"
+  },
+  "table": {
+    "company": "Företag",
+    "role": "Roll",
+    "status": "Status",
+    "date": "Datum"
+  },
+  "pipeline": {
+    "applied": "Sökte",
+    "review": "Granskning",
+    "interview": "Intervju",
+    "offer": "Erbjudande"
+  },
+  "analytics": {
+    "topMatches": "Bästa Jobbmatchningar",
+    "skillGap": "Kompetensanalys"
+  },
+  "profile": {
+    "title": "Expertprofil",
+    "cvTitle": "CV-hantering",
+    "cvUpload": "Ladda upp CV",
+    "viewCV": "Visa nuvarande CV",
+    "interestsTitle": "Topp 5 intresseområden",
+    "fieldsPlaceholder": "Lägg till område...",
+    "save": "Spara profil"
+  },
+  "footer": {
+    "poweredBy": "Drivs av",
+    "engine": "Global Upptäcktsmotor",
+    "version": "Master V6.0"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "applications": "Ansökningar",
+    "matches": "Matchningar",
+    "profile": "Profil"
+  }
+}

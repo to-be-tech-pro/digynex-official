@@ -1,0 +1,48 @@
+{
+  "header": {
+    "title": "தொழில் முடுக்கம்",
+    "subtitle": "Engine",
+    "welcome": "வரவேற்கிறோம், அமிலா!",
+    "progress": "உங்கள் முன்னேற்ற மேலோட்டம்",
+    "globalSuite": "Global Suite"
+  },
+  "stats": {
+    "activeApps": "செயலில் உள்ள விண்ணப்பங்கள்",
+    "aiMatches": "AI பொருத்தங்கள்",
+    "skillScore": "திறன் மதிப்பெண்"
+  },
+  "actions": {
+    "sync": "AI தரவு ஒத்திசைக்கப்படுகிறது"
+  },
+  "sections": {
+    "tracking": "விண்ணப்பக் கண்காணிப்பு",
+    "analytics": "AI-பொருத்த பகுப்பாய்வு"
+  },
+  "table": {
+    "company": "நிறுவனம்",
+    "role": "பணி",
+    "status": "நிலை",
+    "date": "தேதி"
+  },
+  "pipeline": {
+    "applied": "விண்ணப்பம்",
+    "review": "மதிப்பாய்வு",
+    "interview": "நேர்காணல்",
+    "offer": "ஆபர்"
+  },
+  "analytics": {
+    "topMatches": "சிறந்த பொருத்தங்கள்",
+    "skillGap": "திறன் இடைவெளி பகுப்பாய்வு"
+  },
+  "footer": {
+    "poweredBy": "ஆதரவு",
+    "engine": "உலகளாவிய கண்டுபிடிப்பு இயந்திரம்",
+    "version": "Master V6.0"
+  },
+  "nav": {
+    "dashboard": "டாஷ்போர்டு",
+    "applications": "விண்ணப்பங்கள்",
+    "matches": "பொருத்தங்கள்",
+    "profile": "விவரக்குறிப்பு"
+  }
+}

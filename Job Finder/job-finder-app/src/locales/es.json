@@ -1,0 +1,48 @@
+{
+  "header": {
+    "title": "Aceleración de carrera",
+    "subtitle": "Engine",
+    "welcome": "¡Bienvenido, Amila!",
+    "progress": "Tu resumen de progreso",
+    "globalSuite": "Global Suite"
+  },
+  "stats": {
+    "activeApps": "Apps activas",
+    "aiMatches": "Match IA",
+    "skillScore": "Puntuación"
+  },
+  "actions": {
+    "sync": "Sincronizando datos"
+  },
+  "sections": {
+    "tracking": "Seguimiento de aplicaciones",
+    "analytics": "Analítica de matching IA"
+  },
+  "table": {
+    "company": "Empresa",
+    "role": "Puesto",
+    "status": "Estado",
+    "date": "Fecha"
+  },
+  "pipeline": {
+    "applied": "Aplicada",
+    "review": "Revisión",
+    "interview": "Entrevista",
+    "offer": "Oferta"
+  },
+  "analytics": {
+    "topMatches": "Mejores coincidencias",
+    "skillGap": "Análisis de brecha salarial"
+  },
+  "footer": {
+    "poweredBy": "Potenciado por",
+    "engine": "Motor de descubrimiento global",
+    "version": "Master V6.0"
+  },
+  "nav": {
+    "dashboard": "Panel",
+    "applications": "Solicitudes",
+    "matches": "Coincidencias",
+    "profile": "Perfil"
+  }
+}

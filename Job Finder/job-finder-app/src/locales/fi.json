@@ -1,0 +1,48 @@
+{
+  "header": {
+    "title": "Uran kiihdytys",
+    "subtitle": "Engine",
+    "welcome": "Tervetuloa, Amila!",
+    "progress": "Edistymisesi yleiskatsaus",
+    "globalSuite": "Global Suite"
+  },
+  "stats": {
+    "activeApps": "Aktiiviset sovellukset",
+    "aiMatches": "AI-osumat",
+    "skillScore": "Taitopisteet"
+  },
+  "actions": {
+    "sync": "Synkronoi AI-tietoja"
+  },
+  "sections": {
+    "tracking": "Hakemuksen seuranta",
+    "analytics": "AI-matching analyysi"
+  },
+  "table": {
+    "company": "Yritys",
+    "role": "Rooli",
+    "status": "Tila",
+    "date": "Päivämäärä"
+  },
+  "pipeline": {
+    "applied": "Haettu",
+    "review": "Arvostelu",
+    "interview": "Haastattelu",
+    "offer": "Tarjous"
+  },
+  "analytics": {
+    "topMatches": "Parhaat ottelut",
+    "skillGap": "Taitojen puuteanalyysi"
+  },
+  "footer": {
+    "poweredBy": "Tuottanut",
+    "engine": "Maailmanlaajuinen Löytömoottori",
+    "version": "Master V6.0"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "applications": "Hakemukset",
+    "matches": "Osumat",
+    "profile": "Profiili"
+  }
+}

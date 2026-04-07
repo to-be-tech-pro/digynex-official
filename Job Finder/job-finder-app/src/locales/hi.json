@@ -1,0 +1,48 @@
+{
+  "header": {
+    "title": "करियर त्वरण",
+    "subtitle": "Engine",
+    "welcome": "स्वागत है, अमि‍ला!",
+    "progress": "आपकी प्रगति का अवलोकन",
+    "globalSuite": "Global Suite"
+  },
+  "stats": {
+    "activeApps": "सक्रिय आवेदन",
+    "aiMatches": "एआई मैच",
+    "skillScore": "कौशल स्कोर"
+  },
+  "actions": {
+    "sync": "एआई डेटा सिंक हो रहा है"
+  },
+  "sections": {
+    "tracking": "आवेदन ट्रैकिंग",
+    "analytics": "एआई-मैचिंग एनालिटिक्स"
+  },
+  "table": {
+    "company": "कंपनी",
+    "role": "भूमिका",
+    "status": "स्थिति",
+    "date": "तारीख"
+  },
+  "pipeline": {
+    "applied": "लागू किया",
+    "review": "समीक्षा",
+    "interview": "साक्षात्कार",
+    "offer": "प्रस्ताव"
+  },
+  "analytics": {
+    "topMatches": "शीर्ष मैच",
+    "skillGap": "कौशल अंतर विश्लेषण"
+  },
+  "footer": {
+    "poweredBy": "संचालित",
+    "engine": "ग्लोबल डिस्कवरी इंजन",
+    "version": "Master V6.0"
+  },
+  "nav": {
+    "dashboard": "डैशबोर्ड",
+    "applications": "आवेदन",
+    "matches": "मैच",
+    "profile": "प्रोफ़ाइल"
+  }
+}
