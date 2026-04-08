@@ -6,12 +6,15 @@ import {
 } from 'lucide-vue-next'
 
 const props = defineProps({
-  isOpen: Boolean
+  isOpen: Boolean,
+  profile: Object,
+  activeCountry: String,
+  isAuthenticated: Boolean
 })
 
-const emit = defineEmits(['close', 'finalize'])
+const emit = defineEmits(['close', 'finalize', 'requestAuth'])
 
-// Local State (Encapsulated & Locked)
+// Local State (Wizard Mechanics Only)
 const manualStep = ref(1)
 const isCVPreviewOpen = ref(false)
 const isAutoSyncingLinkedIn = ref(false)
@@ -20,51 +23,33 @@ const isGeneratingAI = ref(false)
 const isComparing = ref(false)
 const aiComparison = ref({ field: '', original: '', drafted: '' })
 
-const manualBasic = ref({
-   fullName: '',
-   email: '',
-   phone: '',
-   location: '',
-   headline: ''
-})
-const manualBio = ref('')
-const manualSocialLinks = ref([
-   { platform: 'LinkedIn', url: '' },
-   { platform: 'Portfolio', url: '' }
-])
-const manualExperiences = ref([
-   { company: '', role: '', type: 'Full-time', achievements: '', start: '', end: '', isCurrent: false }
-])
-const manualEducation = ref([
-   { title: '', institution: '', year: '', gpa: '' }
-])
-const manualProjects = ref([
-   { name: '', link: '' }
-])
-const manualLanguages = ref(['English', 'German'])
-const manualSkills = ref({
-   hard: ['Python', 'n8n', 'Docker'],
-   soft: ['Leadership', 'Agile'],
-   tools: ['VS Code', 'Git']
-})
+// Shortcuts to props for live synchronization
+const manualBasic = props.profile.basic
+const manualSocialLinks = props.profile.socialLinks
+const manualExperiences = props.profile.experiences
+const manualEducation = props.profile.education
+const manualProjects = props.profile.projects
+const manualLanguages = props.profile.languages
+const manualSkills = props.profile.skills
+
 const skillInputTemp = ref({ type: 'hard', val: '' })
 
 // Handlers
 const syncLinkedInData = async () => {
-   if (!manualSocialLinks.value[0].url) return;
+   if (!manualSocialLinks[0].url) return;
    isAutoSyncingLinkedIn.value = true;
    await new Promise(res => setTimeout(res, 3500));
    
-   manualBasic.value.fullName = "Amila Master Dev";
-   manualBasic.value.headline = "Senior Full-Stack AI Automation Architect";
-   manualBasic.value.location = "Colombo, Sri Lanka";
+   manualBasic.fullName = "Amila Master Dev";
+   manualBasic.headline = "Senior Full-Stack AI Automation Architect";
+   manualBasic.location = "Colombo, Sri Lanka";
    
-   manualExperiences.value = [
+   props.profile.experiences = [
       { company: 'DigyNex Global', role: 'Head of Automation', type: 'Full-time', achievements: 'Directed 25+ high-stakes RPA missions reducing operational latency by 80%.', start: '2022', end: '', isCurrent: true },
       { company: 'TechNova Sync', role: 'Lead Software Engineer', type: 'Full-time', achievements: 'Architected scalable microservices using Deno and n8n orchestration.', start: '2020', end: '2022', isCurrent: false }
    ];
    
-   manualSkills.value.hard = ['Architectural Design', 'n8n Logic', 'Gemini AI', 'Supabase V3', 'Docker-Compose'];
+   manualSkills.hard = ['Architectural Design', 'n8n Logic', 'Gemini AI', 'Supabase V3', 'Docker-Compose'];
    isAutoSyncingLinkedIn.value = false;
 }
 
@@ -87,10 +72,10 @@ const polishWithAI = async (field, currentVal) => {
 }
 
 const applyAIVersion = () => {
-   if (aiComparison.value.field === 'bio') manualBio.value = aiComparison.value.drafted;
+   if (aiComparison.value.field === 'bio') props.profile.bio = aiComparison.value.drafted;
    else if (aiComparison.value.field.includes('achievements_')) {
       const idx = parseInt(aiComparison.value.field.split('_')[1]);
-      manualExperiences.value[idx].achievements = aiComparison.value.drafted;
+      manualExperiences[idx].achievements = aiComparison.value.drafted;
    }
    isComparing.value = false;
 }
@@ -241,8 +226,8 @@ const finalizeManualCV = async () => {
                      </div>
                   </div>
                   <div class="relative">
-                     <textarea v-model="manualBio" placeholder="Tell your professional story..." rows="4" class="w-full bg-white/5 border border-white/5 rounded-2xl px-4 py-4 text-[12px] text-white focus:outline-none focus:ring-1 focus:ring-[#C1A172] transition-all resize-none"></textarea>
-                     <button @click="polishWithAI('bio', manualBio)" class="absolute bottom-4 right-4 bg-[#C1A172] px-3 py-1.5 rounded-xl flex items-center gap-2 shadow-xl hover:scale-110 active:scale-95 transition-all group/btn shadow-[0_4px_15px_rgba(193,161,114,0.3)]">
+                     <textarea v-model="props.profile.bio" placeholder="Tell your professional story..." rows="4" class="w-full bg-white/5 border border-white/5 rounded-2xl px-4 py-4 text-[12px] text-white focus:outline-none focus:ring-1 focus:ring-[#C1A172] transition-all resize-none"></textarea>
+                     <button @click="polishWithAI('bio', props.profile.bio)" class="absolute bottom-4 right-4 bg-[#C1A172] px-3 py-1.5 rounded-xl flex items-center gap-2 shadow-xl hover:scale-110 active:scale-95 transition-all group/btn shadow-[0_4px_15px_rgba(193,161,114,0.3)]">
                         <Sparkles class="w-3.5 h-3.5 text-[#0A2647]" />
                         <span class="text-[8px] font-black text-[#0A2647] uppercase tracking-widest">Polish</span>
                      </button>
@@ -362,6 +347,35 @@ const finalizeManualCV = async () => {
                   </div>
                </div>
 
+               <!-- AI TARGET RESUME LANGUAGE (NEW: BEAST MODE SYNC) -->
+               <div class="pt-6 border-t border-white/5 space-y-4">
+                  <span class="text-[11px] font-black text-[#C1A172] uppercase tracking-[0.2em] border-b border-white/10 pb-1 block">AI Submission Strategy</span>
+                  <div class="grid grid-cols-2 gap-3">
+                     <button v-for="langOption in ['English (Default)', 'Smart Localization']" 
+                             :key="langOption"
+                             @click="props.profile.targetLanguage = langOption"
+                             :class="props.profile.targetLanguage === langOption ? 'bg-[#C1A172]/20 border-[#C1A172] text-white shadow-[0_0_15px_rgba(193,161,114,0.2)]' : 'bg-black/20 border-white/5 text-white/30'"
+                             class="flex flex-col items-center gap-2 px-4 py-6 rounded-2xl border transition-all text-center group/opt relative overflow-hidden">
+                        <Globe v-if="langOption === 'Smart Localization'" class="w-5 h-5" :class="props.profile.targetLanguage === langOption ? 'text-[#C1A172]' : 'text-white/20'" />
+                        <FileText v-else class="w-5 h-5" :class="props.profile.targetLanguage === langOption ? 'text-[#C1A172]' : 'text-white/20'" />
+                        <div class="flex flex-col gap-0.5">
+                           <span class="text-[9px] font-black uppercase tracking-widest">{{ langOption }}</span>
+                           <span class="text-[7px] font-black text-white/20 uppercase tracking-widest leading-tight">{{ langOption === 'Smart Localization' ? 'Detect Job Region' : 'Global Outreach' }}</span>
+                        </div>
+                        <div v-if="props.profile.targetLanguage === langOption" class="absolute top-2 right-2">
+                           <Check class="w-3 h-3 text-[#C1A172]" />
+                        </div>
+                     </button>
+                  </div>
+                  <div v-if="props.profile.targetLanguage === 'Smart Localization'" class="bg-[#2C74B3]/5 border border-[#2C74B3]/10 p-3 rounded-xl flex items-center justify-between">
+                     <div class="flex items-center gap-3">
+                        <span class="text-[7px] p-1.5 bg-[#2C74B3] text-white rounded font-black uppercase">Active Detetection</span>
+                        <span class="text-[8px] font-black text-white uppercase tracking-widest">{{ activeCountry || 'Detecting...' }} AI Language Adaption</span>
+                     </div>
+                     <span class="text-[10px] animate-pulse">🇸🇪</span>
+                  </div>
+               </div>
+
                <div class="bg-[#2C74B3]/5 border border-[#2C74B3]/10 p-4 rounded-2xl flex items-start gap-4 mt-8 backdrop-blur-sm">
                   <div class="bg-[#2C74B3]/20 p-2 rounded-lg">
                      <ShieldCheck class="w-4 h-4 text-[#2C74B3]" />
@@ -442,16 +456,31 @@ const finalizeManualCV = async () => {
           </div>
 
           <!-- CV Body (High Fidelity) -->
-          <div class="flex-1 overflow-y-auto p-10 space-y-10 custom-scrollbar text-[#0A2647] font-inter">
-            <div class="space-y-4 text-[#0A2647]">
+          <div class="flex-1 overflow-y-auto p-10 space-y-10 custom-scrollbar text-[#0A2647] font-inter relative">
+            
+            <!-- PRIVACY LOCK MASK (GUEST MODE) -->
+            <div v-if="!props.isAuthenticated" class="absolute inset-0 z-[100] flex flex-col items-center justify-center p-8 text-center bg-white/40 backdrop-blur-md">
+               <div class="w-full max-w-[280px] bg-[#0A2647] border border-white/10 rounded-[2.5rem] p-8 shadow-3xl flex flex-col items-center gap-4 animate-in zoom-in-95 duration-500">
+                  <div class="w-12 h-12 bg-red-500/10 rounded-2xl flex items-center justify-center border border-red-500/20">
+                     <FileText class="w-6 h-6 text-red-400" />
+                  </div>
+                  <div class="space-y-1">
+                     <h3 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">PRIVACY LOCK ENGAGED</h3>
+                     <p class="text-[8px] font-black text-white/30 uppercase tracking-[0.1em] leading-relaxed">For GDPR compliance and data protection, full document rendering is restricted in guest environments.</p>
+                  </div>
+                  <button @click="emit('requestAuth')" class="mt-2 w-full py-3 bg-red-400 rounded-xl text-[9px] font-black text-[#0A2647] uppercase tracking-widest shadow-lg hover:scale-105 active:scale-95 transition-all">Unlock Master Access</button>
+               </div>
+            </div>
+
+            <div class="space-y-4 text-[#0A2647]" :class="{ 'filter blur-[3px] select-none pointer-events-none opacity-40': !props.isAuthenticated }">
               <div class="flex items-center gap-4">
                 <h3 class="text-[11px] font-black uppercase tracking-[0.4em] text-[#0A2647] font-playfair">Professional Impact</h3>
                 <div class="flex-1 h-[1px] bg-[#0A2647]/10"></div>
               </div>
-              <p class="text-[10.5px] leading-[1.8] italic text-slate-600 font-medium translate-x-1 border-l-2 border-[#C1A172]/20 pl-4">{{ manualBio || 'Synthesize your professional impact here...' }}</p>
+              <p class="text-[10.5px] leading-[1.8] italic text-slate-600 font-medium translate-x-1 border-l-2 border-[#C1A172]/20 pl-4">{{ props.profile.bio || 'Synthesize your professional impact here...' }}</p>
             </div>
 
-            <div class="space-y-6">
+            <div class="space-y-6" :class="{ 'filter blur-[3px] select-none pointer-events-none opacity-40': !props.isAuthenticated }">
               <div class="flex items-center gap-4">
                 <h3 class="text-[11px] font-black uppercase tracking-[0.4em] text-[#0A2647] font-playfair">Work Evolution</h3>
                 <div class="flex-1 h-[1px] bg-[#0A2647]/10"></div>
@@ -466,7 +495,7 @@ const finalizeManualCV = async () => {
               </div>
             </div>
 
-            <div class="space-y-6">
+            <div class="space-y-6" :class="{ 'filter blur-[3px] select-none pointer-events-none opacity-40': !props.isAuthenticated }">
               <div class="flex items-center gap-4">
                 <h3 class="text-[11px] font-black uppercase tracking-[0.4em] text-[#0A2647] font-playfair">Academic History</h3>
                 <div class="flex-1 h-[1px] bg-[#0A2647]/10"></div>
@@ -480,7 +509,7 @@ const finalizeManualCV = async () => {
               </div>
             </div>
 
-            <div class="space-y-6">
+            <div class="space-y-6" :class="{ 'filter blur-[3px] select-none pointer-events-none opacity-40': !props.isAuthenticated }">
               <div class="flex items-center gap-4">
                 <h3 class="text-[11px] font-black uppercase tracking-[0.4em] text-[#0A2647] font-playfair">Cognitive Stack</h3>
                 <div class="flex-1 h-[1px] bg-[#0A2647]/10"></div>

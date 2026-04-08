@@ -81,6 +81,8 @@
     "dashboard": "Dashboard",
     "applications": "Applications",
     "matches": "Matches",
-    "profile": "Profile"
+    "profile": "Profile",
+    "login": "Login",
+    "register": "Join"
   }
 }

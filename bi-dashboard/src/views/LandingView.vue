@@ -43,12 +43,12 @@
         </div>
 
         <h1 class="text-5xl md:text-7xl font-black tracking-tighter text-white mb-6 leading-[1.1] animate-[slideUp_0.6s_ease-out]">
-          Turn Data into <br class="hidden md:block"/>
-          <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-primary to-accent">Decisions.</span>
+          Strategic Intelligence, <br class="hidden md:block"/>
+          <span class="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-primary to-accent">Nexus Elite.</span>
         </h1>
         
         <p class="mt-6 text-lg md:text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed font-medium animate-[slideUp_0.7s_ease-out]">
-          Stop guessing. The ultimate AI-powered Decision Intelligence System designed exclusively for scaling enterprises. Real-time forecasting, anomaly alerts, and profit mapping.
+          The "Project Nexus" 13-stage ecosystem is here. Deploy an autonomous Digital Workforce that manages Bulk Ingestions, SCV Audits, and Financial Sovereignty on your own servers.
         </p>
         
         <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-4 animate-[slideUp_0.8s_ease-out]">
@@ -86,31 +86,31 @@
 
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
           
-          <!-- Feature 1 -->
+          <!-- Feature 1: Bulk Ingest -->
           <div @click="openFeature('insights')" class="bg-white/5 border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-all group cursor-pointer block no-underline hover:-translate-y-1">
             <div class="w-14 h-14 bg-blue-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <Brain class="w-7 h-7 text-blue-400" />
+              <Layers class="w-7 h-7 text-blue-400" />
             </div>
-            <h3 class="text-xl font-bold text-white mb-3">AI Deep Insights</h3>
-            <p class="text-slate-400 text-sm leading-relaxed font-medium">Auto-analyzes hidden transaction trends and summarizes them into actionable sentences for rapid executive review.</p>
+            <h3 class="text-xl font-bold text-white mb-3">Bulk Ingest Hub</h3>
+            <p class="text-slate-400 text-sm leading-relaxed font-medium">Asynchronous ETL pipeline processing 10,000+ line-item manifests (CSV/PDF) instantly into your project ledger.</p>
           </div>
 
-          <!-- Feature 2 -->
+          <!-- Feature 2: SCV Audit -->
           <div @click="openFeature('forecasting')" class="bg-white/5 border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-all group cursor-pointer block no-underline hover:-translate-y-1">
             <div class="w-14 h-14 bg-accent/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <LineChart class="w-7 h-7 text-accent" />
+              <ShieldCheck class="w-7 h-7 text-accent" />
             </div>
-            <h3 class="text-xl font-bold text-white mb-3">Predictive Forecasting</h3>
-            <p class="text-slate-400 text-sm leading-relaxed font-medium">Compare actual revenue against AI-generated target paths visually, ensuring you hit financial objectives before quarter-end.</p>
+            <h3 class="text-xl font-bold text-white mb-3">SCV Financial Auditing</h3>
+            <p class="text-slate-400 text-sm leading-relaxed font-medium">Strategic Cost Variance tracking. Our AI identifies billing mismatches and profit leaks with immutable transaction logs.</p>
           </div>
 
-          <!-- Feature 3 -->
+          <!-- Feature 3: Sovereignty -->
           <div @click="openFeature('alerts')" class="bg-white/5 border border-white/10 p-8 rounded-2xl hover:bg-white/10 transition-all group cursor-pointer block no-underline hover:-translate-y-1">
-            <div class="w-14 h-14 bg-red-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
-              <AlertTriangle class="w-7 h-7 text-red-500 shadow-[0_0_15px_rgba(239,68,68,0.2)]" />
+            <div class="w-14 h-14 bg-indigo-500/10 rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+              <Lock class="w-7 h-7 text-indigo-400 shadow-[0_0_15px_rgba(99,102,241,0.2)]" />
             </div>
-            <h3 class="text-xl font-bold text-white mb-3">Anomaly Alerts</h3>
-            <p class="text-slate-400 text-sm leading-relaxed font-medium">Real-time alerts intercept sudden expense spikes or revenue segment drops instantly, turning defense into offense.</p>
+            <h3 class="text-xl font-bold text-white mb-3">Operational Sovereignty</h3>
+            <p class="text-slate-400 text-sm leading-relaxed font-medium">On-Premise Docker deployment. Your data never leaves your infrastructure. 100% GDPR & Strategic Isolation.</p>
           </div>
 
         </div>
@@ -166,50 +166,50 @@
         <p class="text-slate-400 mb-16 max-w-2xl mx-auto text-lg">Scale with confidence. Choose the tier that matches your business velocity.</p>
         
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-left">
-          <!-- Starter -->
+          <!-- Nexus Starter -->
           <div class="p-8 rounded-2xl bg-white/5 border border-white/10 flex flex-col hover:border-white/20 transition-all">
-            <h3 class="text-xl font-bold text-white mb-2">Starter</h3>
-            <div class="text-primary text-sm font-bold uppercase tracking-wider mb-6">Up to 500 orders/mo</div>
-            <div class="text-4xl font-black text-white mb-1">$89 <span class="text-sm font-medium text-slate-500">/mo</span></div>
-            <p class="text-slate-500 text-sm mb-8">LKR 12,000 / month (Regional Office)</p>
+            <h3 class="text-xl font-bold text-white mb-2">Nexus Starter</h3>
+            <div class="text-primary text-sm font-bold uppercase tracking-wider mb-6">Small Business Excellence</div>
+            <div class="text-4xl font-black text-white mb-1">$499 <span class="text-sm font-medium text-slate-500">/mo</span></div>
+            <p class="text-slate-500 text-sm mb-8">LKR 125,000+ / month (Value Model)</p>
             <ul class="space-y-4 mb-10 flex-grow text-sm text-slate-400">
-              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> Basic KPI Dashboard</li>
-              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> Daily AI Insights</li>
-              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> Standard Reports</li>
+              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> Basic KPI & Strategic Hub</li>
+              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> Autonomous Weekly Reports</li>
+              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> Daily AI Operations Pulse</li>
             </ul>
-            <button class="w-full py-3 border border-white/10 rounded-lg text-white font-bold hover:bg-white/5 transition-all">Get Started</button>
+            <button class="w-full py-3 border border-white/10 rounded-lg text-white font-bold hover:bg-white/5 transition-all">Inquire Now</button>
           </div>
 
-          <!-- Business -->
+          <!-- Nexus Business/Pro -->
           <div class="p-8 rounded-2xl bg-primary/10 border-2 border-primary flex flex-col relative transform scale-105 shadow-[0_0_40px_rgba(59,130,246,0.2)]">
             <div class="absolute top-0 right-0 p-3">
               <span class="bg-primary text-white text-[10px] font-black uppercase px-3 py-1 rounded-full">Most Popular</span>
             </div>
-            <h3 class="text-xl font-bold text-white mb-2">Business</h3>
-            <div class="text-primary text-sm font-bold uppercase tracking-wider mb-6">Unlimited Orders</div>
-            <div class="text-4xl font-black text-white mb-1">$149 <span class="text-sm font-medium text-slate-500">/mo</span></div>
-            <p class="text-slate-500 text-sm mb-8">LKR 18,000 / month (Regional Office)</p>
+            <h3 class="text-xl font-bold text-white mb-2">Nexus Pro</h3>
+            <div class="text-primary text-sm font-bold uppercase tracking-wider mb-6">Mid-size/Logistics Focus</div>
+            <div class="text-4xl font-black text-white mb-1">$2,499 <span class="text-sm font-medium text-slate-500">/mo</span></div>
+            <p class="text-slate-500 text-sm mb-8">LKR 750,000+ / month (Full Ecosystem)</p>
             <ul class="space-y-4 mb-10 flex-grow text-sm text-slate-400">
-              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> Advanced AI Forecasting</li>
-              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> Real-time Anomaly Alerts</li>
-              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> Multi-currency Support</li>
-              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> Priority Human Support</li>
+              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> Bulk Ingest ETL Pipeline</li>
+              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> AI Invoice/PO Matching</li>
+              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> Multi-org Financial Consolidation</li>
+              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> Priority Agent Support</li>
             </ul>
-            <button class="w-full py-3 bg-primary rounded-lg text-white font-black hover:bg-blue-600 transition-all shadow-lg shadow-primary/20">Go Pro Now</button>
+            <button class="w-full py-3 bg-primary rounded-lg text-white font-black hover:bg-blue-600 transition-all shadow-lg shadow-primary/20">Upgrade to Pro</button>
           </div>
 
-          <!-- Enterprise -->
+          <!-- Nexus Elite -->
           <div class="p-8 rounded-2xl bg-white/5 border border-white/10 flex flex-col hover:border-white/20 transition-all">
-            <h3 class="text-xl font-bold text-white mb-2">Enterprise</h3>
-            <div class="text-primary text-sm font-bold uppercase tracking-wider mb-6">Custom Scale</div>
-            <div class="text-4xl font-black text-white mb-1">Custom</div>
-            <p class="text-slate-500 text-sm mb-8">Quote based on infrastructure</p>
+            <h3 class="text-xl font-bold text-white mb-2">Nexus Elite</h3>
+            <div class="text-primary text-sm font-bold uppercase tracking-wider mb-6">Enterprise Sovereignty</div>
+            <div class="text-4xl font-black text-white mb-1">$4,500 <span class="text-sm font-medium text-slate-500">/mo</span></div>
+            <p class="text-slate-500 text-sm mb-8">$5,000 Initial Strategy Audit</p>
             <ul class="space-y-4 mb-10 flex-grow text-sm text-slate-400">
-              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> On-premise Deployment</li>
-              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> Custom AI Model Training</li>
-              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> Dedicated Success Manager</li>
+              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> On-premise Docker Deployment</li>
+              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> Custom AI Model Training (Gemini)</li>
+              <li class="flex items-center gap-2"><div class="w-4 h-4 rounded-full bg-green-500/20 flex items-center justify-center text-green-500 text-[10px]">✓</div> 24/7 Dedicated AI Engineer</li>
             </ul>
-            <button class="w-full py-3 border border-white/10 rounded-lg text-white font-bold hover:bg-white/5 transition-all">Contact Sales</button>
+            <button class="w-full py-3 border border-white/10 rounded-lg text-white font-bold hover:bg-white/5 transition-all">Schedule Audit</button>
           </div>
         </div>
       </div>
@@ -394,7 +394,7 @@
 
 <script setup>
 import { ref, computed } from 'vue'
-import { Layers, ArrowRight, Brain, LineChart, AlertTriangle, Mail, Phone, MessageCircle, X, CheckCircle } from 'lucide-vue-next'
+import { Layers, ArrowRight, Brain, LineChart, AlertTriangle, Mail, Phone, MessageCircle, X, CheckCircle, ShieldCheck, Lock } from 'lucide-vue-next'
 
 const selectedFeatureKey = ref(null)
 

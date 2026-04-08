@@ -452,26 +452,26 @@ document.addEventListener("DOMContentLoaded", () => {
   const pricingData = {
     SE: {
       currency: "SEK",
-      starter: 299,
-      growth: 799,
-      scale: 1499,
-      setup: { starter: "999 kr", growth: "1,999 kr", scale: "4,999 kr" },
+      starter: 4990,
+      growth: 24990,
+      scale: 44990,
+      setup: { starter: "12,500 kr", growth: "25,000 kr", scale: "50,000 kr" },
       marketName: "Sweden (Headquarters)"
     },
     LK: {
       currency: "LKR",
-      starter: 2500,
-      growth: 12000,
-      scale: 18000,
-      setup: { starter: "12,000 LKR", growth: "18,000 LKR", scale: "30,000 LKR" },
+      starter: 149000,
+      growth: 749000,
+      scale: 1250000,
+      setup: { starter: "150,000 LKR", growth: "250,000 LKR", scale: "500,000 LKR" },
       marketName: "Sri Lanka (Local)"
     },
     GLOBAL: {
       currency: "USD",
-      starter: 29,
-      growth: 79,
-      scale: 149,
-      setup: { starter: "$99", growth: "$199", scale: "$499" },
+      starter: 499,
+      growth: 2499,
+      scale: 4500,
+      setup: { starter: "$999", growth: "$5,000", scale: "$15,000+" },
       marketName: "Global Premium"
     }
   };

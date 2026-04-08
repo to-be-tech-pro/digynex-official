@@ -24,6 +24,10 @@ import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import SkillGapChart from './components/SkillGapChart.vue'
 import ExpertProfileWizard from './components/ExpertProfileWizard.vue'
+import AuthOverlay from './components/AuthOverlay.vue'
+import JobDetailOverlay from './components/JobDetailOverlay.vue'
+import ActionSheet from './components/ActionSheet.vue'
+import { supabase } from './lib/supabase'
 
 const { t, locale } = useI18n()
 const currentLang = ref('EN')
@@ -150,17 +154,34 @@ const saveLinkedIn = async () => {
   }
 }
 
+const masterProfile = ref({
+   basic: { fullName: '', email: '', phone: '', location: '', headline: '' },
+   targetLanguage: 'Smart Localization', // NEW: AI Strategy logic
+   bio: '',
+   socialLinks: [
+      { platform: 'LinkedIn', url: '' },
+      { platform: 'Portfolio', url: '' }
+   ],
+   experiences: [
+      { company: '', role: '', type: 'Full-time', achievements: '', start: '', end: '', isCurrent: false }
+   ],
+   education: [
+      { title: '', institution: '', year: '', gpa: '' }
+   ],
+   projects: [
+      { name: '', link: '' }
+   ],
+   languages: ['English', 'German'],
+   skills: {
+      hard: ['Python', 'n8n', 'Docker'],
+      soft: ['Leadership', 'Agile'],
+      tools: ['VS Code', 'Git']
+   }
+})
+
 const isCompilingLatex = ref(false)
 const isManualFormOpen = ref(false)
 const isCVPreviewOpen = ref(false)
-
-const manualBasic = ref({ fullName: '', email: '', phone: '', location: '', headline: '' })
-const manualBio = ref('')
-const manualExperiences = ref([])
-const manualEducation = ref([])
-const manualSkills = ref({ hard: [], soft: [], tools: [] })
-const manualProjects = ref([])
-const manualLanguages = ref([])
 
 const compileLatex = async () => {
     isCompilingLatex.value = true;
@@ -177,7 +198,65 @@ const finalizeManualCV = () => {
 const onManualFinalize = () => {
    isManualFormOpen.value = false;
    activeTab.value = 'profile';
-   // Additional app-level logic after master identity build
+   // Synchronize the master profile name with the global user display name
+   if (masterProfile.value.basic.fullName) {
+      userProfile.value.name = masterProfile.value.basic.fullName;
+   }
+}
+
+const isAuthenticated = ref(false)
+const isAuthOpen = ref(false)
+const authMode = ref('login')
+const userProfile = ref({
+    email: '',
+    name: 'Expert'
+})
+
+const fetchUserProfile = async () => {
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+        userProfile.value = {
+            email: user.email,
+            name: user.user_metadata?.full_name || user.user_metadata?.display_name || 'Expert'
+        };
+        isAuthenticated.value = true;
+    }
+};
+
+onMounted(async () => {
+    const { data: { session } } = await supabase.auth.getSession();
+    if (session) {
+        await fetchUserProfile();
+    }
+});
+
+const openAuth = (mode) => {
+    authMode.value = mode;
+    isAuthOpen.value = true;
+}
+
+const loginSuccess = async () => {
+    await fetchUserProfile();
+    isAuthOpen.value = false;
+}
+
+const logout = async () => {
+    await supabase.auth.signOut();
+    isAuthenticated.value = false;
+}
+
+// Job Detail Logic
+const isJobDetailOpen = ref(false)
+const selectedJob = ref(null)
+
+const openJobDetail = (job) => {
+    selectedJob.value = job;
+    isJobDetailOpen.value = true;
+}
+
+const isActionSheetOpen = ref(false)
+const openActionSheet = (title) => {
+    isActionSheetOpen.value = true;
 }
 
 
@@ -221,69 +300,89 @@ onUnmounted(() => {
        - NARROW SLIM NAV BAR (BOTTOM-4)
     -->
     <main class="w-full max-w-[360px] h-[800px] bg-[#0A2647] relative z-10 flex flex-col border border-white/10 rounded-[3.8rem] ring-1 ring-white/20 shadow-[0_80px_160px_rgba(0,0,0,0.7)] overflow-hidden">
-      
-      <!-- DASHBOARD VIEW -->
-      <div v-if="activeTab === 'dashboard'" class="flex flex-col h-full overflow-hidden">
-         <!-- Scrolling Content Wrapper -->
-         <div class="flex-1 overflow-y-auto px-4 pb-24 custom-scrollbar">
-            <!-- Top Branding Hub (CENTERED LARGE - 18PX TOP SYNC) -->
-            <header class="flex flex-col items-center pt-[18px] space-y-4 w-full relative z-[600]">
-          <!-- Official Logo Section (ULTRA-TIGHT SYNC) -->
-          <div class="relative group">
-            <div class="p-1 bg-gradient-to-br from-[#144272] to-[#0A2647] rounded-full flex items-center justify-center border-2 border-white/40 shadow-[-10px_-10px_30px_rgba(255,255,255,0.05),15px_15px_35px_rgba(0,0,0,0.6)] overflow-hidden scale-105 transition-all hover:scale-110 active:scale-95 duration-500">
-               <img src="/digynex-icon.png" alt="DigyNex" class="h-11 w-auto object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)]" />
-            </div>
-            <!-- 3D Ring Reflection -->
-            <div class="absolute -inset-1 border border-white/10 rounded-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity"></div>
-          </div>
+        
+       <!-- DASHBOARD VIEW -->
+       <div v-if="activeTab === 'dashboard'" class="flex flex-col h-full overflow-hidden">
+          <!-- Scrolling Content Wrapper -->
+          <div class="flex-1 overflow-y-auto px-4 pb-24 custom-scrollbar">
+             <!-- Top Branding Hub (CENTERED LARGE - 18PX TOP SYNC) -->
+             <header class="flex flex-col items-center pt-[18px] space-y-4 w-full relative z-[600]">
+            <!-- Symmetric Auth Gate (V6.5 ELITE) -->
+            <div class="flex items-center justify-between w-full px-4 mb-2">
+               <!-- LEFT: JOIN (Sign Up) -->
+               <button v-if="!isAuthenticated" @click="openAuth('register')" 
+                       class="text-[8px] font-black text-white/30 uppercase tracking-[0.3em] px-4 py-2 rounded-full border border-white/5 hover:text-white hover:border-[#C1A172]/40 hover:bg-[#C1A172]/5 hover:shadow-[0_0_20px_rgba(193,161,114,0.3)] transition-all duration-500 font-jakarta active:scale-90">
+                  {{ t('auth.signup') || 'JOIN' }}
+               </button>
+<div v-else class="w-16"></div>
 
-          <!-- Branding Text Hub (WHITE SYNC - 22PX BOTTOM GAP) -->
-          <div class="flex flex-col items-center mt-4 mb-1">
-            <h1 class="text-[17px] font-black text-white uppercase tracking-[0.2em] leading-tight font-jakarta">{{ t('header.title') }}</h1>
-            <p class="text-[15px] font-black text-white uppercase tracking-[0.25em] -mt-1 font-jakarta">{{ t('header.subtitle') }}</p>
-          </div>
-
-          <!-- Language Pill Unit (LOCKED SIZES) -->
-          <div ref="langContainer" class="bg-black/30 backdrop-blur-2xl rounded-full p-0.5 flex items-center border border-white/10 shadow-2xl relative transition-all hover:scale-100 scale-100">
-            <button v-for="lang in quickLangs" :key="lang" @click="setLang(lang)" 
-                    :class="locale === lang ? 'bg-white text-[#0A2647] shadow-lg font-black scale-105 ring-1 ring-white/20' : 'text-white/40 hover:text-white/80 font-bold hover:bg-white/5'"
-                    class="px-5 py-2.5 rounded-full text-[10px] uppercase min-w-[55px] flex items-center justify-center cursor-pointer transition-all duration-500 relative z-20">
-              {{ lang }}
-            </button>
-            <div class="h-3 w-[1px] bg-white/10 mx-1"></div>
-            
-            <!-- 4th Pill Dropdown (SYNCED V6.5) -->
-            <div @click="toggleSelector" 
-                 :class="(!quickLangs.includes(locale) || isLangOpen) ? 'bg-white text-[#0A2647] shadow-lg scale-105' : 'text-white/40 hover:text-white/80'"
-                 class="flex items-center gap-1.5 pl-3 pr-3 py-2.5 rounded-full cursor-pointer group transition-all duration-500 relative z-20">
-              
-              <Globe v-if="quickLangs.includes(locale) && !isLangOpen" class="w-3 h-3 transition-transform group-hover:rotate-12" />
-              <span v-else class="text-[9px] font-black uppercase tracking-tight">{{ locale }}</span>
-              <ChevronDown class="w-3 h-3 transition-transform opacity-30" :class="isLangOpen ? 'rotate-180 opacity-100' : ''" />
-            </div>
-
-            <!-- Animated Selector Overlay (SYNCED V6.5) -->
-            <div v-if="isLangOpen" class="absolute top-[60px] right-0 w-[180px] bg-[#0A2647]/95 backdrop-blur-3xl rounded-[1.8rem] p-4 shadow-[0_40px_80px_rgba(0,0,0,0.9)] z-[3000] border border-white/10 animate-in fade-in zoom-in duration-300">
-               <p class="text-[7.5px] font-black text-white/30 uppercase tracking-[0.25em] mb-4 border-b border-white/5 pb-2">{{ t('header.globalSuite') }}</p>
-               <div class="space-y-1 max-h-[220px] overflow-y-auto pr-0.5 custom-scrollbar">
-                  <div v-for="l in otherLangs" :key="l.code" @click="setLang(l.code)" 
-                       class="flex items-center justify-between py-2.5 px-3 rounded-xl border border-white/0 hover:border-white/10 hover:bg-white/5 transition-all cursor-pointer group active:scale-95">
-                     <div class="flex items-center gap-1">
-                        <div class="w-6 h-6 flex items-center justify-center text-[8px] font-black text-white/40 group-hover:text-white transition-colors">{{ l.code }}</div>
-                        <span class="text-[11px] font-bold tracking-tight text-white/70 group-hover:text-white transition-colors">{{ l.name }}</span>
-                     </div>
-                     <ArrowRight class="w-2.5 h-2.5 text-white/10 group-hover:text-white transition-all font-jakarta" />
-                  </div>
+               <!-- CENTER: LOGO UNIT -->
+               <div class="relative group">
+                 <div class="p-1.5 bg-gradient-to-br from-[#144272] to-[#0A2647] rounded-full flex items-center justify-center border-2 border-white/40 shadow-[-10px_-10px_30px_rgba(255,255,255,0.05),15px_15px_35px_rgba(0,0,0,0.6)] overflow-hidden scale-100 transition-all hover:scale-110 active:scale-95 duration-500">
+                    <img src="/digynex-icon.png" alt="DigyNex" class="h-10 w-auto object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)]" />
+                 </div>
+                 <!-- 3D Ring Reflection -->
+                 <div class="absolute -inset-1 border border-white/10 rounded-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity"></div>
                </div>
-            </div>
-          </div>
-        </header>
 
+               <!-- RIGHT: LOGIN -->
+               <button v-if="!isAuthenticated" @click="openAuth('login')" 
+                       class="text-[8px] font-black text-white/30 uppercase tracking-[0.3em] px-4 py-2 rounded-full border border-white/5 hover:text-white hover:border-[#C1A172]/40 hover:bg-[#C1A172]/5 hover:shadow-[0_0_20px_rgba(193,161,114,0.3)] transition-all duration-500 font-jakarta active:scale-90">
+                  {{ t('auth.login') || 'LOGIN' }}
+               </button>
+               <button v-else @click="logout" class="text-[8px] font-black text-red-500/50 uppercase tracking-[0.3em] px-4 py-2 rounded-full border border-red-500/10 hover:text-red-500 transition-all font-jakarta active:scale-90">LOG OUT</button>
+            </div>
+ 
+           <!-- Branding Text Hub (WHITE SYNC - 22PX BOTTOM GAP) -->
+           <div class="flex flex-col items-center mt-4 mb-1">
+             <h1 class="text-[17px] font-black text-white uppercase tracking-[0.2em] leading-tight font-jakarta">{{ t('header.title') }}</h1>
+             <p class="text-[15px] font-black text-white uppercase tracking-[0.25em] -mt-1 font-jakarta">{{ t('header.subtitle') }}</p>
+           </div>
+ 
+           <!-- Language Pill Unit (LOCKED SIZES) -->
+           <div ref="langContainer" class="bg-black/30 backdrop-blur-2xl rounded-full p-0.5 flex items-center border border-white/10 shadow-2xl relative transition-all hover:scale-100 scale-100">
+             <button v-for="lang in quickLangs" :key="lang" @click="setLang(lang)" 
+                     :class="locale === lang ? 'bg-white text-[#0A2647] shadow-lg font-black scale-105 ring-1 ring-white/20' : 'text-white/40 hover:text-white/80 font-bold hover:bg-white/5'"
+                     class="px-5 py-2.5 rounded-full text-[10px] uppercase min-w-[55px] flex items-center justify-center cursor-pointer transition-all duration-500 relative z-20">
+               {{ lang }}
+             </button>
+             <div class="h-3 w-[1px] bg-white/10 mx-1"></div>
+             
+             <!-- 4th Pill Dropdown (SYNCED V6.5) -->
+             <div @click="toggleSelector" 
+                  :class="(!quickLangs.includes(locale) || isLangOpen) ? 'bg-white text-[#0A2647] shadow-lg scale-105' : 'text-white/40 hover:text-white/80'"
+                  class="flex items-center gap-1.5 pl-3 pr-3 py-2.5 rounded-full cursor-pointer group transition-all duration-500 relative z-20">
+               
+               <Globe v-if="quickLangs.includes(locale) && !isLangOpen" class="w-3 h-3 transition-transform group-hover:rotate-12" />
+               <span v-else class="text-[9px] font-black uppercase tracking-tight">{{ locale }}</span>
+               <ChevronDown class="w-3 h-3 transition-transform opacity-30" :class="isLangOpen ? 'rotate-180 opacity-100' : ''" />
+             </div>
+ 
+             <!-- Animated Selector Overlay (SYNCED V6.5) -->
+             <div v-if="isLangOpen" class="absolute top-[60px] right-0 w-[180px] bg-[#0A2647]/95 backdrop-blur-3xl rounded-[1.8rem] p-4 shadow-[0_40px_80px_rgba(0,0,0,0.9)] z-[3000] border border-white/10 animate-in fade-in zoom-in duration-300">
+                <p class="text-[7.5px] font-black text-white/30 uppercase tracking-[0.25em] mb-4 border-b border-white/5 pb-2">{{ t('header.globalSuite') }}</p>
+                <div class="space-y-1 max-h-[220px] overflow-y-auto pr-0.5 custom-scrollbar">
+                   <div v-for="l in otherLangs" :key="l.code" @click="setLang(l.code)" 
+                        class="flex items-center justify-between py-2.5 px-3 rounded-xl border border-white/0 hover:border-white/10 hover:bg-white/5 transition-all cursor-pointer group active:scale-95">
+                      <div class="flex items-center gap-1">
+                         <div class="w-6 h-6 flex items-center justify-center text-[8px] font-black text-white/40 group-hover:text-white transition-colors">{{ l.code }}</div>
+                         <span class="text-[11px] font-bold tracking-tight text-white/70 group-hover:text-white transition-colors">{{ l.name }}</span>
+                      </div>
+                      <ArrowRight class="w-2.5 h-2.5 text-white/10 group-hover:text-white transition-all font-jakarta" />
+                   </div>
+                </div>
+             </div>
+           </div>
+         </header>
+ 
         <!-- Identity Hub (REDUCED 5PX SPACE) -->
-        <div class="flex justify-between items-center mt-[5px] w-full px-1 font-jakarta">
-          <h1 class="text-[24px] font-bold text-white tracking-tight leading-none pt-2 font-jakarta">{{ t('header.welcome') }}</h1>
-          <div class="flex items-center gap-3.5 relative">
-             <div class="relative cursor-pointer hover:scale-110 transition-all group">
+         <div class="flex justify-between items-center mt-[5px] w-full px-1 font-jakarta">
+           <h1 class="text-[24px] font-bold text-white tracking-tight leading-none pt-2 font-jakarta">
+              {{ isAuthenticated ? `Welcome, ${userProfile.name.split(' ')[0]}` : t('header.welcome') }}
+           </h1>
+          <div class="flex items-center gap-3">
+            <div class="relative cursor-pointer hover:scale-110 transition-all group">
+
                 <Bell class="w-6 h-6 text-white/40 group-hover:text-white" />
                 <!-- Notification Badge Unit -->
                 <div class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-500 rounded-full border-2 border-[#0A2647] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
@@ -330,7 +429,7 @@ onUnmounted(() => {
              <!-- Header Heading -->
              <div class="flex justify-between items-center mb-0.5 px-1 font-jakarta">
                 <span class="text-[9.5px] font-black text-[#0A2647]/55 uppercase tracking-[0.2em] leading-none font-jakarta">{{ t('sections.tracking') }}</span>
-                <div class="flex items-center cursor-pointer opacity-30 hover:opacity-100 transition-all font-jakarta">
+                <div @click.stop="openActionSheet('Tracking Actions')" class="flex items-center cursor-pointer opacity-30 hover:opacity-100 transition-all font-jakarta p-1">
                    <MoreHorizontal class="w-[18px] h-[18px] text-[#0A2647]" />
                 </div>
              </div>
@@ -363,7 +462,8 @@ onUnmounted(() => {
 
              <!-- JOB ROWS (ULTRA-ULTRA-PACKED) -->
              <div class="space-y-2 pt-0.5 pb-1 px-0.5 font-jakarta">
-                <div v-for="(job, i) in [{c: 'TechCorp', r: 'Senior Scientist', s: '80%', d: '14/03/24', icon: Briefcase}, {c: 'Innovate', r: 'Product Manager', s: '50%', d: '23/03/24', icon: LayoutDashboard}, {c: 'Techwork', r: 'Senior Scientist', s: '60%', d: '22/03/24', icon: Zap}]" :key="i" 
+                <div v-for="(job, i) in [{c: 'TechCorp', r: 'Senior Scientist', s: '80%', d: '14/03/24', icon: Briefcase, color: '#0A2647', m: 80}, {c: 'Innovate', r: 'Product Manager', s: '50%', d: '23/03/24', icon: LayoutDashboard, color: '#73BBA3', m: 50}, {c: 'Techwork', r: 'Senior Scientist', s: '60%', d: '22/03/24', icon: Zap, color: '#6366F1', m: 60}]" :key="i" 
+                     @click="openJobDetail(job)"
                      class="grid grid-cols-[1.5fr_1.2fr_1fr_0.8fr] items-center bg-transparent group cursor-pointer transition-all active:scale-98">
                    <div class="flex items-center gap-1">
                       <div class="w-7 h-7 bg-[#0A2647] rounded-xl flex items-center justify-center p-1.5 shadow-lg border border-white/5 ring-1 ring-white/10 group-hover:scale-110 transition-all font-jakarta" :class="i === 1 ? 'bg-[#73BBA3]' : i === 2 ? 'bg-[#6366F1]/60' : 'bg-[#0A2647]'"> 
@@ -390,7 +490,7 @@ onUnmounted(() => {
              <!-- Header Heading -->
              <div class="flex justify-between items-center mb-[1px] px-1 font-jakarta">
                 <span class="text-[9.5px] font-black text-[#0A2647]/55 uppercase tracking-[0.2em] leading-none font-jakarta">{{ t('sections.analytics') }}</span>
-                <div class="flex items-center cursor-pointer opacity-30 hover:opacity-100 transition-all font-jakarta">
+                <div @click.stop="openActionSheet('Analytics Options')" class="flex items-center cursor-pointer opacity-30 hover:opacity-100 transition-all font-jakarta p-1">
                    <MoreHorizontal class="w-[18px] h-[18px] text-[#0A2647]" />
                 </div>
              </div>
@@ -426,17 +526,21 @@ onUnmounted(() => {
                  </div>
               </div>
            </div>
-        </div>
+         </div>
         </div>
       </div>
 
       <!-- APPLICATIONS VIEW -->
       <div v-else-if="activeTab === 'applications'" class="flex flex-col h-full overflow-hidden animate-in fade-in slide-in-from-right-10 duration-500">
-         <header class="flex flex-col items-center pt-[18px] px-4 space-y-4 w-full relative z-[600]">
-            <div class="p-0.5 bg-white/10 rounded-full">
-               <img src="/digynex-icon.png" alt="DigyNex" class="h-8 w-auto opacity-50 contrast-125" />
-            </div>
-            <h2 class="text-[20px] font-black text-white tracking-tight uppercase">{{ t('apps.title') }}</h2>
+         <!-- Top Branding Hub (CENTERED SYNC) -->
+         <header class="flex flex-col items-center pt-[18px] space-y-4 w-full relative z-[600]">
+           <div class="p-0.5 bg-white/10 rounded-full">
+              <img src="/digynex-icon.png" alt="DigyNex" class="h-8 w-auto opacity-50 contrast-125" />
+           </div>
+           <div class="flex flex-col items-center mb-1">
+              <h2 class="text-[14px] font-black text-white/40 uppercase tracking-[0.3em] leading-none">{{ t('apps.title') }}</h2>
+           </div>
+         </header>
             <div class="w-full px-1 space-y-3">
                <div class="relative group">
                   <input type="text" :placeholder="t('apps.searchPlaceholder')" 
@@ -452,7 +556,7 @@ onUnmounted(() => {
                   </span>
                </div>
             </div>
-         </header>
+
          <div class="mt-4 flex-1 overflow-y-auto space-y-2 pb-[94px] px-4 custom-scrollbar">
             <!-- SMART ACTIVE VIEW (TOP 4 PRIORITY) -->
             <div v-for="(app, i) in [
@@ -502,7 +606,7 @@ onUnmounted(() => {
                      <span class="text-[8.5px] font-black text-white/20 uppercase tracking-[0.2em] font-jakarta">{{ t('apps.appliedDate') }}</span>
                      <span class="text-[11px] font-extrabold text-white/50 mt-1 font-jakarta">12 March 2024</span>
                   </div>
-                  <button class="bg-white text-[#0A2647] px-6 py-3 rounded-2xl text-[10.5px] font-black uppercase tracking-widest shadow-[0_10px_20px_rgba(0,0,0,0.2)] hover:shadow-[0_15px_30px_rgba(255,255,255,0.1)] active:scale-95 transition-all font-jakarta">
+                  <button @click="openJobDetail(app)" class="bg-white text-[#0A2647] px-6 py-3 rounded-2xl text-[10.5px] font-black uppercase tracking-widest shadow-[0_10px_20px_rgba(0,0,0,0.2)] hover:shadow-[0_15px_30px_rgba(255,255,255,0.1)] active:scale-95 transition-all font-jakarta">
                      {{ t('apps.viewDetails') }}
                   </button>
                </div>
@@ -521,41 +625,42 @@ onUnmounted(() => {
 
       <!-- AI MATCHES VIEW -->
       <div v-else-if="activeTab === 'matches'" class="flex flex-col h-full overflow-hidden animate-in fade-in slide-in-from-right-10 duration-500">
-         <header class="flex flex-col items-center pt-[18px] px-4 space-y-4 w-full relative z-[600]">
-            <div class="p-0.5 bg-white/10 rounded-full">
-               <img src="/digynex-icon.png" alt="DigyNex" class="h-8 w-auto opacity-50 contrast-125" />
-            </div>
-            <div class="flex flex-col items-center">
-               <h2 class="text-[20px] font-black text-white tracking-tight uppercase leading-none">{{ t('nav.matches') }}</h2>
-               <p class="text-[8px] font-black text-[#C1A172] uppercase tracking-[0.3em] mt-1.5 opacity-80 animate-pulse">{{ t('matches.discoveryHub') }}</p>
-            </div>
+         <!-- Top Branding Hub (CENTERED SYNC) -->
+         <header class="flex flex-col items-center pt-[18px] space-y-4 w-full relative z-[600]">
+           <div class="p-0.5 bg-white/10 rounded-full">
+              <img src="/digynex-icon.png" alt="DigyNex" class="h-8 w-auto opacity-50 contrast-125" />
+           </div>
+           <div class="flex flex-col items-center">
+              <h2 class="text-[20px] font-black text-white tracking-tight uppercase leading-none">{{ t('nav.matches') }}</h2>
+              <p class="text-[8px] font-black text-[#C1A172] uppercase tracking-[0.3em] mt-1.5 opacity-80 animate-pulse">{{ t('matches.discoveryHub') }}</p>
+           </div>
 
-            <div class="w-full px-1 space-y-4">
-               <!-- DRAGGABLE / SCROLLABLE COUNTRIES LIST WITH + AT THE END -->
-               <div ref="countriesContainer" @scroll="handleScroll" class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar scroll-smooth w-full px-0.5">
-                  <div v-for="(country, idx) in selectedCountriesArr" :key="country"
-                        @click="activeCountry = country"
-                        :class="activeCountry === country ? 'bg-white text-[#0A2647] font-black shadow-lg scale-105' : 'bg-white/5 text-white/40 font-bold border border-white/5 hover:bg-white/10'"
-                        class="px-5 py-2.5 rounded-full text-[9px] uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all active:scale-95 flex items-center gap-3 shrink-0">
-                    <span>{{ country }}</span>
-                    <X v-if="selectedCountriesArr.length !== 1" 
-                       @click.stop="selectedCountriesArr.splice(idx, 1); if(activeCountry === country) activeCountry = selectedCountriesArr[0]" 
-                       class="w-3 h-3 opacity-85 group-hover:opacity-100 text-red-500 hover:scale-125 transition-all" />
-                  </div>
-                  <!-- PROMINENT FIXED + BUTTON AT THE END -->
-                  <div @click="showCountrySelector = true" 
-                       class="flex items-center justify-center min-w-[44px] h-[36px] bg-gradient-to-br from-[#C1A172] to-[#FFD700] rounded-full cursor-pointer hover:scale-110 active:scale-95 transition-all shadow-[0_5px_15px_rgba(193,161,114,0.3)] shrink-0 z-50">
-                     <span class="text-[16px] font-black text-[#0A2647]">+</span>
-                  </div>
-               </div>
+           <div class="w-full px-1 space-y-4">
+              <!-- DRAGGABLE / SCROLLABLE COUNTRIES LIST WITH + AT THE END -->
+              <div ref="countriesContainer" @scroll="handleScroll" class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar scroll-smooth w-full px-0.5">
+                 <div v-for="(country, idx) in selectedCountriesArr" :key="country"
+                       @click="activeCountry = country"
+                       :class="activeCountry === country ? 'bg-white text-[#0A2647] font-black shadow-lg scale-105' : 'bg-white/5 text-white/40 font-bold border border-white/5 hover:bg-white/10'"
+                       class="px-4 h-[36px] rounded-full text-[9px] uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all active:scale-95 flex items-center gap-3 shrink-0">
+                   <span>{{ country }}</span>
+                   <X v-if="selectedCountriesArr.length !== 1" 
+                      @click.stop="selectedCountriesArr.splice(idx, 1); if(activeCountry === country) activeCountry = selectedCountriesArr[0]" 
+                      class="w-3 h-3 opacity-85 group-hover:opacity-100 text-red-500 hover:scale-125 transition-all" />
+                 </div>
+                 <!-- PROMINENT FIXED + BUTTON AT THE END -->
+                 <div @click="showCountrySelector = true" 
+                      class="flex items-center justify-center min-w-[44px] h-[36px] bg-gradient-to-br from-[#C1A172] to-[#FFD700] rounded-full cursor-pointer hover:scale-110 active:scale-95 transition-all shadow-[0_5px_15px_rgba(193,161,114,0.3)] shrink-0 z-50">
+                    <span class="text-[16px] font-black text-[#0A2647]">+</span>
+                 </div>
+              </div>
 
-               <!-- SEARCH INPUT (MOVED BELOW COUNTRIES) -->
-               <div class="relative group mt-1">
-                  <input type="text" :placeholder="t('apps.searchPlaceholder')" 
-                         class="w-full bg-white/10 border border-white/20 rounded-2xl px-12 py-4 text-[10.5px] text-white placeholder:text-white/15 focus:outline-none focus:ring-1 focus:ring-[#C1A172]/50 transition-all font-jakarta shadow-2xl" />
-                  <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-white/30 group-focus-within:text-[#C1A172] transition-colors" />
-               </div>
-            </div>
+              <!-- SEARCH INPUT (MOVED BELOW COUNTRIES) -->
+              <div class="relative group mt-1">
+                 <input type="text" :placeholder="t('apps.searchPlaceholder')" 
+                        class="w-full bg-white/5 border border-white/10 rounded-2xl px-12 py-3 text-[11px] text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-[#C1A172]/50 transition-all font-jakarta shadow-inner" />
+                 <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-[18px] h-[18px] text-white/30 group-focus-within:text-[#C1A172] transition-colors" />
+              </div>
+           </div>
          </header>
 
          <div class="mt-4 flex-1 overflow-y-auto space-y-2 pb-[94px] px-4 custom-scrollbar">
@@ -619,7 +724,7 @@ onUnmounted(() => {
                         <Star class="w-3.5 h-3.5" />
                      </button>
                      <button class="bg-[#C1A172] text-[#0A2647] w-[102px] py-1.5 rounded-xl text-[8.5px] font-black uppercase tracking-[0.05em] leading-tight shadow-[0_12px_25px_rgba(193,161,114,0.25)] hover:scale-[1.02] active:scale-95 transition-all font-jakarta relative overflow-hidden text-center">
-                        <span class="relative z-10">SAVE GLOBAL<br />PROFILE</span>
+                        SAVE GLOBAL PROFILE
                      </button>
                   </div>
                </div>
@@ -629,17 +734,33 @@ onUnmounted(() => {
 
       <!-- PROFILE VIEW (V6.0 - PACKED ARCHITECTURE) -->
       <div v-else-if="activeTab === 'profile'" class="flex flex-col animate-in fade-in slide-in-from-right-10 duration-500 overflow-hidden h-full">
-         <header class="flex flex-col items-center pt-[14px] space-y-2 w-full shrink-0">
-            <div class="p-0.5 bg-white/10 rounded-full border border-white/20">
-               <img src="/digynex-icon.png" alt="DigyNex" class="h-8 w-auto contrast-125 drop-shadow-[0_0_10px_rgba(193,161,114,0.3)]" />
-            </div>
-            <div class="flex flex-col items-center">
-               <h2 class="text-[18px] font-black text-white uppercase tracking-[0.2em] leading-none">{{ t('profile.title') || 'Expert Profile' }}</h2>
-               <p class="text-[8px] font-black text-[#C1A172] uppercase tracking-[0.4em] mt-1.5 opacity-80">PRO IDENTITY SYNC</p>
-            </div>
+         <!-- Top Branding Hub (CENTERED SYNC) -->
+         <header class="flex flex-col items-center pt-[18px] space-y-4 w-full relative z-[600]">
+           <div class="p-0.5 bg-white/10 rounded-full">
+              <img src="/digynex-icon.png" alt="DigyNex" class="h-8 w-auto opacity-50 contrast-125" />
+           </div>
+           <div class="flex flex-col items-center mb-1">
+              <h2 class="text-[14px] font-black text-white/40 uppercase tracking-[0.3em] leading-none">{{ t('profile.title') }}</h2>
+           </div>
          </header>
          
-         <div class="mt-4 flex-1 overflow-y-auto custom-scrollbar space-y-3 px-4 pb-[94px]">
+          <div class="mt-4 flex-1 overflow-y-auto custom-scrollbar space-y-3 px-4 pb-[94px] relative">
+             <!-- GLOBAL PRIVACY LOCK (PROFILE GUEST MODE) -->
+             <div v-if="!isAuthenticated" class="absolute inset-x-0 inset-y-0 z-[100] flex flex-col items-center justify-center px-8 text-center bg-[#0A2647]/40 backdrop-blur-md rounded-[3rem] h-[calc(100%-110px)] top-4 mx-4">
+                <div class="w-full max-w-[280px] bg-[#0A2647] border border-white/10 rounded-[2.5rem] p-8 shadow-3xl flex flex-col items-center gap-4 animate-in zoom-in-95 duration-500">
+                   <div class="w-12 h-12 bg-[#C1A172]/10 rounded-2xl flex items-center justify-center border border-[#C1A172]/20">
+                      <ShieldCheck class="w-6 h-6 text-[#C1A172]" />
+                   </div>
+                   <div class="space-y-1">
+                      <h3 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">IDENTITY HUB LOCKED</h3>
+                      <p class="text-[8px] font-black text-white/30 uppercase tracking-[0.1em] leading-relaxed">Personal data ingestion and AI profiling are restricted to authorized users.</p>
+                   </div>
+                   <button @click="isAuthOpen = true" class="mt-2 w-full py-3 bg-[#C1A172] rounded-xl text-[9px] font-black text-[#0A2647] uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all">Unlock Master Access</button>
+                </div>
+             </div>
+
+             <div :class="{ 'filter blur-[10px] select-none pointer-events-none opacity-40': !isAuthenticated }" class="space-y-3">
+
             
             <!-- AI GENERATOR HUB (PACKED ELITE CARD) -->
             <div class="bg-gradient-to-br from-[#BDDAFA]/25 via-[#F1F5F9] to-[#EDF2F7] rounded-[2.5rem] px-5 pt-2 pb-2.5 shadow-[0_50px_120px_-40px_rgba(0,0,0,0.25)] border border-white relative overflow-hidden group">
@@ -743,6 +864,7 @@ onUnmounted(() => {
             </button>
          </div>
       </div>
+   </div>
 
       <!-- PLACEHOLDERS FOR OTHER TABS -->
       <div v-else class="flex flex-col items-center justify-center py-40 text-center space-y-4">
@@ -833,8 +955,12 @@ onUnmounted(() => {
       <!-- LOCKED EXPERT PROFILE SYSTEM (DEDICATED CORE) -->
       <ExpertProfileWizard 
         :isOpen="isManualFormOpen" 
+        :profile="masterProfile"
+        :activeCountry="activeCountry"
+        :isAuthenticated="isAuthenticated"
         @close="isManualFormOpen = false" 
         @finalize="onManualFinalize" 
+        @requestAuth="isAuthOpen = true"
       />
 
       <!-- LINKEDIN CONNECT OVERLAY -->
@@ -1005,13 +1131,13 @@ onUnmounted(() => {
          </div>
       </Transition>
 
-      <div v-if="!isManualFormOpen && !isLinkedInModalOpen" class="absolute bottom-[63px] left-0 right-0 flex flex-col items-center z-[990] pointer-events-none">
-        <div class="flex items-center gap-2.5 opacity-40">
+      <div v-if="!isManualFormOpen && !isLinkedInModalOpen" class="absolute bottom-[67px] left-0 right-0 flex flex-col items-center z-[990] pointer-events-none">
+        <div class="flex items-center gap-2.5 opacity-50">
            <span class="text-[8px] font-black text-white/40 uppercase tracking-[0.2em]">{{ t('footer.poweredBy') }}</span>
            <img src="/digynex-icon.png" alt="DigyNex" class="h-3 w-auto object-contain opacity-50" />
            <span class="text-[9px] font-black text-[#C1A172] uppercase tracking-[0.1em]">DigyNex</span>
         </div>
-        <p class="text-[6.5px] font-black text-white/20 tracking-[0.5em] uppercase mt-[2px] italic">{{ t('footer.engine') }} • {{ t('footer.version') }}</p>
+        <p class="text-[6.5px] font-black text-white/35 tracking-[0.5em] uppercase mt-[1.5px] italic">{{ t('footer.engine') }} • {{ t('footer.version') }}</p>
       </div>
 
       <nav v-if="!isManualFormOpen && !isLinkedInModalOpen" 
@@ -1024,6 +1150,24 @@ onUnmounted(() => {
           <div v-if="activeTab === key" class="absolute -bottom-1.5 w-1 h-1 bg-[#C1A172] rounded-full shadow-[0_0_12px_#C1A172]"></div>
         </div>
       </nav>
+      <AuthOverlay 
+        :isOpen="isAuthOpen" 
+        :mode="authMode"
+        @close="isAuthOpen = false" 
+        @onSuccess="loginSuccess" 
+      />
+
+      <JobDetailOverlay
+        :isOpen="isJobDetailOpen"
+        :job="selectedJob"
+        @close="isJobDetailOpen = false"
+      />
+
+      <ActionSheet 
+        :isOpen="isActionSheetOpen"
+        @close="isActionSheetOpen = false"
+      />
+
     </main>
 
 
