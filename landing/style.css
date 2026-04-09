@@ -1522,15 +1522,26 @@ html {
 }
 
 .p-price {
+  margin: 20px 0;
   display: flex;
-  align-items: baseline;
-  gap: 5px;
-  margin-bottom: 10px;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+}
+
+.starting-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  opacity: 0.7;
+  margin-bottom: -5px;
 }
 
 .p-price .currency {
-  font-size: 18px;
+  font-size: 1.5rem;
   font-weight: 600;
+  vertical-align: top;
+  margin-right: 2px;
   color: var(--liquid-gold);
 }
 
@@ -1570,6 +1581,65 @@ html {
 .p-features i {
   font-size: 16px;
   opacity: 0.8;
+}
+
+.single-card-grid {
+  display: flex !important;
+  justify-content: center;
+  width: 100%;
+}
+
+.partitioning-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  text-align: left;
+  border-top: 1px solid rgba(212, 175, 55, 0.2);
+  padding-top: 20px;
+}
+
+.p-phase {
+  background: rgba(255, 255, 255, 0.03);
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 3px solid var(--liquid-gold);
+}
+
+.p-phase strong {
+  display: block;
+  font-size: 0.7rem;
+  color: var(--liquid-gold);
+  letter-spacing: 1px;
+  margin-bottom: 4px;
+}
+
+.p-phase p {
+  font-size: 0.85rem;
+  margin: 0;
+  color: #ccc;
+  line-height: 1.2;
+}
+
+.audit-grid {
+  display: grid;
+  gap: 30px;
+  margin-top: 40px;
+}
+
+.grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.audit-item {
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 20px;
+  transition: 0.3s;
+}
+
+.audit-item:hover {
+  background: rgba(212, 175, 55, 0.05);
+  transform: translateY(-5px);
 }
 
 /* Mobile Adjustments for Pricing */
