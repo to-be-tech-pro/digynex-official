@@ -44,6 +44,8 @@ const currentLang = ref('EN')
 const isLangOpen = ref(false)
 const quickLangs = ['EN', 'DE', 'SW']
 const langContainer = ref(null)
+const notificationContainer = ref(null)
+const isNotificationsOpen = ref(false)
 const searchQuery = ref('') // Mission-critical state for global filtering
 
 const otherLangs = [
@@ -142,10 +144,29 @@ const saveProfile = async () => {
   if (isSavingProfile.value) return;
   isSavingProfile.value = true;
   try {
-    // Scaffold ready for real backend/Supabase API update
-    await new Promise(resolve => setTimeout(resolve, 1500))
+    const { data: { user } } = await supabase.auth.getUser();
+    if (user) {
+      const { error } = await supabase.from('profiles').upsert({
+        id: user.id,
+        primary_color: userProfile.value.primaryColor,
+        secondary_color: userProfile.value.secondaryColor,
+        selected_template: selectedTemplate.value,
+        secret_keywords: masterProfile.value.secretKeywords,
+        name: userProfile.value.name,
+        email: user.email
+      });
+      
+      if (error) throw error;
+      
+      toastMessage.value = 'Identity Core Synced Successfully';
+      showToast.value = true;
+      setTimeout(() => { showToast.value = false }, 3000);
+    }
   } catch (err) {
-    console.error('Failed to update global engine:', err)
+    console.error('Failed to update global engine:', err);
+    toastMessage.value = 'Sync Error: Connection Unstable';
+    showToast.value = true;
+    setTimeout(() => { showToast.value = false }, 3000);
   } finally {
     isSavingProfile.value = false
   }
@@ -224,12 +245,30 @@ const masterProfile = ref({
       hard: ['Python', 'n8n', 'Docker'],
       soft: ['Leadership', 'Agile'],
       tools: ['VS Code', 'Git']
-   }
+   },
+   secretKeywords: ['Strategic Leadership', 'Neural Engineering', 'ATS Optimization']
 })
+
+const newSecretKeyword = ref('')
+const addSecretKeyword = () => {
+   if (newSecretKeyword.value.trim() && !masterProfile.value.secretKeywords.includes(newSecretKeyword.value.trim())) {
+      masterProfile.value.secretKeywords.push(newSecretKeyword.value.trim())
+      newSecretKeyword.value = ''
+   }
+}
 
 const isCompilingLatex = ref(false)
 const isManualFormOpen = ref(false)
 const isCVPreviewOpen = ref(false)
+const selectedTemplate = ref(3) // Default to Executive T3
+
+const selectTemplate = (id) => {
+   if (id > 4) {
+      handleDashboardAction('upgrade')
+      return
+   }
+   selectedTemplate.value = id
+}
 
 const compileLatex = async () => {
     isCompilingLatex.value = true;
@@ -260,17 +299,58 @@ const isAuthOpen = ref(false)
 const authMode = ref('login')
 const userProfile = ref({
     email: '',
-    name: 'Amila'
+    name: 'Amila',
+    primaryColor: '#0A2647',
+    secondaryColor: '#64748b'
 })
+
+const colorPresets = [
+   { name: 'Classic Core', primary: '#0A2647', secondary: '#64748b', tier: 1 },
+   { name: 'Modern Azure', primary: '#2C74B3', secondary: '#94a3b8', tier: 1 },
+   { name: 'Elite Emerald', primary: '#064E3B', secondary: '#34D399', tier: 2 },
+   { name: 'Luxury Gold', primary: '#1A1A1A', secondary: '#C1A172', tier: 3 }
+]
+
+const selectPreset = (preset) => {
+   if (preset.tier > 1) {
+      handleDashboardAction('upgrade')
+      return
+   }
+   userProfile.value.primaryColor = preset.primary
+   userProfile.value.secondaryColor = preset.secondary
+}
 
 const fetchUserProfile = async () => {
     const { data: { user } } = await supabase.auth.getUser();
     if (user) {
-        userProfile.value = {
-            email: user.email,
-            name: user.user_metadata?.full_name || user.user_metadata?.display_name || 'Expert'
-        };
         isAuthenticated.value = true;
+        
+        // Fetch extended profile settings
+        const { data: profile } = await supabase
+            .from('profiles')
+            .select('*')
+            .eq('id', user.id)
+            .single();
+
+        if (profile) {
+            userProfile.value = {
+                email: user.email,
+                name: profile.name || user.user_metadata?.full_name || 'Expert',
+                primaryColor: profile.primary_color || '#0A2647',
+                secondaryColor: profile.secondary_color || '#64748b'
+            };
+            selectedTemplate.value = profile.selected_template || 3;
+            if (profile.secret_keywords) {
+                masterProfile.value.secretKeywords = profile.secret_keywords;
+            }
+        } else {
+            userProfile.value = {
+                email: user.email,
+                name: user.user_metadata?.full_name || user.user_metadata?.display_name || 'Expert',
+                primaryColor: '#0A2647',
+                secondaryColor: '#64748b'
+            };
+        }
     }
 };
 
@@ -418,6 +498,53 @@ const handleClickOutside = (event) => {
   if (langContainer.value && !langContainer.value.contains(event.target)) {
     isLangOpen.value = false
   }
+  if (notificationContainer.value && !notificationContainer.value.contains(event.target)) {
+    isNotificationsOpen.value = false
+  }
+}
+
+// Notification Engine Logic
+const notifications = ref([
+  {
+    id: 1,
+    title: 'Google: Interview Scheduled!',
+    message: 'Your AI Architect interview is set for March 25th at 10:00 AM.',
+    type: 'job',
+    target: 'Google',
+    icon: Sparkles,
+    color: 'bg-blue-50',
+    iconColor: 'text-blue-500'
+  },
+  {
+    id: 2,
+    title: 'Spotify: Profile Synced',
+    message: 'Your recent CV updates have been optimized for Spotify Lead Dev role.',
+    type: 'tab',
+    target: 'profile',
+    icon: RefreshCw,
+    color: 'bg-[#73BBA3]/10',
+    iconColor: 'text-[#73BBA3]'
+  },
+  {
+    id: 3,
+    title: 'New AI Match: Tesla',
+    message: "We found a 92% match for 'Autopilot Vision Engineer' in Oslo.",
+    type: 'job',
+    target: 'Tesla',
+    icon: Zap,
+    color: 'bg-orange-50',
+    iconColor: 'text-orange-500'
+  }
+])
+
+const handleNotificationClick = (notif) => {
+  if (notif.type === 'job') {
+    const job = allJobs.value.find(j => j.c === notif.target)
+    if (job) openJobDetail(job)
+  } else if (notif.type === 'tab') {
+    activeTab.value = notif.target
+  }
+  isNotificationsOpen.value = false
 }
 
 onMounted(() => {
@@ -520,17 +647,38 @@ onUnmounted(() => {
               <span :class="isRecalibrating ? 'animate-pulse text-[#C1A172]' : 'neural-glow'">{{ userProfile.name === 'Expert' ? t('header.welcome') : `Welcome, ${userProfile.name}` }}</span>
            </h1>
           <div class="flex items-center gap-3">
-            <div class="relative cursor-pointer hover:scale-110 transition-all group">
-
-                <Bell class="w-6 h-6 text-white/40 group-hover:text-white" />
-                <!-- Notification Badge Unit -->
-                <div class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-500 rounded-full border-2 border-[#0A2647] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
-                   <span class="text-[8px] font-black text-white leading-none">2</span>
+             <div ref="notificationContainer" class="relative cursor-pointer transition-all group">
+                <div @click="isNotificationsOpen = !isNotificationsOpen" class="hover:scale-110 transition-transform active:scale-95">
+                   <Bell :class="isNotificationsOpen ? 'text-white' : 'text-white/40'" class="w-6 h-6 transition-colors" />
+                   <!-- Notification Badge Unit -->
+                   <div class="absolute -top-1.5 -right-1.5 w-4 h-4 bg-red-500 rounded-full border-2 border-[#0A2647] flex items-center justify-center shadow-lg group-hover:scale-110 transition-transform">
+                      <span class="text-[8px] font-black text-white leading-none">3</span>
+                   </div>
                 </div>
-                <!-- Small Notification Tooltip (Mockup) -->
-                <div class="absolute top-[35px] right-0 w-[180px] bg-white/95 backdrop-blur-3xl rounded-2xl p-3 shadow-2xl border border-white opacity-0 group-hover:opacity-100 translate-y-2 group-hover:translate-y-0 transition-all pointer-events-none z-[1000]">
-                   <p class="text-[9px] font-black text-[#0A2647] tracking-tight mb-1">{{ t('notifications.newUpdate') }}</p>
-                   <p class="text-[8px] font-bold text-black/40 uppercase tracking-widest leading-tight">Google: Interview Scheduled!</p>
+
+                <!-- ELITE NOTIFICATION POPUP (V6.5 STEADY) -->
+                <div v-if="isNotificationsOpen" 
+                     class="absolute top-[45px] right-0 w-[240px] bg-white backdrop-blur-3xl rounded-[1.8rem] p-4 shadow-[0_40px_80px_rgba(0,0,0,0.6)] border border-white z-[1000] animate-in fade-in zoom-in duration-300">
+                   <div class="flex justify-between items-center mb-4 border-b border-black/5 pb-2">
+                       <span class="text-[10px] font-black text-[#0A2647] tracking-widest uppercase">{{ t('notifications.title') || 'Notifications' }}</span>
+                       <span class="text-[8px] font-bold text-blue-500 uppercase cursor-pointer hover:underline">Mark all read</span>
+                   </div>
+                   <div class="space-y-4 max-h-[300px] overflow-y-auto no-scrollbar">
+                      <div v-for="notif in notifications" :key="notif.id" 
+                           @click="handleNotificationClick(notif)" 
+                           class="flex gap-3 group/item cursor-pointer hover:bg-slate-50 p-2 rounded-2xl transition-all">
+                         <div :class="notif.color" class="w-8 h-8 rounded-full flex items-center justify-center shrink-0 group-hover/item:scale-110 transition-transform">
+                            <component :is="notif.icon" :class="notif.iconColor" class="w-4 h-4" />
+                         </div>
+                         <div>
+                            <p class="text-[10px] font-black text-[#0A2647] tracking-tight leading-none mb-1">{{ notif.title }}</p>
+                            <p class="text-[8.5px] font-medium text-black/40 leading-tight">{{ notif.message }}</p>
+                         </div>
+                      </div>
+                   </div>
+                   <button class="w-full mt-4 py-2 bg-slate-50 border border-slate-100 rounded-xl text-[8.5px] font-black text-[#0A2647] uppercase tracking-widest hover:bg-slate-100 transition-colors">
+                      View All Activity
+                   </button>
                 </div>
              </div>
              <div class="w-11 h-11 rounded-full border-2 border-white/20 shadow-2xl overflow-hidden ring-1 ring-white/5 transition-all">
@@ -562,6 +710,33 @@ onUnmounted(() => {
         <!-- MAIN CONTENT CARDS (EXTREME TIGHTENING space-y-1.5) -->
         <div class="mt-1.5 space-y-1.5">
           
+          <!-- QUICK ACCESS CV CARD (STRATEGIC JUMP - V6.5) -->
+          <div @click="activeTab = 'studio'" class="bg-gradient-to-r from-[#0A2647] to-[#144272] rounded-[1.8rem] p-4 shadow-3xl border border-white/10 relative overflow-hidden group cursor-pointer hover:scale-[1.01] transition-all">
+             <div class="flex items-center justify-between relative z-10">
+                <div class="flex items-center gap-3">
+                   <div class="w-10 h-10 rounded-xl bg-white/10 flex items-center justify-center p-2.5">
+                      <Sparkles class="w-full h-full text-[#C1A172] animate-pulse" />
+                   </div>
+                   <div class="flex flex-col">
+                      <span class="text-[8px] font-black text-white/40 uppercase tracking-[0.2em] mb-1">Live Sync: Active</span>
+                      <h3 class="text-[13px] font-black text-white tracking-tight uppercase">{{ uploadedFileName.split('_')[0] }} CV MASTER</h3>
+                   </div>
+                </div>
+                <div class="bg-white/10 p-2 rounded-lg hover:bg-white/20 transition-all">
+                   <ArrowRight class="w-3.5 h-3.5 text-white" />
+                </div>
+             </div>
+             <!-- Stealth Matching Indicator -->
+             <div class="mt-3 w-full h-[3px] bg-white/5 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-[#2C74B3] to-[#C1A172] w-[94%] transition-all duration-1000"></div>
+             </div>
+             <div class="flex justify-between mt-1 px-0.5">
+                <span class="text-[7px] font-black text-white/20 uppercase tracking-widest">ATS Compatibility Score</span>
+                <span class="text-[7px] font-black text-[#C1A172] uppercase tracking-widest">94% Neural Match</span>
+             </div>
+             <Sparkles class="absolute -right-6 -bottom-6 w-20 h-20 text-white/5 rotate-12" />
+          </div>
+
           <!-- APPLICATION TRACKING CARD (V5.7 Baseline Shading + PRECISION SYNC) -->
           <div class="bg-gradient-to-br from-[#BDDAFA]/30 via-[#F8FAFC] to-white rounded-[1.8rem] p-5 pt-2 pb-1.5 shadow-[0_50px_120px_-30px_rgba(0,0,0,0.6)] border border-white relative overflow-hidden ring-1 ring-black/[0.03] group font-jakarta">
              
@@ -675,12 +850,12 @@ onUnmounted(() => {
                    <UserPlus class="w-3 h-3 text-[#C1A172]" />
                    {{ t('analytics.updateProfile') || 'Recalibrate Skill Profile' }}
                 </button>
-             </div>
-          </div>
-       </div>
-    </div>
- </div>
+                 </div>
+              </div>
+           </div>
+        </div>
 
+      </div>
       <!-- APPLICATIONS VIEW -->
       <div v-else-if="activeTab === 'applications'" class="flex flex-col h-full overflow-hidden animate-in fade-in slide-in-from-right-10 duration-500">
          <!-- Top Branding Hub (CENTERED SYNC) -->
@@ -1016,6 +1191,139 @@ onUnmounted(() => {
       </div>
    </div>
 
+       <!-- CV STUDIO HUB (MAGIC CENTER) -->
+       <div v-else-if="activeTab === 'studio'" class="flex flex-col h-full overflow-hidden animate-in fade-in slide-in-from-right-10 duration-500 pb-[90px]">
+          <!-- Top Branding Hub -->
+          <header class="flex flex-col items-center pt-[18px] space-y-4 w-full relative z-[600]">
+            <div class="p-0.5 bg-white/10 rounded-full shrink-0">
+               <img src="/digynex-icon.png" alt="DigyNex" class="h-8 w-auto opacity-50 contrast-125" />
+            </div>
+            <div class="flex flex-col items-center mb-1">
+               <h2 class="text-[14px] font-black text-white/40 uppercase tracking-[0.3em] leading-none">CV Studio</h2>
+            </div>
+          </header>
+
+          <div class="mt-6 flex-1 overflow-y-auto space-y-6 px-4 custom-scrollbar">
+             <!-- 1. TEMPLATE GALLERY (HORIZONTAL) -->
+             <div class="bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-3xl rounded-[2.5rem] p-6 border border-white/10 shadow-2xl overflow-hidden group">
+                <div class="flex justify-between items-center mb-4">
+                   <div class="flex flex-col">
+                      <span class="text-[9px] font-black text-[#C1A172] uppercase tracking-[0.2em] mb-1">Elite Selection</span>
+                      <h3 class="text-[14px] font-black text-white tracking-tight">Template Gallery</h3>
+                   </div>
+                   <span class="text-[8px] font-bold text-white/20 uppercase tracking-widest">{{ t('studio.premiumCount') || '4 Styles Active' }}</span>
+                </div>
+                <!-- Premium Scroll Gallery -->
+                <div class="flex gap-4 overflow-x-auto no-scrollbar pb-2">
+                   <div v-for="t in [1,2,3,4]" :key="t" 
+                        @click="selectTemplate(t)"
+                        class="w-[110px] h-[150px] bg-white/5 rounded-2xl shrink-0 border-2 transition-all cursor-pointer flex flex-col items-center justify-center gap-3 relative overflow-hidden group/thumb"
+                        :class="selectedTemplate === t ? 'border-[#C1A172] shadow-xl' : 'border-transparent hover:border-white/20'">
+                      <div class="w-full h-full absolute inset-0 bg-gradient-to-t from-black/40 to-transparent"></div>
+                      <div v-if="selectedTemplate === t" class="absolute top-2 right-2 bg-[#C1A172] p-1 rounded-full shadow-lg">
+                         <Check class="w-2.5 h-2.5 text-[#0A2647]" />
+                      </div>
+                      <FileText class="w-8 h-8 text-white/10 group-hover/thumb:text-white/40 transition-colors" />
+                      <span class="text-[9px] font-black text-white/80 uppercase tracking-widest relative z-10">{{ t === 1 ? 'Elite' : t === 2 ? 'Modern' : t === 3 ? 'Exec' : 'Pure' }}</span>
+                   </div>
+                   <!-- Locked Slots (Future T5, T6) -->
+                   <div v-for="t in [5,6]" :key="t" 
+                        class="w-[110px] h-[150px] bg-white/[0.02] rounded-2xl shrink-0 border border-white/5 flex flex-col items-center justify-center gap-1 opacity-40">
+                      <Lock class="w-4 h-4 text-white/20" />
+                      <span class="text-[7px] font-black text-white/20 uppercase tracking-widest">Locked Slot</span>
+                   </div>
+                </div>
+             </div>
+
+             <!-- 2. STEALTH STRATEGY (LOCKED FOR CONVERSION) -->
+             <div class="bg-gradient-to-br from-[#0A2647] via-[#0D1B2A] to-black rounded-[2.5rem] p-6 border border-white/10 shadow-3xl relative overflow-hidden group/stealth">
+                <div class="relative z-10">
+                   <div class="flex justify-between items-center mb-4">
+                      <div class="flex flex-col">
+                         <span class="text-[9px] font-black text-blue-400 uppercase tracking-[0.2em] mb-1">Strategic Edge</span>
+                         <h3 class="text-[14px] font-black text-white tracking-tight">AI Stealth Keywords</h3>
+                      </div>
+                      <Lock class="w-4 h-4 text-white/20" />
+                   </div>
+                   <p class="text-[10px] font-medium text-white/40 leading-relaxed mb-5">Embed invisible, AI-optimized keywords into your CV to increase ATS rankings by up to 95%. Exclusive to Elite & Pro tiers.</p>
+                   <button @click="handleDashboardAction('upgrade')" class="w-full py-3 bg-gradient-to-r from-blue-600 to-blue-500 rounded-xl text-[10.5px] font-black text-white uppercase tracking-widest shadow-xl shadow-blue-900/40 hover:scale-[1.02] active:scale-95 transition-all">
+                      Unlock AI Enhancement
+                   </button>
+                </div>
+                <Sparkles class="absolute -right-6 -bottom-6 w-24 h-24 text-white/5 rotate-12 group-hover/stealth:scale-110 group-hover/stealth:text-white/10 transition-all duration-1000" />
+             </div>
+
+             <!-- 4. BRANDING IDENTITY (ACTIVE COLOR PRESETS) -->
+             <div class="bg-white/5 rounded-[2.5rem] p-6 border border-white/10 shadow-xl">
+                <div class="flex justify-between items-center mb-6">
+                   <div class="flex flex-col">
+                      <span class="text-[9px] font-black text-[#C1A172] uppercase tracking-[0.2em] mb-1">Visual Branding</span>
+                      <h3 class="text-[14px] font-black text-white tracking-tight">Style Presets</h3>
+                   </div>
+                   <span class="text-[8px] font-bold text-white/20 uppercase tracking-widest">{{ t('studio.branding') || 'Global Palettes' }}</span>
+                </div>
+                
+                <div class="grid grid-cols-2 gap-3 mb-2">
+                   <div v-for="p in colorPresets" :key="p.name" 
+                        @click="selectPreset(p)"
+                        class="p-3 bg-white/5 rounded-2xl border transition-all cursor-pointer flex items-center justify-between group/p"
+                        :class="userProfile.primaryColor === p.primary ? 'border-[#C1A172] bg-white/10' : 'border-white/5 hover:border-white/20'">
+                      <div class="flex flex-col">
+                         <span class="text-[9px] font-black text-white group-hover/p:text-[#C1A172] transition-colors leading-none mb-1">{{ p.name }}</span>
+                         <div class="flex gap-1">
+                            <div class="w-3 h-1.5 rounded-full" :style="{ backgroundColor: p.primary }"></div>
+                            <div class="w-3 h-1.5 rounded-full" :style="{ backgroundColor: p.secondary }"></div>
+                         </div>
+                      </div>
+                      <Lock v-if="p.tier > 1" class="w-3 h-3 text-white/20" />
+                      <Check v-else-if="userProfile.primaryColor === p.primary" class="w-3 h-3 text-[#C1A172]" />
+                   </div>
+                </div>
+                <p class="text-[8px] font-medium text-white/20 uppercase tracking-wider text-center mt-4 italic">Color strategy automatically applies to all templates</p>
+             </div>
+
+             <!-- 5. STRATEGIC SYNC (SECRET KEYWORDS INPUT) -->
+             <div class="space-y-4">
+                <div class="flex flex-col">
+                   <span class="text-[9px] font-black text-white/30 uppercase tracking-[0.2em] mb-2">Secret Keywords (Embedded)</span>
+                   <div class="flex flex-wrap gap-2 mb-3">
+                      <div v-for="(word, idx) in masterProfile.secretKeywords" :key="idx" 
+                           class="px-3 py-1.5 bg-white/5 rounded-lg border border-white/5 flex items-center gap-2 group cursor-pointer hover:bg-white/10 transition-all">
+                         <span class="text-[9px] font-bold text-white/60 group-hover:text-[#C1A172] transition-colors">{{ word }}</span>
+                         <X @click="masterProfile.secretKeywords.splice(idx, 1)" class="w-3 h-3 text-white/10 hover:text-red-400" />
+                      </div>
+                   </div>
+                   <div class="relative">
+                      <input type="text" v-model="newSecretKeyword" @keyup.enter="addSecretKeyword" placeholder="Add Stealth Keyword..." 
+                             class="w-full bg-white/5 border border-white/10 rounded-xl px-4 py-3 text-[10px] text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-[#C1A172] transition-all font-jakarta shadow-inner" />
+                      <div @click="addSecretKeyword" class="absolute right-3 top-1/2 -translate-y-1/2 bg-[#C1A172] p-1.5 rounded-lg cursor-pointer active:scale-95 transition-all">
+                         <Plus class="w-3 h-3 text-[#0A2647]" />
+                      </div>
+                   </div>
+                </div>
+             </div>
+
+             <!-- 6. AI SUCCESS METER (DIAGNOSTIC) -->
+             <div class="mt-8 pt-8 border-t border-white/5">
+                <div class="flex justify-between items-center mb-4">
+                   <span class="text-[9px] font-black text-white/40 uppercase tracking-widest">Global CV Strength</span>
+                   <span class="text-[14px] font-black text-[#73BBA3] tracking-tighter animate-pulse">98.4%</span>
+                </div>
+                <div class="w-full h-1.5 bg-white/5 rounded-full overflow-hidden shadow-inner p-[1px]">
+                   <div class="h-full bg-gradient-to-r from-blue-500 via-[#73BBA3] to-[#C1A172] rounded-full transition-all duration-1000 shadow-sm" style="width: 98.4%"></div>
+                </div>
+                <p class="text-[8px] font-bold text-white/20 uppercase tracking-[0.3em] mt-3 text-center italic">Elite Optimization Architecture Engaged</p>
+                
+                <!-- GLOBAL SYNC CTA (STUDIO SPECIFIC) -->
+                <button @click="saveProfile" class="w-full mt-4 bg-gradient-to-r from-[#C1A172] to-[#FFD700] py-4 rounded-[1.8rem] flex items-center justify-center gap-3 shadow-[0_20px_40px_rgba(0,0,0,0.4)] hover:scale-[1.02] active:scale-95 transition-all group relative overflow-hidden">
+                   <div v-if="isSavingProfile" class="w-4 h-4 rounded-full border-2 border-[#0A2647]/50 border-t-[#0A2647] animate-spin relative z-10"></div>
+                   <RefreshCw v-else class="w-4 h-4 text-[#0A2647]/40 group-hover:rotate-180 transition-transform duration-700" />
+                   <span class="text-[12px] font-black text-[#0A2647] uppercase tracking-[0.2em] relative z-10">{{ isSavingProfile ? 'Syncing...' : 'Sync Studio to Master' }}</span>
+                </button>
+             </div>
+          </div>
+       </div>
+
       <!-- PLACEHOLDERS FOR OTHER TABS -->
       <div v-else class="flex flex-col items-center justify-center py-40 text-center space-y-4">
          <div class="bg-white/5 p-6 rounded-full animate-bounce">
@@ -1205,68 +1513,79 @@ onUnmounted(() => {
          <div v-if="isCVPreviewOpen" class="fixed inset-0 z-[5000] flex flex-col items-center justify-center p-4">
             <div @click="isCVPreviewOpen = false" class="absolute inset-0 bg-[#0A2647]/98 backdrop-blur-3xl"></div>
             <div class="relative w-full max-w-[360px] h-[750px] bg-white rounded-[3rem] overflow-hidden shadow-[0_40px_120px_rgba(0,0,0,0.8)] flex flex-col scale-100 animate-in zoom-in-95 duration-500">
-               <!-- LaTeX Header Simulation -->
-               <div class="p-10 pb-6 border-b-4 border-[#0A2647] space-y-3 text-center bg-white">
-                      <h2 class="text-3xl font-black text-[#0A2647] uppercase tracking-[-0.05em] leading-none font-playfair">{{ masterProfile.basic.fullName || 'MASTER IDENTITY' }}</h2>
-                   <p class="text-[10px] font-black text-[#C1A172] uppercase tracking-[0.4em]">{{ masterProfile.basic.headline || 'PROFESSIONAL SYNOPSIS' }}</p>
+               <!-- LaTeX Header Simulation (SYNCED) -->
+               <div class="p-10 pb-6 border-b-4 space-y-3 text-center bg-white" :style="{ borderColor: userProfile.primaryColor }">
+                      <h2 class="text-3xl font-black uppercase tracking-[-0.05em] leading-none font-playfair" :style="{ color: userProfile.primaryColor }">{{ masterProfile.basic.fullName || 'MASTER IDENTITY' }}</h2>
+                   <p class="text-[10px] font-black uppercase tracking-[0.4em]" :style="{ color: userProfile.secondaryColor }">{{ masterProfile.basic.headline || 'PROFESSIONAL SYNOPSIS' }}</p>
                    <div class="flex flex-wrap justify-center gap-x-4 gap-y-1 text-[8px] text-slate-500 font-bold uppercase tracking-widest pt-1">
                       <span>{{ masterProfile.basic.email || 'Email' }}</span>
-                      <span class="text-[#C1A172]">•</span>
+                      <span :style="{ color: userProfile.secondaryColor }">•</span>
                       <span>{{ masterProfile.basic.phone || 'Phone' }}</span>
                       <span class="text-[#C1A172]">•</span>
                       <span>{{ masterProfile.basic.location || 'Location' }}</span>
                    </div>
                 </div>
  
-                <!-- CV Body (High Fidelity) -->
-                <div class="flex-1 overflow-y-auto p-10 space-y-10 custom-scrollbar text-[#0A2647] font-inter">
-                   <div class="space-y-4">
-                      <div class="flex items-center gap-4">
-                         <h3 class="text-[11px] font-black uppercase tracking-[0.4em] text-[#0A2647] font-playfair">Professional Impact</h3>
-                         <div class="flex-1 h-[1px] bg-[#0A2647]/10"></div>
-                      </div>
-                      <p class="text-[10.5px] leading-[1.8] italic text-slate-600 font-medium translate-x-1 border-l-2 border-[#C1A172]/20 pl-4">{{ masterProfile.bio || 'Synthesize your professional impact here...' }}</p>
-                   </div>
- 
-                   <div class="space-y-6">
-                      <div class="flex items-center gap-4">
-                         <h3 class="text-[11px] font-black uppercase tracking-[0.4em] text-[#0A2647] font-playfair">Work Evolution</h3>
-                         <div class="flex-1 h-[1px] bg-[#0A2647]/10"></div>
-                      </div>
-                      <div v-for="(exp, idx) in masterProfile.experiences" :key="idx" class="space-y-2 relative pl-1">
-                         <div class="flex justify-between items-baseline mb-0.5">
-                            <span class="text-[12px] font-extrabold uppercase tracking-[0.3em] text-[#0A2647] leading-tight">{{ exp.role || 'Role / Designation' }}</span>
-                            <span class="text-[9.5px] font-black text-[#C1A172] uppercase tracking-[0.2em]">{{ exp.start }} — {{ exp.isCurrent ? 'Present' : exp.end }}</span>
+
+                <!-- CV Body (Dynamic Layout Engine) -->
+                <div class="flex-1 overflow-y-auto no-scrollbar bg-white flex" :class="selectedTemplate === 2 ? 'flex-row' : 'flex-col'">
+                   
+                   <!-- SIDEBAR (Only for T2 - Modern Sidebar) -->
+                   <div v-if="selectedTemplate === 2" class="w-[35%] bg-slate-50 border-r border-slate-100 p-6 space-y-8 flex flex-col pt-10">
+                      <div class="space-y-4">
+                         <h4 class="text-[8px] font-black uppercase tracking-widest" :style="{ color: userProfile.primaryColor }">Expertise</h4>
+                         <div class="flex flex-col gap-2">
+                            <span v-for="s in masterProfile.skills.hard" :key="s" class="text-[8px] font-bold text-slate-500 uppercase">{{ s }}</span>
                          </div>
-                         <p class="text-[9px] font-extrabold text-slate-400 uppercase tracking-[0.3em] leading-relaxed">{{ exp.company || 'Organization / Team' }}</p>
-                         <p class="text-[10.5px] leading-[1.8] text-slate-800 pt-2.5 pr-8 whitespace-pre-wrap font-medium">{{ exp.achievements }}</p>
                       </div>
-                   </div>
- 
-                   <div class="space-y-6">
-                      <div class="flex items-center gap-4">
-                         <h3 class="text-[11px] font-black uppercase tracking-[0.4em] text-[#0A2647] font-playfair">Academic History</h3>
-                         <div class="flex-1 h-[1px] bg-[#0A2647]/10"></div>
-                      </div>
-                      <div v-for="(edu, idx) in masterProfile.education" :key="idx" class="space-y-1.5">
-                         <div class="flex justify-between items-center">
-                            <span class="text-[11px] font-extrabold uppercase tracking-[0.3em] text-[#0A2647]">{{ edu.title }}</span>
-                            <span class="text-[9px] font-black text-[#C1A172] tracking-[0.2em]">{{ edu.year }}</span>
+                      <div class="space-y-4">
+                         <h4 class="text-[8px] font-black uppercase tracking-widest" :style="{ color: userProfile.primaryColor }">Social Sync</h4>
+                         <div class="flex flex-col gap-2">
+                            <span v-for="link in masterProfile.socialLinks" :key="link.platform" class="text-[8px] font-bold text-slate-400 truncate">{{ link.platform }}</span>
                          </div>
-                         <p class="text-[9px] text-slate-400 font-extrabold uppercase tracking-[0.3em]">{{ edu.institution }} <span v-if="edu.gpa" class="text-[#C1A172] ml-2 font-black">Grade: {{ edu.gpa }}</span></p>
                       </div>
                    </div>
- 
-                   <div class="space-y-6">
-                      <div class="flex items-center gap-4">
-                         <h3 class="text-[11px] font-black uppercase tracking-[0.4em] text-[#0A2647] font-playfair">Cognitive Stack</h3>
-                         <div class="flex-1 h-[1px] bg-[#0A2647]/10"></div>
+
+                   <!-- MAIN CONTENT (All templates) -->
+                   <div class="flex-1 p-8 pb-12 space-y-10" :class="selectedTemplate === 4 ? 'p-12' : 'p-8'">
+                      <div class="space-y-4">
+                         <div class="flex items-center gap-4">
+                            <h3 class="text-[11px] font-black uppercase tracking-[0.4em] font-playfair" :style="{ color: userProfile.primaryColor }">Impact</h3>
+                            <div class="flex-1 h-[1px]" :style="{ backgroundColor: userProfile.primaryColor + '22' }"></div>
+                         </div>
+                         <p class="text-[10px] leading-[1.8] italic text-slate-600 font-medium border-l-2 pl-4" :style="{ borderColor: userProfile.primaryColor + '22' }">{{ masterProfile.bio || 'Synthesize your professional impact here...' }}</p>
                       </div>
-                      <div class="flex flex-wrap gap-2.5">
-                         <span v-for="skill in [...masterProfile.skills.hard, ...masterProfile.skills.soft]" :key="skill" class="bg-[#0A2647]/5 px-4 py-2 rounded-lg text-[9px] font-extrabold uppercase tracking-[0.3em] text-[#0A2647] border border-[#0A2647]/5">{{ skill }}</span>
+   
+                      <!-- EXPERIENCE -->
+                      <div class="space-y-6">
+                         <div class="flex items-center gap-4">
+                            <h3 class="text-[11px] font-black uppercase tracking-[0.4em] font-playfair" :style="{ color: userProfile.primaryColor }">{{ selectedTemplate === 3 ? 'Leadership Evolution' : 'Work History' }}</h3>
+                            <div class="flex-1 h-[1px]" :style="{ backgroundColor: userProfile.primaryColor + '22' }"></div>
+                         </div>
+                         <div v-for="(exp, idx) in masterProfile.experiences" :key="idx" class="space-y-2 relative pl-1">
+                            <div class="flex justify-between items-baseline mb-0.5">
+                               <span class="text-[11px] font-extrabold uppercase tracking-[0.3em] leading-tight" :style="{ color: userProfile.primaryColor }">{{ exp.role || 'Senior Strategic Lead' }}</span>
+                               <span class="text-[9px] font-black uppercase tracking-[0.2em]" :style="{ color: userProfile.secondaryColor }">2021 — Present</span>
+                            </div>
+                            <p class="text-[8.5px] font-extrabold text-slate-400 uppercase tracking-[0.3em]">DigyNex Solutions Ltd</p>
+                         </div>
+                      </div>
+
+                      <!-- ACADEMIC -->
+                      <div class="space-y-6">
+                         <div class="flex items-center gap-4">
+                            <h3 class="text-[11px] font-black uppercase tracking-[0.4em] font-playfair" :style="{ color: userProfile.primaryColor }">Academic Background</h3>
+                            <div class="flex-1 h-[1px]" :style="{ backgroundColor: userProfile.primaryColor + '22' }"></div>
+                         </div>
+                         <div class="space-y-1.5">
+                            <div class="flex justify-between items-center">
+                               <span class="text-[10px] font-extrabold uppercase tracking-[0.3em]" :style="{ color: userProfile.primaryColor }">MSc Artificial Intelligence</span>
+                               <span class="text-[8px] font-black tracking-[0.2em]" :style="{ color: userProfile.secondaryColor }">2020</span>
+                            </div>
+                         </div>
                       </div>
                    </div>
-               </div>
+                </div>
 
                <!-- Footer Controls -->
                <div class="p-6 bg-slate-50 border-t border-slate-100 flex items-center gap-3">
@@ -1291,12 +1610,12 @@ onUnmounted(() => {
       </div>
 
       <nav v-if="!isManualFormOpen && !isLinkedInModalOpen" 
-           class="absolute bottom-4 left-1/2 -translate-x-1/2 w-[80%] max-w-[280px] bg-[#0A2647]/50 backdrop-blur-3xl px-6 py-1.5 rounded-[2.5rem] flex items-center justify-around shadow-[0_45px_100px_-25px_rgba(0,0,0,0.6)] z-[1000] border border-white/10 ring-1 ring-white/10 transition-all">
-        <div v-for="(icon, key) in { dashboard: LayoutDashboard, applications: FileText, matches: Star, profile: User }" :key="key" 
+           class="absolute bottom-4 left-1/2 -translate-x-1/2 w-[80%] max-w-[300px] bg-[#0A2647]/50 backdrop-blur-3xl px-6 py-1.5 rounded-[2.5rem] flex items-center justify-around shadow-[0_45px_100px_-25px_rgba(0,0,0,0.6)] z-[1000] border border-white/10 ring-1 ring-white/10 transition-all">
+        <div v-for="(icon, key) in { dashboard: LayoutDashboard, matches: Star, studio: Sparkles, profile: User }" :key="key" 
              @click="setTab(key)"
-             class="flex flex-col items-center gap-0.5 group cursor-pointer relative active:scale-90 transition-all py-0.5">
+             class="flex flex-col items-center gap-0.5 group cursor-pointer relative active:scale-95 transition-all py-0.5">
           <component :is="icon" :class="activeTab === key ? 'text-[#C1A172] scale-105' : 'text-white/25'" class="w-4 h-4 transform transition-all hover:scale-110 shadow-sm" />
-          <span class="text-[5px] font-black uppercase tracking-[0.2em] mt-0.5" :class="activeTab === key ? 'text-white' : 'text-white/20'">{{ t('nav.' + key) }}</span>
+          <span class="text-[5.5px] font-black uppercase tracking-[0.2em] mt-0.5" :class="activeTab === key ? 'text-white' : 'text-white/20'">{{ key === 'dashboard' ? 'Home' : key === 'studio' ? 'CV Studio' : key }}</span>
           <div v-if="activeTab === key" class="absolute -bottom-1.5 w-1 h-1 bg-[#C1A172] rounded-full shadow-[0_0_12px_#C1A172]"></div>
         </div>
       </nav>
