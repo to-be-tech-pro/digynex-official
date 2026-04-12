@@ -11,11 +11,12 @@ A high-fidelity, AI-powered ecosystem for career identity synthesis and high-sca
 - **Expert Profile Wizard**: Multi-step master identity builder with LinkedIn ingestion.
 - **Service-Oriented Architecture**: Rigid separation of UI state and Supabase persistence layers.
 
-## 🛠️ System Architecture
-- **Frontend**: Vue 3 (Composition API) + Vite
-- **Logic Layer**: Modular JS Services (`/src/services/`)
-- **Backend Automation**: Python Audit & Surgical Fix Suite (`/backend-services/`)
-- **Database**: Supabase V3 High-Performance DB
+## 🛠️ System Architecture (Modular V6.5)
+The application adheres to a strict **Separation of Concerns (SoC)** model:
+- **Views (`/src/views/`)**: Modular hub components (e.g., `DashboardHub.vue`, `StudioHub.vue`) that orchestrate specific feature sets.
+- **Layouts (`/src/components/layout/`)**: Reusable shell components like `TopNavbar.vue` and `BottomNavbar.vue`.
+- **Services (`/src/services/`)**: The "Soul" of the app; headless logic and Supabase interaction (No UI dependencies).
+- **Backend Services (`/backend-services/`)**: Isolated Python scripts for database maintenance and automated auditing.
 
 ---
 **Documentation**: See `DASHBOARD_ENGINE_INTERACTIVITY_v1.md` for full logic mapping.
