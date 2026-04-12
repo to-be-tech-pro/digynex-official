@@ -10,9 +10,9 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 
 // --- CORE SERVICES (SOUL) ---
-import * as authService from './services/authService'
-import * as profileService from './services/profileService'
-import * as templateService from './services/templateService'
+import { authService } from './services/authService'
+import { profileService } from './services/profileService'
+import { templateService } from './services/templateService'
 
 // --- VIEW LAYERS (FACE) ---
 import DashboardHub from './views/DashboardHub.vue'
@@ -26,9 +26,6 @@ import ExpertProfileWizard from './components/ExpertProfileWizard.vue'
 import AuthOverlay from './components/AuthOverlay.vue'
 import JobDetailOverlay from './components/JobDetailOverlay.vue'
 import ActionSheet from './components/ActionSheet.vue'
-import { authService } from './services/authService'
-import { profileService } from './services/profileService'
-import { templateService } from './services/templateService'
 import ClassicElite from './components/templates/ClassicElite.vue'
 import SidebarModern from './components/templates/SidebarModern.vue'
 
