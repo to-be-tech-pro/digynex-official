@@ -155,7 +155,8 @@ const emit = defineEmits([
            <ShieldCheck v-if="!isSavingProfile" class="w-3.5 h-3.5 text-[#0A2647]/40" />
         </button>
      </div>
-  </div>
+      </div>
+   </div>
 </template>
 
 <style scoped>
