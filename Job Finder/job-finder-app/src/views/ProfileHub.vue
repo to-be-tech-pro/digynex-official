@@ -33,10 +33,14 @@ const emit = defineEmits([
        </div>
        <div class="flex flex-col items-center mb-1">
           <h2 class="text-[14px] font-black text-white/40 uppercase tracking-[0.3em] leading-none">{{ t('profile.title') }}</h2>
+          <div class="flex items-center gap-1.5 mt-2.5">
+             <div class="w-1 h-1 rounded-full bg-[#C1A172] animate-pulse shadow-[0_0_8px_#C1A172]"></div>
+             <span class="text-[7.5px] font-black text-white/20 uppercase tracking-[0.2em]">Neural Sync Active</span>
+          </div>
        </div>
      </header>
      
-      <div class="mt-4 flex-1 overflow-y-auto custom-scrollbar space-y-3 px-4 pb-[115px] relative">
+      <div class="mt-4 flex-1 overflow-y-auto custom-scrollbar space-y-3 px-4 hub-scroller relative">
          <!-- GLOBAL PRIVACY LOCK (PROFILE GUEST MODE) -->
          <div v-if="!isAuthenticated" class="absolute inset-x-0 inset-y-0 z-[100] flex flex-col items-center justify-center px-8 text-center bg-[#0A2647]/40 backdrop-blur-md rounded-[3rem] h-[calc(100%-110px)] top-1 mx-4">
             <div class="w-full max-w-[280px] bg-[#0A2647] border border-white/10 rounded-[2.5rem] p-8 shadow-3xl flex flex-col items-center gap-4 animate-in zoom-in-95 duration-500">

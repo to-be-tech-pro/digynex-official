@@ -39,7 +39,7 @@ const handleDashboardAction = (action) => emit('handleAction', action)
   <div class="flex flex-col h-full overflow-hidden">
     <slot name="header"></slot>
     <!-- Scrolling Content Wrapper -->
-    <div class="flex-1 overflow-y-auto px-4 pb-[115px] custom-scrollbar">
+    <div class="flex-1 overflow-y-auto px-4 hub-scroller custom-scrollbar">
        
        <!-- Identity Hub -->
         <div class="flex justify-between items-center mt-[5px] w-full px-1 font-jakarta transition-all duration-1000" :class="isRecalibrating ? 'scale-[1.02] blur-[1px]' : ''">
@@ -156,6 +156,14 @@ const handleDashboardAction = (action) => emit('handleAction', action)
                  </div>
                  <span class="text-[8.5px] font-black text-black/25 text-right leading-none">{{job.d}}</span>
                </div>
+            </div>
+
+            <!-- DETAILED MANAGEMENT TRIGGER -->
+            <div class="mt-2 border-t border-black/[0.03] pt-2 px-1">
+               <button @click="emit('setTab', 'applications')" class="w-full py-2 bg-white/50 border border-black/[0.05] rounded-xl flex items-center justify-center gap-2 hover:bg-[#0A2647]/5 transition-all group/det">
+                  <span class="text-[9px] font-black text-[#0A2647]/40 group-hover/det:text-[#0A2647] uppercase tracking-widest transition-colors">Detailed Submissions Management</span>
+                  <ArrowRight class="w-3 h-3 text-[#0A2647]/30" />
+               </button>
             </div>
          </div>
 

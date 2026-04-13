@@ -13,6 +13,7 @@ import { useI18n } from 'vue-i18n'
 import { authService } from './services/authService'
 import { profileService } from './services/profileService'
 import { templateService } from './services/templateService'
+import { jobService } from './services/jobService'
 
 // --- VIEW LAYERS (FACE) ---
 import DashboardHub from './views/DashboardHub.vue'
@@ -426,7 +427,21 @@ onMounted(async () => {
   if (session) {
     await fetchUserProfile();
   }
-  
+
+  // 3. Neural Ingestion: Fetch real-time matches from Engine
+  const discoveredJobs = await jobService.getDiscoveryJobs();
+  if (discoveredJobs && discoveredJobs.length > 0) {
+     matches.value = discoveredJobs.map(j => ({
+        id: j.id,
+        c: j.company,
+        r: j.role,
+        l: j.location,
+        m: j.match_score,
+        t: j.posted_at,
+        color: j.hex_color || '#0A2647',
+        icon: Zap // Defaulting to Zap for high-intent matches
+     }));
+  }
   
   document.addEventListener('click', handleClickOutside)
 })
@@ -556,18 +571,24 @@ const fetchUserProfile = async () => {
                 email: user.email,
                 name: profile.name || user.user_metadata?.full_name || 'Expert',
                 primaryColor: profile.primary_color || '#0A2647',
-                secondaryColor: profile.secondary_color || '#64748b'
+                secondaryColor: profile.secondary_color || '#64748b',
+                languagePreference: profile.language_preference || 'EN'
             };
             selectedTemplate.value = profile.selected_template || 3;
             if (profile.secret_keywords) {
                 masterProfile.value.secretKeywords = profile.secret_keywords;
+            }
+            if (profile.language_preference) {
+                currentLang.value = profile.language_preference;
+                locale.value = profile.language_preference;
             }
         } else {
             userProfile.value = {
                 email: user.email,
                 name: user.user_metadata?.full_name || user.user_metadata?.display_name || 'Expert',
                 primaryColor: '#0A2647',
-                secondaryColor: '#64748b'
+                secondaryColor: '#64748b',
+                languagePreference: 'EN'
             };
         }
     }
@@ -1163,6 +1184,17 @@ const handleNotificationClick = (notif) => {
          </div>
       </Transition>
 
+       <!-- FOOTER ATTRIBUTION (SURGICAL SPACING SYNC) -->
+       <div v-if="!isManualFormOpen && !isLinkedInModalOpen" 
+            class="absolute bottom-[76px] left-0 right-0 flex flex-col items-center z-[1001] pointer-events-none transition-all duration-500">
+          <div class="flex items-center gap-2.5 opacity-40 mb-[1px]">
+             <span class="text-[7.5px] font-black text-white/30 uppercase tracking-[0.2em]">{{ t('footer.poweredBy') }}</span>
+             <img src="/digynex-icon.png" alt="DigyNex" class="h-2.5 w-auto object-contain opacity-30" />
+             <span class="text-[8px] font-black text-[#C1A172] uppercase tracking-[0.1em]">DigyNex Identity Hub</span>
+          </div>
+          <p class="text-[6px] font-black text-white/25 tracking-[0.5em] uppercase mt-[1px] italic">{{ t('footer.engine') }} • {{ t('footer.version') }}</p>
+       </div>
+
        <!-- CENTRALIZED NAVIGATION ENGINE -->
        <BottomNavbar 
           v-if="!isManualFormOpen && !isLinkedInModalOpen"
@@ -1171,17 +1203,6 @@ const handleNotificationClick = (notif) => {
           @setTab="setTab"
           @openDiscovery="() => {}"
        />
-
-       <!-- FOOTER ATTRIBUTION -->
-       <!-- FOOTER ATTRIBUTION -->
-       <div v-if="!isManualFormOpen && !isLinkedInModalOpen" class="absolute bottom-[82px] left-0 right-0 flex flex-col items-center z-[990] pointer-events-none transition-all duration-500">
-          <div class="flex items-center gap-2.5 opacity-50">
-             <span class="text-[8px] font-black text-white/40 uppercase tracking-[0.2em]">{{ t('footer.poweredBy') }}</span>
-             <img src="/digynex-icon.png" alt="DigyNex" class="h-3 w-auto object-contain opacity-50" />
-             <span class="text-[9px] font-black text-[#C1A172] uppercase tracking-[0.1em]">DigyNex Identity Hub</span>
-          </div>
-          <p class="text-[6.5px] font-black text-white/35 tracking-[0.5em] uppercase mt-[1.5px] italic">{{ t('footer.engine') }} • {{ t('footer.version') }}</p>
-       </div>
 
       <AuthOverlay 
         :isOpen="isAuthOpen" 
@@ -1308,9 +1329,17 @@ h1 { letter-spacing: -0.05em; }
 }
 
 /* Strategic Accuracy Control V6.0 Elite Spacing */
+:root {
+  --surgical-bottom-zone: 106px;
+}
+
 * {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+.hub-scroller {
+  padding-bottom: var(--surgical-bottom-zone) !important;
 }
 
 .fade-enter-active, .fade-leave-active {
@@ -1348,14 +1377,6 @@ h1 { letter-spacing: -0.05em; }
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
-      
-      
-        
-      
-
-      
-    
-  
 
 .custom-horizontal-scrollbar::-webkit-scrollbar {
   height: 4px;

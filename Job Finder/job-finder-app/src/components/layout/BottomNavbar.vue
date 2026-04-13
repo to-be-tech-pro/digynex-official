@@ -1,6 +1,6 @@
 <script setup>
 import { 
-  LayoutDashboard, FileText, Star, User
+  LayoutDashboard, Sparkles, Star, User
 } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -12,8 +12,8 @@ const emit = defineEmits(['setTab'])
 
 const navItems = [
   { id: 'dashboard', icon: LayoutDashboard, label: 'nav.dashboard' },
-  { id: 'applications', icon: FileText, label: 'nav.applications' },
   { id: 'matches', icon: Star, label: 'nav.matches' },
+  { id: 'studio', icon: Sparkles, label: 'nav.studio' },
   { id: 'profile', icon: User, label: 'nav.profile' }
 ]
 

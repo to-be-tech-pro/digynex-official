@@ -30,17 +30,21 @@ const handleDashboardAction = (action) => emit('handleAction', action)
 
 <template>
   <div class="flex flex-col h-full overflow-hidden animate-in fade-in slide-in-from-right-10 duration-500">
+     <!-- CENTERED PREMIUM HEADER (MATCHES SCREENSHOT SYNC) -->
      <!-- Top Branding Hub (CENTERED SYNC) -->
      <header class="flex flex-col items-center pt-[18px] space-y-4 w-full relative z-[600]">
        <div class="p-0.5 bg-white/10 rounded-full">
           <img src="/digynex-icon.png" alt="DigyNex" class="h-8 w-auto opacity-50 contrast-125" />
        </div>
-       <div class="flex flex-col items-center">
-          <h2 class="text-[20px] font-black text-white tracking-tight uppercase leading-none">{{ t('nav.matches') }}</h2>
-          <p class="text-[8px] font-black text-[#C1A172] uppercase tracking-[0.3em] mt-1.5 opacity-80 animate-pulse">{{ t('matches.discoveryHub') }}</p>
+       <div class="flex flex-col items-center mb-1">
+          <h2 class="text-[14px] font-black text-white/40 uppercase tracking-[0.3em] leading-none">{{ t('nav.matches') }}</h2>
+          <div class="flex items-center gap-1.5 mt-2.5">
+             <div class="w-1 h-1 rounded-full bg-[#C1A172] animate-pulse shadow-[0_0_8px_#C1A172]"></div>
+             <span class="text-[7.5px] font-black text-white/20 uppercase tracking-[0.2em]">Neural Sync Active</span>
+          </div>
        </div>
 
-       <div class="w-full px-4 space-y-4">
+       <div class="w-full px-4 space-y-4 mt-3">
           <!-- FOCUS SLOTS TELEMETRY -->
           <div v-if="activeFocusSlots" class="flex justify-between items-center bg-white/5 border border-white/5 rounded-2xl px-3 py-1.5 mx-1">
              <div class="flex items-center gap-2">
@@ -80,7 +84,7 @@ const handleDashboardAction = (action) => emit('handleAction', action)
        </div>
      </header>
 
-     <div class="mt-4 flex-1 overflow-y-auto space-y-2 pb-[115px] px-4 custom-scrollbar">
+     <div class="mt-4 flex-1 overflow-y-auto space-y-2 hub-scroller px-4 custom-scrollbar">
         <div v-for="(match, i) in filteredMatches" :key="match.id" 
         @click="openJobDetail(match)"
         class="bg-gradient-to-br from-[#BDDAFA]/25 via-[#F1F5F9] to-[#EDF2F7] rounded-[2.5rem] px-5 pt-1.5 pb-2 border border-white shadow-[0_50px_120px_-40px_rgba(0,0,0,0.25)] relative overflow-hidden group hover:scale-[1.01] transition-all cursor-pointer select-none">

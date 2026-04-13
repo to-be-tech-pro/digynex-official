@@ -48,7 +48,7 @@ const openActionSheet = (title, type) => emit('openActionSheet', title, type)
         </div>
      </div>
 
-     <div class="mt-4 flex-1 overflow-y-auto space-y-2 pb-[115px] px-4 custom-scrollbar">
+     <div class="mt-4 flex-1 overflow-y-auto space-y-2 hub-scroller px-4 custom-scrollbar">
         <!-- SMART ACTIVE VIEW (TOP 4 PRIORITY) -->
         <div v-for="(app, i) in filteredJobs" :key="i" @click="openJobDetail(app)" class="cursor-pointer bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-xl rounded-[2.2rem] p-4 pt-1 pb-1 border border-white/10 shadow-2xl relative overflow-hidden group hover:scale-[1.01] transition-all">
            <div class="absolute -right-10 -top-10 w-32 h-32 bg-white/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>

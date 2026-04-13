@@ -20,6 +20,7 @@ export const profileService = {
       secondary_color: profileData.secondaryColor,
       selected_template: profileData.selectedTemplate,
       secret_keywords: profileData.secretKeywords,
+      language_preference: profileData.languagePreference,
       name: profileData.name,
       email: user.email
     });
