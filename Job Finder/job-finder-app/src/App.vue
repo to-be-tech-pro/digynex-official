@@ -1055,7 +1055,7 @@ const handleNotificationClick = (notif) => {
 
        <!-- FOOTER ATTRIBUTION -->
        <!-- FOOTER ATTRIBUTION -->
-       <div v-if="!isManualFormOpen && !isLinkedInModalOpen" class="absolute bottom-[85px] left-0 right-0 flex flex-col items-center z-[990] pointer-events-none transition-all duration-500">
+       <div v-if="!isManualFormOpen && !isLinkedInModalOpen" class="absolute bottom-[82px] left-0 right-0 flex flex-col items-center z-[990] pointer-events-none transition-all duration-500">
           <div class="flex items-center gap-2.5 opacity-50">
              <span class="text-[8px] font-black text-white/40 uppercase tracking-[0.2em]">{{ t('footer.poweredBy') }}</span>
              <img src="/digynex-icon.png" alt="DigyNex" class="h-3 w-auto object-contain opacity-50" />

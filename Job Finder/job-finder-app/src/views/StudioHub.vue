@@ -34,7 +34,7 @@ const updateSelectedTemplate = (id) => emit('update:selectedTemplate', id)
 </script>
 
 <template>
-  <div class="flex flex-col h-full overflow-hidden animate-in fade-in slide-in-from-right-10 duration-500 pb-[90px]">
+  <div class="flex flex-col h-full overflow-hidden animate-in fade-in slide-in-from-right-10 duration-500">
     <!-- Top Branding Hub -->
     <header class="flex flex-col items-center pt-[18px] space-y-4 w-full relative z-[600]">
       <div class="p-0.5 bg-white/10 rounded-full shrink-0">
@@ -49,7 +49,7 @@ const updateSelectedTemplate = (id) => emit('update:selectedTemplate', id)
       </div>
     </header>
 
-    <div class="mt-6 flex-1 overflow-y-auto space-y-6 px-4 custom-scrollbar">
+    <div class="mt-6 flex-1 overflow-y-auto space-y-6 px-4 pb-[115px] custom-scrollbar">
        <!-- 1. TEMPLATE GALLERY (HORIZONTAL) -->
        <div class="bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-3xl rounded-[2.5rem] p-6 border border-white/10 shadow-2xl overflow-visible group relative">
           <div class="flex justify-between items-center mb-3">

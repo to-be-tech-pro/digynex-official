@@ -66,7 +66,7 @@ const handleDashboardAction = (action) => emit('handleAction', action)
        </div>
      </header>
 
-     <div class="mt-4 flex-1 overflow-y-auto space-y-2 pb-[150px] px-4 custom-scrollbar">
+     <div class="mt-4 flex-1 overflow-y-auto space-y-2 pb-[115px] px-4 custom-scrollbar">
         <div v-for="(match, i) in [
            {id: 'm1', c: 'NVIDIA', r: 'AI Research Scientist', l: 'Stockholm, SE', m: 99, icon: Zap, color: '#76B900', t: '2 hr'},
            {id: 'm2', c: 'OpenAI', r: 'Language Model Eng', l: 'Remote, Global', m: 97, icon: Stars, color: '#000000', t: '5 hr'},

@@ -38,7 +38,7 @@ const handleDashboardAction = (action) => emit('handleAction', action)
   <div class="flex flex-col h-full overflow-hidden">
     <slot name="header"></slot>
     <!-- Scrolling Content Wrapper -->
-    <div class="flex-1 overflow-y-auto px-4 pb-[150px] custom-scrollbar">
+    <div class="flex-1 overflow-y-auto px-4 pb-[115px] custom-scrollbar">
        
        <!-- Identity Hub -->
        <div class="flex justify-between items-center mt-[5px] w-full px-1 font-jakarta transition-all duration-1000" :class="isRecalibrating ? 'scale-[1.02] blur-[1px]' : ''">
