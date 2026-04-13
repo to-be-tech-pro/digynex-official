@@ -36,7 +36,7 @@ const emit = defineEmits([
        </div>
      </header>
      
-      <div class="mt-4 flex-1 overflow-y-auto custom-scrollbar space-y-3 px-4 pb-[94px] relative">
+      <div class="mt-4 flex-1 overflow-y-auto custom-scrollbar space-y-3 px-4 pb-[150px] relative">
          <!-- GLOBAL PRIVACY LOCK (PROFILE GUEST MODE) -->
          <div v-if="!isAuthenticated" class="absolute inset-x-0 inset-y-0 z-[100] flex flex-col items-center justify-center px-8 text-center bg-[#0A2647]/40 backdrop-blur-md rounded-[3rem] h-[calc(100%-110px)] top-1 mx-4">
             <div class="w-full max-w-[280px] bg-[#0A2647] border border-white/10 rounded-[2.5rem] p-8 shadow-3xl flex flex-col items-center gap-4 animate-in zoom-in-95 duration-500">
