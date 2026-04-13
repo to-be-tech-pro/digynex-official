@@ -162,10 +162,23 @@ const countrySearch = ref('')
 const selectedCountriesArr = ref(['Sweden', 'Germany', 'Norway', 'Finland', 'Denmark'])
 const activeCountry = ref('Sweden')
 
-const setLang = (lang) => {
+const displayName = computed(() => {
+    if (!userProfile.value.name) return 'Expert';
+    return userProfile.value.name.split(' ')[0];
+})
+
+const setLang = async (lang) => {
   currentLang.value = lang
   locale.value = lang
   isLangOpen.value = false
+  
+  // Persist language preference to engine (Logic First)
+  if (isAuthenticated.value) {
+     const user = await authService.getUser();
+     if (user) {
+        await profileService.syncProfile(user, { languagePreference: lang });
+     }
+  }
 }
 
 const setTab = (tab) => {
@@ -588,7 +601,7 @@ const handleDashboardAction = async (actionId) => {
 
 
 const toggleSelector = (e) => {
-  e.stopPropagation()
+  if (e) e.stopPropagation();
   isLangOpen.value = !isLangOpen.value
 }
 
@@ -663,6 +676,7 @@ const handleNotificationClick = (notif) => {
           :t="t"
           :locale="locale"
           :isAuthenticated="isAuthenticated"
+          :displayName="displayName"
           :userProfile="userProfile"
           :masterProfile="masterProfile"
           :allJobs="allJobs"

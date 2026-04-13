@@ -21,27 +21,33 @@ const emit = defineEmits([
 <template>
   <header class="flex flex-col items-center pt-[18px] space-y-4 w-full relative z-[600]">
      <!-- Symmetric Auth Gate -->
-     <div class="flex items-center justify-between w-full px-4 mb-2">
-        <button v-if="!isAuthenticated" @click="emit('openAuth', 'register')" 
-                class="text-[8px] font-black text-white/30 uppercase tracking-[0.3em] px-4 py-2 rounded-full border border-white/5 hover:text-white hover:border-[#C1A172]/40 hover:bg-[#C1A172]/5 hover:shadow-[0_0_20px_rgba(193,161,114,0.3)] transition-all duration-500 font-jakarta active:scale-90">
-           {{ t('auth.signup') || 'JOIN' }}
-        </button>
-        <div v-else class="w-16"></div>
+     <div class="grid grid-cols-3 items-center w-full px-4 mb-2">
+         <!-- LEFT: JOIN (ONLY GUEST) -->
+         <div class="flex justify-start">
+            <button v-if="!isAuthenticated" @click="emit('openAuth', 'register')" 
+                    class="text-[8px] font-black text-white/30 uppercase tracking-[0.3em] px-4 py-2 rounded-full border border-white/5 hover:text-white hover:border-[#C1A172]/40 hover:bg-[#C1A172]/5 hover:shadow-[0_0_20px_rgba(193,161,114,0.3)] transition-all duration-500 font-jakarta active:scale-90">
+               {{ t('auth.signup') || 'JOIN' }}
+            </button>
+         </div>
 
-        <!-- CENTER: LOGO UNIT -->
-        <div class="relative group">
-          <div class="p-1.5 bg-gradient-to-br from-[#144272] to-[#0A2647] rounded-full flex items-center justify-center border-2 border-white/40 shadow-[-10px_-10px_30px_rgba(255,255,255,0.05),15px_15px_35px_rgba(0,0,0,0.6)] overflow-hidden scale-100 transition-all hover:scale-110 active:scale-95 duration-500">
-             <img src="/digynex-icon.png" alt="DigyNex" class="h-10 w-auto object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)]" />
-          </div>
-          <div class="absolute -inset-1 border border-white/10 rounded-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity"></div>
-        </div>
+         <!-- CENTER: LOGO UNIT -->
+         <div class="flex justify-center">
+            <div class="relative group">
+              <div class="p-1.5 bg-gradient-to-br from-[#144272] to-[#0A2647] rounded-full flex items-center justify-center border-2 border-white/40 shadow-[-10px_-10px_30px_rgba(255,255,255,0.05),15px_15px_35px_rgba(0,0,0,0.6)] overflow-hidden scale-100 transition-all hover:scale-110 active:scale-95 duration-500">
+                 <img src="/digynex-icon.png" alt="DigyNex" class="h-10 w-auto object-contain drop-shadow-[0_10px_25px_rgba(0,0,0,0.8)]" />
+              </div>
+              <div class="absolute -inset-1 border border-white/10 rounded-full pointer-events-none opacity-50 group-hover:opacity-100 transition-opacity"></div>
+            </div>
+         </div>
 
-        <!-- RIGHT: LOGIN -->
-        <button v-if="!isAuthenticated" @click="emit('openAuth', 'login')" 
-                class="text-[8px] font-black text-white/30 uppercase tracking-[0.3em] px-4 py-2 rounded-full border border-white/5 hover:text-white hover:border-[#C1A172]/40 hover:bg-[#C1A172]/5 hover:shadow-[0_0_20px_rgba(193,161,114,0.3)] transition-all duration-500 font-jakarta active:scale-90">
-           {{ t('auth.login') || 'LOGIN' }}
-        </button>
-        <button v-else @click="emit('logout')" class="text-[8px] font-black text-red-500/50 uppercase tracking-[0.3em] px-4 py-2 rounded-full border border-red-500/10 hover:text-red-500 transition-all font-jakarta active:scale-90">LOG OUT</button>
+         <!-- RIGHT: AUTH STATE -->
+         <div class="flex justify-end">
+            <button v-if="!isAuthenticated" @click="emit('openAuth', 'login')" 
+                    class="text-[8px] font-black text-white/30 uppercase tracking-[0.3em] px-4 py-2 rounded-full border border-white/5 hover:text-white hover:border-[#C1A172]/40 hover:bg-[#C1A172]/5 hover:shadow-[0_0_20px_rgba(193,161,114,0.3)] transition-all duration-500 font-jakarta active:scale-90">
+               {{ t('auth.login') || 'LOGIN' }}
+            </button>
+            <button v-else @click="emit('logout')" class="text-[8px] font-black text-white/30 uppercase tracking-[0.3em] px-4 py-2 rounded-full border border-white/5 hover:text-red-400 hover:border-red-400/30 transition-all font-jakarta active:scale-90">{{ t('auth.logout') || 'LOG OUT' }}</button>
+         </div>
      </div>
 
     <!-- Branding Text Hub -->
