@@ -17,6 +17,9 @@ import { templateService } from './services/templateService'
 // --- VIEW LAYERS (FACE) ---
 import DashboardHub from './views/DashboardHub.vue'
 import StudioHub from './views/StudioHub.vue'
+import ApplicationsHub from './views/ApplicationsHub.vue'
+import MatchesHub from './views/MatchesHub.vue'
+import ProfileHub from './views/ProfileHub.vue'
 import TopNavbar from './components/layout/TopNavbar.vue'
 import BottomNavbar from './components/layout/BottomNavbar.vue'
 
@@ -583,13 +586,6 @@ const handleDashboardAction = async (actionId) => {
     }
 }
 
-const handleScroll = (e) => {
-  const el = e.target
-  const scrollable = el.scrollWidth - el.clientWidth
-  if (scrollable > 0) {
-    sliderProgress.value = (el.scrollLeft / scrollable) * 70 // 70 because thumb is 30% width
-  }
-}
 
 const toggleSelector = (e) => {
   e.stopPropagation()
@@ -695,339 +691,53 @@ const handleNotificationClick = (notif) => {
                 @logout="logout"
              />
           </template>
-       </DashboardHub>
+       </Da       <!-- MODULAR VIEW ENGINE (PHASE 2 - DECOUPLED) -->
+       <ApplicationsHub 
+          v-else-if="activeTab === 'applications'"
+          v-model:searchQuery="searchQuery"
+          :t="t"
+          :filteredJobs="filteredJobs"
+          @openJobDetail="openJobDetail"
+          @openActionSheet="openActionSheet"
+       />
 
-      
-      <!-- APPLICATIONS VIEW -->
-      <div v-else-if="activeTab === 'applications'" class="flex flex-col h-full overflow-hidden animate-in fade-in slide-in-from-right-10 duration-500">
-         <!-- Top Branding Hub (CENTERED SYNC) -->
-         <header class="flex flex-col items-center pt-[18px] space-y-4 w-full relative z-[600]">
-           <div class="p-0.5 bg-white/10 rounded-full">
-              <img src="/digynex-icon.png" alt="DigyNex" class="h-8 w-auto opacity-50 contrast-125" />
-           </div>
-           <div class="flex flex-col items-center mb-1">
-              <h2 class="text-[14px] font-black text-white/40 uppercase tracking-[0.3em] leading-none">{{ t('apps.title') }}</h2>
-           </div>
-         </header>
-            <div class="w-full px-1 space-y-3 mt-3">
-               <div class="relative group mx-2">
-                  <input type="text" v-model="searchQuery" :placeholder="t('apps.searchPlaceholder')" 
-                         class="w-full bg-white/5 border border-white/10 rounded-2xl px-12 py-2 text-[10px] text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-[#2C74B3]/50 transition-all font-jakarta shadow-inner" />
-                  <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-[#2C74B3] transition-colors" />
-                  <div @click.stop="openActionSheet('Search Filters', 'filters')" class="absolute right-4 top-1/2 -translate-y-1/2 p-1.5 hover:bg-white/10 rounded-lg cursor-pointer transition-all">
-                     <SlidersHorizontal class="w-3.5 h-3.5 text-white/20 hover:text-white transition-colors" />
-                  </div>
-               </div>
-               <div class="flex items-center gap-2 overflow-x-auto pb-1 no-scrollbar scroll-smooth">
-                  <span v-for="cat in ['filterAll', 'filterPending', 'filterInterview', 'filterOffers', 'filterArchived']" :key="cat"
-                        :class="cat === 'filterAll' ? 'bg-white text-[#0A2647] font-black' : 'bg-white/5 text-white/40 font-bold border border-white/5'"
-                        class="px-5 py-2 rounded-full text-[9px] uppercase tracking-widest whitespace-nowrap cursor-pointer hover:bg-white/10 transition-all active:scale-95">
-                    {{ t('apps.' + cat) }}
-                  </span>
-               </div>
-            </div>
+       <MatchesHub 
+          v-else-if="activeTab === 'matches'"
+          v-model:searchQuery="searchQuery"
+          v-model:activeCountry="activeCountry"
+          :t="t"
+          :selectedCountriesArr="selectedCountriesArr"
+          @openJobDetail="openJobDetail"
+          @handleAction="handleDashboardAction"
+          @openCountrySelector="showCountrySelector = true"
+       />
 
-         <div class="mt-4 flex-1 overflow-y-auto space-y-2 pb-[94px] px-4 custom-scrollbar">
-            <!-- SMART ACTIVE VIEW (TOP 4 PRIORITY) -->
-            <div v-for="(app, i) in filteredJobs" :key="i" @click="openJobDetail(app)" class="cursor-pointer bg-gradient-to-br from-white/10 via-white/5 to-transparent backdrop-blur-xl rounded-[2.2rem] p-4 pt-1 pb-1 border border-white/10 shadow-2xl relative overflow-hidden group hover:scale-[1.01] transition-all">
-               <div class="absolute -right-10 -top-10 w-32 h-32 bg-white/5 rounded-full blur-3xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-               
-               <!-- SUPREME SYMMETRY CONTAINER -->
-               <div class="flex items-start justify-between relative z-10 mb-1 h-12">
-                  <!-- LEFT: IDENTITY UNIT -->
-                  <div class="flex items-start gap-3 h-full">
-                     <div class="w-12 h-12 rounded-[1.2rem] p-2.5 flex items-center justify-center shadow-2xl ring-1 ring-white/10 shrink-0 transform group-hover:rotate-6 transition-transform" :style="{ backgroundColor: app.color }">
-                        <component :is="app.icon" class="w-full h-full text-white drop-shadow-lg" />
-                     </div>
-                     <div class="flex flex-col pt-[7px]">
-                        <h3 class="text-[16px] font-black text-white tracking-tight leading-none font-jakarta">{{ app.r }}</h3>
-                        <p class="text-[12px] font-bold text-white/50 mt-1.5 font-jakarta tracking-wide">{{ app.c }}</p>
-                     </div>
-                  </div>
-
-                  <!-- RIGHT: METRIC & STATUS UNIT -->
-                  <div class="flex flex-col items-end pt-[2px] h-full">
-                     <div class="bg-white/10 px-3 py-1.5 rounded-full border border-white/20 shadow-inner group-hover:border-white/40 transition-colors leading-none flex items-center justify-center">
-                        <span class="text-[12px] font-black text-[#C1A172] tracking-tighter">{{ app.m }}%</span>
-                     </div>
-                     <!-- ALIGNED STATUS BADGE -->
-                     <div class="flex items-center gap-1.5 opacity-80 bg-white/5 px-2.5 py-1.5 rounded-full border border-white/5 mt-3 transition-all group-hover:bg-white/10">
-                        <div :class="app.s === 'interview' ? 'bg-[#73BBA3]' : app.s === 'offer' ? 'bg-[#C1A172]' : 'bg-[#2C74B3]'"
-                             class="w-1.5 h-1.5 rounded-full shadow-[0_0_12px_currentColor]"></div>
-                        <span class="text-[8px] font-black uppercase tracking-[0.15em] text-white/70 leading-none font-jakarta">{{ t('pipeline.' + app.s) }}</span>
-                     </div>
-                  </div>
-               </div>
-
-               <!-- TIER 3: LOCATION HUB (MINIMAL) -->
-               <div class="flex items-center gap-2 mb-1 font-jakarta opacity-85 px-[0.75px] hover:opacity-100 transition-opacity">
-                  <Globe class="w-3.5 h-3.5" />
-                  <span class="text-[11px] font-bold text-white tracking-wide truncate">{{ app.l }}</span>
-               </div>
-
-               <!-- FOOTER: ALIGNED DATE & BUTTON -->
-               <div class="flex items-center justify-between border-t border-white/5 pt-1">
-                  <div class="flex flex-col">
-                     <span class="text-[8.5px] font-black text-white/20 uppercase tracking-[0.2em] font-jakarta">{{ t('apps.appliedDate') }}</span>
-                     <span class="text-[11px] font-extrabold text-white/50 mt-1 font-jakarta">12 March 2024</span>
-                  </div>
-                  <button @click="openJobDetail(app)" class="bg-white text-[#0A2647] px-6 py-3 rounded-2xl text-[10.5px] font-black uppercase tracking-widest shadow-[0_10px_20px_rgba(0,0,0,0.2)] hover:shadow-[0_15px_30px_rgba(255,255,255,0.1)] active:scale-95 transition-all font-jakarta">
-                     {{ t('apps.viewDetails') }}
-                  </button>
-               </div>
-            </div>
-
-            <!-- SHOW MORE - ELITE CALL TO ACTION -->
-            <button class="w-full bg-white/5 border border-white/10 py-2.5 rounded-[2rem] flex items-center justify-center gap-3 hover:bg-white/10 active:scale-[0.98] transition-all group font-jakarta">
-               <span class="text-[11px] font-black text-white/40 uppercase tracking-[0.2em] group-hover:text-white transition-colors">{{ t('apps.loadMore') }}</span>
-               <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center p-1.5 group-hover:bg-[#C1A172] transition-all">
-                  <ChevronDown class="w-3.5 h-3.5 text-white" />
-               </div>
-            </button>
-
-         </div>
-      </div>
-
-      <!-- AI MATCHES VIEW -->
-      <div v-else-if="activeTab === 'matches'" class="flex flex-col h-full overflow-hidden animate-in fade-in slide-in-from-right-10 duration-500">
-         <!-- Top Branding Hub (CENTERED SYNC) -->
-         <header class="flex flex-col items-center pt-[18px] space-y-4 w-full relative z-[600]">
-           <div class="p-0.5 bg-white/10 rounded-full">
-              <img src="/digynex-icon.png" alt="DigyNex" class="h-8 w-auto opacity-50 contrast-125" />
-           </div>
-           <div class="flex flex-col items-center">
-              <h2 class="text-[20px] font-black text-white tracking-tight uppercase leading-none">{{ t('nav.matches') }}</h2>
-              <p class="text-[8px] font-black text-[#C1A172] uppercase tracking-[0.3em] mt-1.5 opacity-80 animate-pulse">{{ t('matches.discoveryHub') }}</p>
-           </div>
-
-           <div class="w-full px-1 space-y-4">
-              <!-- DRAGGABLE / SCROLLABLE COUNTRIES LIST WITH + AT THE END -->
-              <div ref="countriesContainer" @scroll="handleScroll" class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar scroll-smooth w-full px-0.5">
-                 <div v-for="(country, idx) in selectedCountriesArr" :key="country"
-                       @click="activeCountry = country"
-                       :class="activeCountry === country ? 'bg-white text-[#0A2647] font-black shadow-lg scale-105' : 'bg-white/5 text-white/40 font-bold border border-white/5 hover:bg-white/10'"
-                       class="px-4 h-[36px] rounded-full text-[9px] uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all active:scale-95 flex items-center gap-3 shrink-0">
-                   <span>{{ country }}</span>
-                   <X v-if="selectedCountriesArr.length !== 1" 
-                      @click.stop="selectedCountriesArr.splice(idx, 1); if(activeCountry === country) activeCountry = selectedCountriesArr[0]" 
-                      class="w-3 h-3 opacity-85 group-hover:opacity-100 text-red-500 hover:scale-125 transition-all" />
-                 </div>
-                 <!-- PROMINENT FIXED + BUTTON AT THE END -->
-                 <div @click="showCountrySelector = true" 
-                      class="flex items-center justify-center min-w-[44px] h-[36px] bg-gradient-to-br from-[#C1A172] to-[#FFD700] rounded-full cursor-pointer hover:scale-110 active:scale-95 transition-all shadow-[0_5px_15px_rgba(193,161,114,0.3)] shrink-0 z-50">
-                    <span class="text-[16px] font-black text-[#0A2647]">+</span>
-                 </div>
-              </div>
-
-              <!-- SEARCH INPUT (MOVED BELOW COUNTRIES) -->
-              <div class="relative group mt-1 mx-2">
-                 <input type="text" v-model="searchQuery" :placeholder="t('apps.searchPlaceholder')" 
-                        class="w-full bg-white/5 border border-white/10 rounded-2xl px-12 py-2 text-[10px] text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-[#C1A172]/50 transition-all font-jakarta shadow-inner" />
-                 <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-[#C1A172] transition-colors" />
-              </div>
-           </div>
-         </header>
-
-         <div class="mt-4 flex-1 overflow-y-auto space-y-2 pb-[94px] px-4 custom-scrollbar">
-            <div v-for="(match, i) in [
-               {id: 'm1', c: 'NVIDIA', r: 'AI Research Scientist', l: 'Stockholm, SE', m: 99, icon: Zap, color: '#76B900', t: '2 hr'},
-               {id: 'm2', c: 'OpenAI', r: 'Language Model Eng', l: 'Remote, Global', m: 97, icon: Stars, color: '#000000', t: '5 hr'},
-               {id: 'm3', c: 'Apple', r: 'iOS Core Developer', l: 'Copenhagen, DK', m: 95, icon: LayoutDashboard, color: '#555555', t: '8 hr'},
-               {id: 'm4', c: 'Microsoft', r: 'Azure AI Architect', l: 'Oslo, NO', m: 92, icon: Briefcase, color: '#00A4EF', t: '1 d'}
-            ]" :key="i" 
-            @click="openJobDetail(match)"
-            class="bg-gradient-to-br from-[#BDDAFA]/25 via-[#F1F5F9] to-[#EDF2F7] rounded-[2.5rem] px-5 pt-1.5 pb-2 border border-white shadow-[0_50px_120px_-40px_rgba(0,0,0,0.25)] relative overflow-hidden group hover:scale-[1.01] transition-all cursor-pointer select-none">
-               
-               <!-- SUPREME SYMMETRY CONTAINER (V6.5 - ALPHA SYNC) -->
-               <div class="flex items-start justify-between relative z-10 mb-1.5 min-h-[58px] pt-1.5">
-                  <!-- LEFT: IDENTITY UNIT -->
-                  <div class="flex items-start gap-3.5 h-full">
-                     <div class="w-10 h-10 rounded-[1rem] p-2 flex items-center justify-center shadow-[0_15px_35px_rgba(0,0,0,0.4)] ring-1 ring-white/10 shrink-0 transform group-hover:rotate-6 transition-transform" :style="{ backgroundColor: match.color }">
-                        <component :is="match.icon" class="w-full h-full text-white drop-shadow-[0_5px_15px_rgba(0,0,0,0.5)]" />
-                     </div>
-                     <div class="flex flex-col pt-[1px]">
-                        <h3 class="text-[16px] font-black text-[#0A2647] tracking-tight leading-[1.1] font-jakarta">{{ match.r }}</h3>
-                        <div class="flex items-center gap-1.5 mt-1">
-                           <span class="text-[10.5px] font-black text-[#0A2647]/55 tracking-wide font-jakarta">{{ match.c }}</span>
-                           <div class="w-1 h-1 bg-[#0A2647]/10 rounded-full"></div>
-                           <span class="text-[9px] font-bold text-[#C1A172] uppercase tracking-[0.1em]">{{ t('matches.posted', { time: match.t }) }}</span>
-                        </div>
-                     </div>
-                  </div>
- 
-                  <!-- RIGHT: METRIC HUB (DYNAMIC GLOW) -->
-                  <div class="flex flex-col items-end pt-[2px] h-full">
-                     <div class="bg-gradient-to-br from-[#C1A172] to-[#FFD700] px-2 py-1 rounded-lg shadow-[0_8px_20px_rgba(193,161,114,0.3)] border border-white/20 flex items-baseline gap-1 scale-100 group-hover:scale-105 transition-transform">
-                        <span class="text-[11px] font-black text-[#0A2647] leading-none">{{ match.m }}%</span>
-                        <span class="text-[7px] font-black text-[#0A2647]/60 uppercase tracking-tighter">Match</span>
-                     </div>
-                  </div>
-               </div>
- 
-               <!-- TIER 3: LOCATION & INTELLIGENCE HUD (V6.5 TIGHTENED) -->
-               <div class="flex items-center justify-between mb-2 pb-1.5 border-b border-black/[0.03] mx-0.5">
-                  <div class="flex items-center gap-2 font-jakarta opacity-85 px-[0.75px] hover:opacity-100 transition-opacity">
-                     <Globe class="w-3 h-3 text-[#0A2647]" />
-                     <span class="text-[10.5px] font-bold text-[#0A2647]/70 tracking-wide truncate">{{ match.l }}</span>
-                  </div>
-                  <div class="flex items-center gap-1.5 bg-[#C1A172]/10 px-2 py-0.5 rounded-lg border border-[#C1A172]/20 group-hover:bg-[#C1A172]/20 transition-all">
-                     <Zap class="w-2.5 h-2.5 text-[#C1A172]" />
-                     <span class="text-[8px] font-black text-[#C1A172] uppercase tracking-tighter">{{ t('matches.instantTailorShort') || 'Tailor' }}</span>
-                  </div>
-               </div>
-               
-               <!-- FOOTER: ELITE ACTION CONTROL -->
-               <div class="flex items-center justify-between pt-0.5 pb-0.5">
-                  <div class="flex items-center gap-3">
-                     <div class="flex -space-x-2.5">
-                        <div v-for="j in 3" :key="j" class="w-5 h-5 rounded-full border-2 border-[#0A2647] overflow-hidden group-hover:border-white/10 transition-colors">
-                           <img :src="'https://i.pravatar.cc/50?u=' + (i+j)" class="w-full h-full object-cover contrast-125" />
-                        </div>
-                     </div>
-                     <span class="text-[8.5px] font-black text-[#0A2647]/35 uppercase tracking-wider font-jakarta">{{ t('matches.applicantsCount', { count: 12 }) }}</span>
-                  </div>
-                  <div class="flex gap-1.5 justify-end items-center relative z-[100]">
-                     <button @click.stop="handleDashboardAction('save_match')" class="bg-white/5 border border-white/10 text-white/30 w-8 h-8 flex items-center justify-center rounded-xl hover:bg-white/10 hover:text-white transition-all active:scale-90 group-hover:border-white/20">
-                        <Star class="w-3 h-3" />
-                     </button>
-                     <button @click.stop="handleDashboardAction('tailor_cv')" class="bg-[#C1A172] text-[#0A2647] w-[90px] py-1 rounded-xl text-[8px] font-black uppercase tracking-[0.05em] shadow-[0_8px_15px_rgba(193,161,114,0.25)] hover:scale-[1.02] active:scale-95 transition-all font-jakarta relative overflow-hidden text-center">
-                        {{ t('matches.instantTailorShort') || 'Tailor CV' }}
-                     </button>
-                  </div>
-               </div>
-            </div>
-         </div>
-      </div>
-
-      <!-- PROFILE VIEW (V6.0 - PACKED ARCHITECTURE) -->
-      <div v-else-if="activeTab === 'profile'" class="flex flex-col animate-in fade-in slide-in-from-right-10 duration-500 overflow-hidden h-full">
-         <!-- Top Branding Hub (CENTERED SYNC) -->
-         <header class="flex flex-col items-center pt-[18px] space-y-4 w-full relative z-[600]">
-           <div class="p-0.5 bg-white/10 rounded-full">
-              <img src="/digynex-icon.png" alt="DigyNex" class="h-8 w-auto opacity-50 contrast-125" />
-           </div>
-           <div class="flex flex-col items-center mb-1">
-              <h2 class="text-[14px] font-black text-white/40 uppercase tracking-[0.3em] leading-none">{{ t('profile.title') }}</h2>
-           </div>
-         </header>
-         
-          <div class="mt-4 flex-1 overflow-y-auto custom-scrollbar space-y-3 px-4 pb-[94px] relative">
-             <!-- GLOBAL PRIVACY LOCK (PROFILE GUEST MODE) -->
-             <div v-if="!isAuthenticated" class="absolute inset-x-0 inset-y-0 z-[100] flex flex-col items-center justify-center px-8 text-center bg-[#0A2647]/40 backdrop-blur-md rounded-[3rem] h-[calc(100%-110px)] top-1 mx-4">
-                <div class="w-full max-w-[280px] bg-[#0A2647] border border-white/10 rounded-[2.5rem] p-8 shadow-3xl flex flex-col items-center gap-4 animate-in zoom-in-95 duration-500">
-                   <div class="w-12 h-12 bg-[#C1A172]/10 rounded-2xl flex items-center justify-center border border-[#C1A172]/20">
-                      <ShieldCheck class="w-6 h-6 text-[#C1A172]" />
-                   </div>
-                   <div class="space-y-1">
-                      <h3 class="text-[11px] font-black text-white uppercase tracking-[0.2em]">IDENTITY HUB LOCKED</h3>
-                      <p class="text-[8px] font-black text-white/30 uppercase tracking-[0.1em] leading-relaxed">Personal data ingestion and AI profiling are restricted to authorized users.</p>
-                   </div>
-                   <button @click="isAuthOpen = true" class="mt-2 w-full py-3 bg-[#C1A172] rounded-xl text-[9px] font-black text-[#0A2647] uppercase tracking-widest shadow-xl hover:scale-105 active:scale-95 transition-all">Unlock Master Access</button>
-                </div>
-             </div>
-
-             <div :class="{ 'filter blur-[10px] select-none pointer-events-none opacity-40': !isAuthenticated }" class="space-y-3">
-
-            
-            <!-- AI GENERATOR HUB (PACKED ELITE CARD) -->
-            <div class="bg-gradient-to-br from-[#BDDAFA]/25 via-[#F1F5F9] to-[#EDF2F7] rounded-[2.5rem] px-5 pt-2 pb-2.5 shadow-[0_50px_120px_-40px_rgba(0,0,0,0.25)] border border-white relative overflow-hidden group">
-               <div class="flex items-center justify-between mb-3 px-1">
-                  <div class="flex items-center gap-2">
-                     <div class="bg-[#0A2647]/5 p-2 rounded-xl">
-                        <Sparkles class="w-4 h-4 text-[#0A2647]" />
-                     </div>
-                     <span class="text-[10px] font-black text-[#0A2647]/50 uppercase tracking-[0.2em]">AI Master Builder</span>
-                  </div>
-                  <div class="flex items-center gap-1.5">
-                    <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                    <span class="text-[8px] font-black text-[#0A2647]/30 uppercase">Active Core</span>
-                  </div>
-               </div>
-               
-               <div class="space-y-3">
-                  <button @click="openLinkedInModal" :class="linkedInConnected ? 'bg-[#0077b5]' : 'bg-[#0A2647]'" class="w-full py-4 rounded-2xl flex items-center justify-center gap-3 shadow-[0_12px_25px_rgba(0,0,0,0.15)] hover:scale-[1.02] active:scale-95 transition-all relative overflow-hidden group/btn">
-                     <div class="absolute inset-0 bg-white/10 translate-x-[-100%] group-hover/btn:translate-x-[100%] transition-transform duration-700"></div>
-                     <Linkedin class="w-4 h-4 text-white" />
-                     <span class="text-[11px] font-black text-white uppercase tracking-widest relative z-10">
-                        {{ linkedInConnected ? 'Ingested: ' + linkedInUrlInput.substring(0,10) + '...' : 'One-Click Ingestion' }}
-                     </span>
-                  </button>
-                  
-                  <div class="grid grid-cols-2 gap-2 w-[88%] mx-auto pb-0">
-                      <button @click="isManualFormOpen = true" class="bg-[#0A2647]/5 border border-[#0A2647]/10 py-2.5 rounded-xl flex items-center justify-center gap-2 hover:bg-[#0A2647]/10 transition-all text-[#0A2647]/60 active:scale-95 group/manual">
-                          <User class="w-3 h-3 group-hover/manual:rotate-12 transition-transform" />
-                          <span class="text-[8px] font-black uppercase tracking-widest">Manual Setup</span>
-                      </button>
-                      <button @click="compileLatex" class="bg-[#C1A172] py-2.5 rounded-xl flex items-center justify-center gap-2 shadow-[0_8px_15px_rgba(193,161,114,0.25)] hover:scale-[1.02] transition-all text-[#0A2647] active:scale-95">
-                          <FileText v-if="!isCompilingLatex" class="w-3 h-3" />
-                          <div v-else class="w-3 h-3 rounded-full border-2 border-[#0A2647]/40 border-t-[#0A2647] animate-spin"></div>
-                          <span class="text-[8px] font-black uppercase tracking-widest">{{ isCompilingLatex ? 'Compiling' : 'Global Export' }}</span>
-                      </button>
-                  </div>
-               </div>
-            </div>
-
-            <!-- CV MANAGEMENT (MATCHED ARCHITECTURE) -->
-            <div class="bg-gradient-to-br from-[#BDDAFA]/25 via-[#F1F5F9] to-[#EDF2F7] rounded-[2.5rem] px-5 pt-2 pb-2.5 shadow-[0_50px_120px_-40px_rgba(0,0,0,0.25)] border border-white relative overflow-hidden group">
-               <div class="flex items-center justify-between mb-4">
-                  <div class="flex flex-col">
-                     <span class="text-[9px] font-black text-[#0A2647]/50 uppercase tracking-[0.2em] mb-1">Legacy CV Core</span>
-                     <p class="text-[14px] font-black text-[#0A2647] tracking-tight truncate w-40">{{ uploadedFileName }}</p>
-                  </div>
-                  <div class="bg-[#0A2647] p-2.5 rounded-xl shadow-lg transform group-hover:rotate-6 transition-transform">
-                     <FileText class="w-5 h-5 text-[#C1A172]" />
-                  </div>
-               </div>
-               
-               <!-- Active Focus Slots (PACKED) -->
-               <div class="mb-4 bg-[#0A2647]/5 rounded-2xl p-4 border border-[#0A2647]/5">
-                  <div class="flex items-center justify-between mb-2">
-                     <span class="text-[9px] font-black text-[#0A2647]/50 uppercase tracking-widest">Pipeline Bandwidth</span>
-                     <span class="text-[10px] font-black text-[#0A2647]">{{ activeFocusSlots.used }} / {{ activeFocusSlots.total }} Slots</span>
-                  </div>
-                  <div class="w-full h-2 bg-[#0A2647]/10 rounded-full overflow-hidden shadow-inner p-[1px]">
-                     <div class="h-full bg-gradient-to-r from-[#2C74B3] to-[#C1A172] rounded-full transition-all duration-1000 shadow-sm" :style="`width: ${(activeFocusSlots.used / activeFocusSlots.total) * 100}%`"></div>
-                  </div>
-               </div>
-
-               <div class="space-y-3">
-                  <input type="file" ref="fileInput" @change="handleFileUpload" class="hidden" accept=".pdf,.doc,.docx" />
-                  <button @click="triggerFileUpload" class="w-[88%] mx-auto bg-[#0A2647]/5 border border-[#0A2647]/10 py-3.5 rounded-2xl flex items-center justify-center gap-3 transition-all group/upload active:scale-95 hover:bg-[#0A2647]/10 shadow-sm">
-                     <Zap v-if="!isUploadingCV" class="w-4 h-4 text-[#0A2647]/20 group-hover/upload:text-[#2C74B3] transition-colors" />
-                     <div v-else class="w-4 h-4 rounded-full border-2 border-[#0A2647]/20 border-t-[#0A2647] animate-spin"></div>
-                     <span class="text-[11px] font-black text-[#0A2647]/40 group-hover/upload:text-[#0A2647] uppercase tracking-widest transition-colors">{{ isUploadingCV ? 'Syncing...' : 'Upload Professional CV' }}</span>
-                  </button>
-                  <button @click="isCVModalOpen = true" class="w-[88%] mx-auto bg-[#0A2647] py-3.5 rounded-2xl flex items-center justify-center gap-3 hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-[#0A2647]/20">
-                     <span class="text-[11px] font-black text-white uppercase tracking-widest">SECURE VIEW ENGINE</span>
-                  </button>
-               </div>
-            </div>
-            
-            <!-- FIELDS OF INTEREST (PACKED CARD) -->
-            <div class="bg-gradient-to-br from-[#BDDAFA]/25 via-[#F1F5F9] to-[#EDF2F7] rounded-[2.5rem] px-5 pt-2 pb-2.5 shadow-[0_50px_120px_-40px_rgba(0,0,0,0.25)] border border-white relative">
-               <span class="text-[9px] font-black text-[#0A2647]/50 uppercase tracking-[0.2em] mb-2 block">Strategic Specialization</span>
-               <div class="flex flex-wrap gap-1.5 mb-2">
-                  <TransitionGroup name="fade">
-                     <div v-for="(field, index) in fieldsOfInterest" :key="field" 
-                          class="px-4 py-2 bg-[#0A2647]/5 rounded-full border border-[#0A2647]/10 flex items-center gap-2 group cursor-pointer hover:bg-[#0A2647]/10 transition-all select-none shadow-sm">
-                        <span class="text-[10px] font-black text-[#0A2647]/70">{{ field }}</span>
-                        <X @click="removeField(index)" class="w-3 h-3 text-[#0A2647]/20 hover:text-red-500 transition-colors" />
-                     </div>
-                  </TransitionGroup>
-               </div>
-               <div class="relative w-[88%] mx-auto mt-2">
-                  <input v-model="newField" @keyup.enter="addField" type="text" placeholder="Target Field..." 
-                         class="w-full bg-[#0A2647]/5 border border-[#0A2647]/10 rounded-2xl px-4 py-2.5 text-[10px] text-[#0A2647] placeholder:text-[#0A2647]/45 focus:outline-none focus:ring-1 focus:ring-[#C1A172] transition-all font-jakarta shadow-inner" />
-                  <div @click="addField" class="absolute right-3 top-1/2 -translate-y-1/2 bg-[#0A2647] p-1.5 rounded-lg shadow-lg cursor-pointer transition-colors active:scale-95 text-white">
-                     <ArrowRight class="w-2.5 h-2.5" />
-                  </div>
-               </div>
-            </div>
-            
-            <button @click="saveProfile" class="w-[88%] mx-auto mt-6 bg-gradient-to-r from-[#C1A172] to-[#FFD700] py-2.5 rounded-[1.8rem] flex items-center justify-center gap-2 shadow-[0_15px_35px_rgba(0,0,0,0.3)] hover:scale-[1.02] active:scale-95 transition-all group relative overflow-hidden shrink-0">
-               <div v-if="isSavingProfile" class="w-3.5 h-3.5 rounded-full border-2 border-[#0A2647]/50 border-t-[#0A2647] animate-spin relative z-10"></div>
-               <span class="text-[11.5px] font-black text-[#0A2647] uppercase tracking-[0.2em] relative z-10">{{ isSavingProfile ? 'UPDATING...' : 'SAVE EXPERT IDENTITY' }}</span>
-               <ShieldCheck v-if="!isSavingProfile" class="w-3.5 h-3.5 text-[#0A2647]/40" />
+       <ProfileHub 
+          v-else-if="activeTab === 'profile'"
+          v-model:newField="newField"
+          :t="t"
+          :isAuthenticated="isAuthenticated"
+          :userProfile="userProfile"
+          :uploadedFileName="uploadedFileName"
+          :activeFocusSlots="activeFocusSlots"
+          :fieldsOfInterest="fieldsOfInterest"
+          :isUploadingCV="isUploadingCV"
+          :isSavingProfile="isSavingProfile"
+          :isCompilingLatex="isCompilingLatex"
+          :linkedInConnected="linkedInConnected"
+          :linkedInUrlInput="linkedInUrlInput"
+          @openAuth="openAuth"
+          @openLinkedInModal="openLinkedInModal"
+          @openManualForm="isManualFormOpen = true"
+          @compileLatex="compileLatex"
+          @triggerFileUpload="triggerFileUpload"
+          @handleFileUpload="handleFileUpload"
+          @saveProfile="saveProfile"
+          @removeField="removeField"
+          @addField="addField"
+          @openCVModal="isCVModalOpen = true"
+       />
+>
             </button>
          </div>
       </div>
@@ -1348,11 +1058,12 @@ const handleNotificationClick = (notif) => {
        />
 
        <!-- FOOTER ATTRIBUTION -->
-       <div v-if="!isManualFormOpen && !isLinkedInModalOpen" class="absolute bottom-[67px] left-0 right-0 flex flex-col items-center z-[990] pointer-events-none">
+       <!-- FOOTER ATTRIBUTION -->
+       <div v-if="!isManualFormOpen && !isLinkedInModalOpen" class="absolute bottom-[85px] left-0 right-0 flex flex-col items-center z-[990] pointer-events-none transition-all duration-500">
           <div class="flex items-center gap-2.5 opacity-50">
              <span class="text-[8px] font-black text-white/40 uppercase tracking-[0.2em]">{{ t('footer.poweredBy') }}</span>
              <img src="/digynex-icon.png" alt="DigyNex" class="h-3 w-auto object-contain opacity-50" />
-             <span class="text-[9px] font-black text-[#C1A172] uppercase tracking-[0.1em]">DigyNex</span>
+             <span class="text-[9px] font-black text-[#C1A172] uppercase tracking-[0.1em]">DigyNex Identity Hub</span>
           </div>
           <p class="text-[6.5px] font-black text-white/35 tracking-[0.5em] uppercase mt-[1.5px] italic">{{ t('footer.engine') }} • {{ t('footer.version') }}</p>
        </div>
