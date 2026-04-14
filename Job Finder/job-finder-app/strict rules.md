@@ -1,3 +1,8 @@
+# GOLDEN RULE
+> "Listen, I am the Project Manager. I want you to build features in two steps. Step 1: Fix the 'Engine' (Logic/Backend) first. Make sure the data is being saved correctly in the database. Step 2: Only after the engine is working, build the 'Face' (UI/Lassana daka). Rule: Don't mix the two. Keep the UI files clean."
+
+---
+
 # PROJECT ARCHITECTURE & OPERATIONAL RULES
 **Project Name:** DigyNex AI Job Finder (Commercial SaaS)
 **Architecture Style:** Separation of Concerns (SoC) - Modular Design

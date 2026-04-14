@@ -46,7 +46,7 @@ const emit = defineEmits([
                     class="text-[8px] font-black text-white/30 uppercase tracking-[0.3em] px-4 py-2 rounded-full border border-white/5 hover:text-white hover:border-[#C1A172]/40 hover:bg-[#C1A172]/5 hover:shadow-[0_0_20px_rgba(193,161,114,0.3)] transition-all duration-500 font-jakarta active:scale-90">
                {{ t('auth.login') || 'LOGIN' }}
             </button>
-            <button v-else @click="emit('logout')" class="text-[8px] font-black text-white/30 uppercase tracking-[0.3em] px-4 py-2 rounded-full border border-white/5 hover:text-red-400 hover:border-red-400/30 transition-all font-jakarta active:scale-90">{{ t('auth.logout') || 'LOG OUT' }}</button>
+            <button v-else @click="emit('logout')" class="text-[8px] font-black text-white/30 uppercase tracking-[0.3em] px-4 py-2 rounded-full border border-white/5 hover:text-red-400 hover:border-red-400/30 transition-all font-jakarta active:scale-90">{{ t('governance.logout') || 'LOG OUT' }}</button>
          </div>
      </div>
 

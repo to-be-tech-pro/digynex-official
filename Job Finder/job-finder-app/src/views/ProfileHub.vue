@@ -21,7 +21,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  'openAuth', 'openLinkedInModal', 'openManualForm', 'compileLatex', 'triggerFileUpload', 'handleFileUpload', 'saveProfile', 'removeField', 'addField', 'update:newField', 'openCVModal', 'openAdminPanel', 'logout', 'openLegal'
+  'openAuth', 'openLinkedInModal', 'openManualForm', 'compileLatex', 'triggerFileUpload', 'handleFileUpload', 'saveProfile', 'removeField', 'addField', 'update:newField', 'openCVModal', 'openAdminPanel', 'logout', 'openLegal', 'returnToDashboard'
 ])
 
 const hasCVData = computed(() => {
@@ -32,20 +32,8 @@ const hasCVData = computed(() => {
 </script>
 
 <template>
-  <div class="flex flex-col animate-in fade-in slide-in-from-right-10 duration-500 overflow-hidden h-full">
-     <!-- Top Branding Hub (CENTERED SYNC) -->
-     <header class="flex flex-col items-center pt-[18px] space-y-4 w-full relative z-[600]">
-       <div class="p-0.5 bg-white/10 rounded-full">
-          <img src="/digynex-icon.png" alt="DigyNex" class="h-8 w-auto opacity-50 contrast-125" />
-       </div>
-       <div class="flex flex-col items-center mb-1">
-          <h2 class="text-[14px] font-black text-white/40 uppercase tracking-[0.3em] leading-none">{{ t('profile.title') }}</h2>
-          <div class="flex items-center gap-1.5 mt-2.5">
-             <div class="w-1 h-1 rounded-full bg-[#C1A172] animate-pulse shadow-[0_0_8px_#C1A172]"></div>
-             <span class="text-[7.5px] font-black text-white/20 uppercase tracking-[0.2em]">Neural Sync Active</span>
-          </div>
-       </div>
-     </header>
+  <div class="flex flex-col animate-in fade-in slide-in-from-right-10 duration-500 overflow-hidden h-full pt-4">
+
      
       <div class="mt-4 flex-1 overflow-y-auto custom-scrollbar space-y-3 px-4 hub-scroller relative">
          <!-- PROFESSIONAL ACCESS PROMPT (GUEST MODE) -->
@@ -184,7 +172,7 @@ const hasCVData = computed(() => {
         </button>
 
         <!-- GOVERNANCE SYSTEM (MULTI-CARD) -->
-        <div class="mt-12 mb-20 space-y-5 px-2">
+        <div class="mt-4 mb-10 space-y-2.5 px-2">
            
            <!-- SECTION 1: GENERAL STRATEGY -->
            <div class="bg-white/5 rounded-[2.2rem] p-5 border border-white/5 backdrop-blur-md shadow-2xl">
@@ -225,26 +213,26 @@ const hasCVData = computed(() => {
            <!-- SECTION 3: NEURAL MASTER CONTROL (ADMIN ONLY) -->
            <button v-if="userProfile?.isAdmin && userProfile?.email === 'amilawijayantha858@gmail.com'" 
                    @click.stop="$emit('openAdminPanel')"
-                   class="w-full p-6 bg-gradient-to-r from-[#C1A172]/10 to-[#C1A172]/5 border border-dashed border-[#C1A172]/30 rounded-[2.5rem] flex items-center justify-between group transition-all hover:border-[#C1A172] shadow-xl shadow-[#C1A172]/5">
-              <div class="flex items-center gap-4">
-                 <div class="bg-[#C1A172] p-2.5 rounded-xl shadow-[0_0_20px_rgba(193,161,114,0.3)]">
-                    <ShieldCheck class="w-5 h-5 text-[#0A2647]" />
+                   class="w-full p-3.5 bg-gradient-to-r from-[#C1A172]/10 to-[#C1A172]/5 border border-dashed border-[#C1A172]/30 rounded-3xl flex items-center justify-between group transition-all hover:border-[#C1A172] shadow-xl shadow-[#C1A172]/5">
+              <div class="flex items-center gap-3">
+                 <div class="bg-[#C1A172] p-2 rounded-xl shadow-[0_0_20px_rgba(193,161,114,0.3)]">
+                    <ShieldCheck class="w-4.5 h-4.5 text-[#0A2647]" />
                  </div>
                  <div class="text-left">
-                    <span class="text-[13px] font-black text-[#C1A172] uppercase tracking-[0.15em] block">{{ t('governance.adminTitle') }}</span>
-                    <span class="text-[10px] font-bold text-[#C1A172]/50 uppercase tracking-widest">{{ t('governance.adminSub') }}</span>
+                    <span class="text-[12.5px] font-black text-[#C1A172] uppercase tracking-[0.15em] block">{{ t('governance.adminTitle') }}</span>
+                    <span class="text-[9.5px] font-bold text-[#C1A172]/50 uppercase tracking-widest">{{ t('governance.adminSub') }}</span>
                  </div>
               </div>
-              <Sparkles class="w-4 h-4 text-[#C1A172]/40 group-hover:rotate-45 transition-transform" />
+              <Sparkles class="w-3.5 h-3.5 text-[#C1A172]/40 group-hover:rotate-45 transition-transform" />
            </button>
 
            <!-- SECTION 4: DEPLOYMENT STAMP & SUPPORT -->
-           <div class="pt-8 flex flex-col items-center space-y-7">
-              <button class="text-[12px] font-black text-white/40 uppercase tracking-[0.2em] hover:text-[#C1A172] transition-colors">
+           <div class="pt-2.5 flex flex-col items-center space-y-3.5">
+              <button @click="$emit('openLegal', 'support')" class="text-[12px] font-black text-white/40 uppercase tracking-[0.2em] hover:text-[#C1A172] transition-colors">
                  {{ t('governance.support') }}
               </button>
 
-              <button @click="$emit('logout')" class="w-[90%] py-4.5 bg-red-500/10 border border-red-500/20 rounded-2xl flex items-center justify-center gap-2 group hover:bg-red-500/20 transition-all active:scale-95">
+              <button @click="$emit('logout')" class="w-[90%] py-4.5 bg-red-500/10 border border-red-500/20 rounded-full flex items-center justify-center gap-2 group hover:bg-red-500/20 transition-all active:scale-95">
                  <span class="text-[11px] font-black text-red-500 uppercase tracking-[0.2em] group-hover:tracking-[0.3em] transition-all">{{ t('governance.logout') }}</span>
               </button>
 
@@ -252,7 +240,7 @@ const hasCVData = computed(() => {
                  <p class="text-[10px] font-black text-white uppercase tracking-[0.3em]">
                     V7.0 {{ t('governance.version') }}
                  </p>
-                 <div class="w-10 h-[1.5px] bg-white/20 mt-3"></div>
+                 <div class="w-10 h-[1.5px] bg-white/20 mt-1.5"></div>
               </div>
            </div>
         </div>

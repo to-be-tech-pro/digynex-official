@@ -32,21 +32,8 @@ const updateSelectedTemplate = (id) => emit('update:selectedTemplate', id)
 </script>
 
 <template>
-  <div class="flex flex-col h-full overflow-hidden animate-in fade-in slide-in-from-right-10 duration-500">
-    
-    <!-- Top Branding Hub (CENTERED SYNC) -->
-    <header class="flex flex-col items-center pt-[18px] space-y-4 w-full relative z-[600]">
-      <div class="p-0.5 bg-white/10 rounded-full">
-         <img src="/digynex-icon.png" alt="DigyNex" class="h-8 w-auto opacity-50 contrast-125" />
-      </div>
-      <div class="flex flex-col items-center mb-1">
-         <h2 class="text-[14px] font-black text-white/40 uppercase tracking-[0.3em] leading-none">{{ t('nav.studio') }}</h2>
-         <div class="flex items-center gap-1.5 mt-2.5">
-            <div class="w-1 h-1 rounded-full bg-[#C1A172] animate-pulse shadow-[0_0_8px_#C1A172]"></div>
-            <span class="text-[7.5px] font-black text-white/20 uppercase tracking-[0.2em]">Neural Sync Active</span>
-         </div>
-      </div>
-    </header>
+  <div class="flex flex-col h-full overflow-hidden animate-in fade-in slide-in-from-right-10 duration-500 pt-4">
+
 
     <div class="mt-2.5 flex-1 overflow-y-auto space-y-4 px-4 hub-scroller custom-scrollbar">
         

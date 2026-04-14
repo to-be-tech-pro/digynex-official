@@ -4,7 +4,7 @@ import {
   Sparkles, FileText, LayoutDashboard, Briefcase, Zap, 
   Linkedin, User, Search, SlidersHorizontal, UserPlus, 
   Check, Maximize2, Lock, Bell, RefreshCw, ShieldCheck,
-  Cloud, Star, Stars, Mic, DownloadCloud, BarChart3, Bookmark, Share2, EyeOff, AlertTriangle
+  Cloud, Star, Stars, Mic, DownloadCloud, BarChart3, Bookmark, Share2, EyeOff, AlertTriangle, Mail
 } from 'lucide-vue-next'
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -33,7 +33,7 @@ import JobDetailOverlay from './components/JobDetailOverlay.vue'
 import ActionSheet from './components/ActionSheet.vue'
 import ClassicElite from './components/templates/ClassicElite.vue'
 import SidebarModern from './components/templates/SidebarModern.vue'
-import AdminPanel from './components/AdminPanel.vue'
+import AdminHub from './views/AdminHub.vue'
 
 const TEMPLATE_MAP = {
   1: ClassicElite,
@@ -95,6 +95,7 @@ const masterProfile = ref({
 })
 
 const isAuthenticated = ref(false)
+const isFirstTime = ref(false) // Logic Engine: Detects if the user session is new
 const isAuthOpen = ref(false)
 const authMode = ref('login')
 
@@ -617,9 +618,11 @@ const openLegalModal = (type) => {
         'privacy': 'Privacy & AI Ethics (GDPR)',
         'terms': 'Terms of Service',
         'security': 'Data Security & Neural Guard',
-        'refund': 'Billing & Refund Policy'
+        'refund': 'Billing & Refund Policy',
+        'support': 'Support & Help Center'
     };
     infoSheetTitle.value = titles[type] || 'Information Hub';
+    infoSheetType.value = type;
     isInfoSheetOpen.value = true;
 }
 
@@ -636,8 +639,10 @@ const fetchUserProfile = async () => {
                 primaryColor: profile.primary_color || '#0A2647',
                 secondaryColor: profile.secondary_color || '#64748b',
                 languagePreference: profile.language_preference || 'EN',
-                isAdmin: profile.is_admin || false
+                isAdmin: profile.is_admin || false,
+                isReturning: true // ENGINE: Mark as returning user
             };
+            isFirstTime.value = false;
             uploadedFileName.value = profile.uploaded_cv_name || 'No CV Uploaded';
             selectedTemplate.value = profile.selected_template || 3;
             if (profile.secret_keywords) {
@@ -657,8 +662,10 @@ const fetchUserProfile = async () => {
                 name: user.user_metadata?.full_name || user.user_metadata?.display_name || 'Expert',
                 primaryColor: '#0A2647',
                 secondaryColor: '#64748b',
-                languagePreference: 'EN'
+                languagePreference: 'EN',
+                isReturning: false // ENGINE: Mark as first-time user
             };
+            isFirstTime.value = true;
         }
     }
     // FLAGSHIP: Global Override (Ensures Owner always has Super User status in development)
@@ -685,6 +692,12 @@ const loginSuccess = async () => {
 const logout = async () => {
     await authService.signOut();
     isAuthenticated.value = false;
+    // GOLDEN RULE: Redirect to 1st UI (Dashboard) after logic update
+    activeTab.value = 'dashboard';
+}
+
+const returnToDashboard = () => {
+    activeTab.value = 'dashboard';
 }
 
 // Job Detail Logic
@@ -872,6 +885,20 @@ const handleNotificationClick = (notif) => {
     <main :dir="locale === 'AR' ? 'rtl' : 'ltr'" 
           class="w-full max-w-[360px] h-[800px] bg-[#0A2647] relative z-10 flex flex-col border border-white/10 rounded-[3.8rem] ring-1 ring-white/20 shadow-[0_80px_160px_rgba(0,0,0,0.7)] overflow-hidden transition-all duration-500">
         
+       <!-- GLOBAL HEADER HUB -->
+       <TopNavbar 
+          :t="t"
+          :locale="locale"
+          :isAuthenticated="isAuthenticated"
+          :quickLangs="quickLangs"
+          :otherLangs="otherLangs"
+          :isLangOpen="isLangOpen"
+          @setLang="setLang"
+          @toggleLang="toggleSelector"
+          @openAuth="openAuth"
+          @logout="logout"
+       />
+
        <!-- DASHBOARD VIEW -->
        <DashboardHub 
           v-if="activeTab === 'dashboard'"
@@ -892,22 +919,8 @@ const handleNotificationClick = (notif) => {
           @openActionSheet="openActionSheet"
           @setPipelineStep="(step) => selectedPipelineStep = step"
           @handleAction="handleDashboardAction"
-       >
-          <template #header>
-             <TopNavbar 
-                :t="t"
-                :locale="locale"
-                :isAuthenticated="isAuthenticated"
-                :quickLangs="quickLangs"
-                :otherLangs="otherLangs"
-                :isLangOpen="isLangOpen"
-                @setLang="setLang"
-                @toggleLang="toggleSelector"
-                @openAuth="openAuth"
-                @logout="logout"
-             />
-          </template>
-       </DashboardHub>
+       />
+
        <ApplicationsHub 
           v-else-if="activeTab === 'applications'"
           v-model:searchQuery="searchQuery"
@@ -960,13 +973,19 @@ const handleNotificationClick = (notif) => {
           @openAdminPanel="activeTab = 'admin'" 
           @logout="logout"
           @openLegal="openLegalModal"
+          @returnToDashboard="returnToDashboard"
        />
 
-       <!-- MASTER CONTROL PANEL (ADMIN ONLY) -->
-       <AdminPanel 
+       <!-- MASTER CONTROL PANEL (ADMIN HUB) -->
+       <AdminHub 
           v-else-if="activeTab === 'admin'"
+          :t="t"
+          :userProfile="userProfile"
           v-model:isMaintenanceMode="isMaintenanceMode"
           @setTab="(tab) => activeTab = tab"
+          @sendNotification="handleDashboardAction"
+          @purgeData="handleDashboardAction"
+          @updateUserTier="handleDashboardAction"
        />
 
        <!-- CV STUDIO HUB (MAGIC CENTER) -->
@@ -1401,9 +1420,74 @@ const handleNotificationClick = (notif) => {
                    </button>
                 </div>
 
-                <div class="p-8 overflow-y-auto no-scrollbar space-y-6">
+                <div class="p-3.5 overflow-y-auto no-scrollbar space-y-3.5">
                    <!-- DYNAMIC CONTENT DISPATCH -->
-                   <div v-if="infoSheetType === 'pricing'" class="space-y-5">
+                   <div v-if="infoSheetType === 'support'" class="space-y-3.5">
+                      <div class="space-y-1 px-1">
+                         <p class="text-[12px] font-black text-[#C1A172] uppercase tracking-[0.2em]">Contact Neural Support</p>
+                         <p class="text-[8.5px] font-bold text-white/40 uppercase tracking-widest">Global Response Engineering Active</p>
+                      </div>
+
+                      <div class="space-y-1.5">
+                         <!-- WhatsApp Direct -->
+                         <a href="https://digynex.se/whatsapp/" target="_blank" class="block p-3 bg-[#25D366]/5 border border-[#25D366]/20 rounded-2xl hover:bg-[#25D366]/10 transition-all group scale-100 active:scale-95">
+                            <div class="flex items-center justify-between">
+                               <div class="flex items-center gap-2.5">
+                                  <div class="bg-[#25D366] p-2.5 rounded-xl shadow-[0_10px_25px_rgba(37,211,102,0.3)] flex items-center justify-center shrink-0">
+                                     <svg class="w-[22px] h-[22px] text-white shrink-0 aspect-square" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.58-1.759-1.753-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+                                     </svg>
+                                  </div>
+                                  <div class="flex flex-col">
+                                     <span class="text-[11.5px] font-black text-white uppercase tracking-wider">WhatsApp Portal</span>
+                                     <span class="text-[8.5px] font-bold text-white/40 uppercase">Direct Strategy Sync</span>
+                                  </div>
+                               </div>
+                               <ArrowRight class="w-3 h-3 text-white/20 group-hover:text-[#25D366] transition-all" />
+                            </div>
+                         </a>
+
+                         <!-- Official Website -->
+                         <a href="https://digynex.se" target="_blank" class="block p-3 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all group scale-100 active:scale-95">
+                            <div class="flex items-center justify-between">
+                               <div class="flex items-center gap-2.5">
+                                  <div class="bg-white/10 p-2.5 rounded-xl shrink-0 flex items-center justify-center">
+                                     <Globe class="w-[22px] h-[22px] text-[#C1A172] shrink-0 aspect-square" />
+                                  </div>
+                                  <div class="flex flex-col">
+                                     <span class="text-[11.5px] font-black text-white uppercase tracking-wider">Neural Website</span>
+                                     <span class="text-[8.5px] font-bold text-white/40 uppercase">digynex.se</span>
+                                  </div>
+                               </div>
+                               <ArrowRight class="w-3 h-3 text-white/20 group-hover:text-white transition-all" />
+                            </div>
+                         </a>
+
+                         <!-- Support Email -->
+                         <a href="mailto:info@digynex.se" class="block p-3 bg-white/5 border border-white/10 rounded-2xl hover:bg-white/10 transition-all group scale-100 active:scale-95">
+                            <div class="flex items-center justify-between">
+                               <div class="flex items-center gap-2.5">
+                                  <div class="bg-white/10 p-2.5 rounded-xl shrink-0 flex items-center justify-center">
+                                     <Mail class="w-[22px] h-[22px] text-indigo-400 shrink-0 aspect-square" />
+                                  </div>
+                                  <div class="flex flex-col">
+                                     <span class="text-[11.5px] font-black text-white uppercase tracking-wider">Priority Email</span>
+                                     <span class="text-[8.5px] font-bold text-white/40 uppercase">info@digynex.se</span>
+                                  </div>
+                               </div>
+                               <ArrowRight class="w-3 h-3 text-white/20 group-hover:text-white transition-all" />
+                            </div>
+                         </a>
+                      </div>
+
+                      <div class="p-4 bg-[#C1A172]/5 border border-[#C1A172]/10 rounded-2xl text-center">
+                         <p class="text-[8.5px] font-bold text-[#C1A172]/60 uppercase tracking-widest leading-relaxed">
+                            Our Global Engineering teams are available 24/7 to ensure your neural career specimens remain optimized.
+                         </p>
+                      </div>
+                   </div>
+
+                   <div v-else-if="infoSheetType === 'pricing'" class="space-y-5">
                    <!-- TIER 1: DISCOVERY -->
                    <div class="p-7 bg-white/5 border border-white/10 rounded-[2.5rem] relative overflow-hidden transition-all hover:bg-white/[0.07]">
                       <div class="flex items-center justify-between mb-6">

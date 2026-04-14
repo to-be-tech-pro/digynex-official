@@ -29,60 +29,45 @@ const handleDashboardAction = (action) => emit('handleAction', action)
 </script>
 
 <template>
-  <div class="flex flex-col h-full overflow-hidden animate-in fade-in slide-in-from-right-10 duration-500">
-     <!-- CENTERED PREMIUM HEADER (MATCHES SCREENSHOT SYNC) -->
-     <!-- Top Branding Hub (CENTERED SYNC) -->
-     <header class="flex flex-col items-center pt-[18px] space-y-4 w-full relative z-[600]">
-       <div class="p-0.5 bg-white/10 rounded-full">
-          <img src="/digynex-icon.png" alt="DigyNex" class="h-8 w-auto opacity-50 contrast-125" />
-       </div>
-       <div class="flex flex-col items-center mb-1">
-          <h2 class="text-[14px] font-black text-white/40 uppercase tracking-[0.3em] leading-none">{{ t('nav.matches') }}</h2>
-          <div class="flex items-center gap-1.5 mt-2.5">
-             <div class="w-1 h-1 rounded-full bg-[#C1A172] animate-pulse shadow-[0_0_8px_#C1A172]"></div>
-             <span class="text-[7.5px] font-black text-white/20 uppercase tracking-[0.2em]">Neural Sync Active</span>
-          </div>
-       </div>
+  <div class="flex flex-col h-full overflow-hidden animate-in fade-in slide-in-from-right-10 duration-500 pt-4">
+     <div class="w-full px-4 space-y-4 mt-1">
+        <!-- FOCUS SLOTS TELEMETRY -->
+        <div v-if="activeFocusSlots" class="flex justify-between items-center bg-white/5 border border-white/5 rounded-2xl px-3 py-1.5 mx-1">
+           <div class="flex items-center gap-2">
+              <LayoutDashboard class="w-3 h-3 text-[#C1A172]" />
+              <span class="text-[8px] font-black text-white/60 uppercase tracking-widest">Active Discovery Slots</span>
+           </div>
+           <div class="flex items-center gap-1.5">
+              <span class="text-[10px] font-black text-white leading-none">{{ activeFocusSlots.used }}/{{ activeFocusSlots.total }}</span>
+              <div class="w-1.5 h-1.5 rounded-full bg-[#C1A172] animate-pulse shadow-[0_0_8px_#C1A172]"></div>
+           </div>
+        </div>
 
-       <div class="w-full px-4 space-y-4 mt-3">
-          <!-- FOCUS SLOTS TELEMETRY -->
-          <div v-if="activeFocusSlots" class="flex justify-between items-center bg-white/5 border border-white/5 rounded-2xl px-3 py-1.5 mx-1">
-             <div class="flex items-center gap-2">
-                <LayoutDashboard class="w-3 h-3 text-[#C1A172]" />
-                <span class="text-[8px] font-black text-white/60 uppercase tracking-widest">Active Discovery Slots</span>
-             </div>
-             <div class="flex items-center gap-1.5">
-                <span class="text-[10px] font-black text-white leading-none">{{ activeFocusSlots.used }}/{{ activeFocusSlots.total }}</span>
-                <div class="w-1.5 h-1.5 rounded-full bg-[#C1A172] animate-pulse shadow-[0_0_8px_#C1A172]"></div>
-             </div>
-          </div>
+        <!-- DRAGGABLE / SCROLLABLE COUNTRIES LIST -->
+        <div ref="countriesContainer" @scroll="handleScroll" class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar scroll-smooth w-full px-0.5">
+           <div v-for="(country, idx) in selectedCountriesArr" :key="country"
+                 @click="$emit('update:activeCountry', country)"
+                 :class="activeCountry === country ? 'bg-white text-[#0A2647] font-black shadow-lg scale-105' : 'bg-white/5 text-white/40 font-bold border border-white/5 hover:bg-white/10'"
+                 class="px-4 h-[36px] rounded-full text-[9px] uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all active:scale-95 flex items-center gap-3 shrink-0">
+             <span>{{ country }}</span>
+             <X v-if="selectedCountriesArr.length !== 1" 
+                @click.stop="selectedCountriesArr.splice(idx, 1); if(activeCountry === country) $emit('update:activeCountry', selectedCountriesArr[0])" 
+                class="w-3 h-3 opacity-85 group-hover:opacity-100 text-red-500 hover:scale-125 transition-all" />
+           </div>
+           <!-- PROMINENT FIXED + BUTTON AT THE END -->
+           <div @click="$emit('openCountrySelector')" 
+                class="flex items-center justify-center min-w-[44px] h-[36px] bg-gradient-to-br from-[#C1A172] to-[#FFD700] rounded-full cursor-pointer hover:scale-110 active:scale-95 transition-all shadow-[0_5px_15px_rgba(193,161,114,0.3)] shrink-0 z-50">
+             <span class="text-[16px] font-black text-[#0A2647]">+</span>
+           </div>
+        </div>
 
-          <!-- DRAGGABLE / SCROLLABLE COUNTRIES LIST -->
-          <div ref="countriesContainer" @scroll="handleScroll" class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar scroll-smooth w-full px-0.5">
-             <div v-for="(country, idx) in selectedCountriesArr" :key="country"
-                   @click="$emit('update:activeCountry', country)"
-                   :class="activeCountry === country ? 'bg-white text-[#0A2647] font-black shadow-lg scale-105' : 'bg-white/5 text-white/40 font-bold border border-white/5 hover:bg-white/10'"
-                   class="px-4 h-[36px] rounded-full text-[9px] uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all active:scale-95 flex items-center gap-3 shrink-0">
-               <span>{{ country }}</span>
-               <X v-if="selectedCountriesArr.length !== 1" 
-                  @click.stop="selectedCountriesArr.splice(idx, 1); if(activeCountry === country) $emit('update:activeCountry', selectedCountriesArr[0])" 
-                  class="w-3 h-3 opacity-85 group-hover:opacity-100 text-red-500 hover:scale-125 transition-all" />
-             </div>
-             <!-- PROMINENT FIXED + BUTTON AT THE END -->
-             <div @click="$emit('openCountrySelector')" 
-                  class="flex items-center justify-center min-w-[44px] h-[36px] bg-gradient-to-br from-[#C1A172] to-[#FFD700] rounded-full cursor-pointer hover:scale-110 active:scale-95 transition-all shadow-[0_5px_15px_rgba(193,161,114,0.3)] shrink-0 z-50">
-                <span class="text-[16px] font-black text-[#0A2647]">+</span>
-             </div>
-          </div>
-
-          <!-- SEARCH INPUT (MOVED BELOW COUNTRIES) -->
-          <div class="relative group mt-1 mx-2">
-             <input type="text" :value="searchQuery" @input="$emit('update:searchQuery', $event.target.value)" :placeholder="t('apps.searchPlaceholder')" 
-                    class="w-full bg-white/5 border border-white/10 rounded-2xl px-12 py-2 text-[10px] text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-[#C1A172]/50 transition-all font-jakarta shadow-inner" />
-             <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-[#C1A172] transition-colors" />
-          </div>
-       </div>
-     </header>
+        <!-- SEARCH INPUT (MOVED BELOW COUNTRIES) -->
+        <div class="relative group mt-1 mx-2">
+           <input type="text" :value="searchQuery" @input="$emit('update:searchQuery', $event.target.value)" :placeholder="t('apps.searchPlaceholder')" 
+                  class="w-full bg-white/5 border border-white/10 rounded-2xl px-12 py-2 text-[10px] text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-[#C1A172]/50 transition-all font-jakarta shadow-inner" />
+           <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-[#C1A172] transition-colors" />
+        </div>
+     </div>
 
      <div class="mt-4 flex-1 overflow-y-auto space-y-2 hub-scroller px-4 custom-scrollbar">
         <div v-for="(match, i) in filteredMatches" :key="match.id" 

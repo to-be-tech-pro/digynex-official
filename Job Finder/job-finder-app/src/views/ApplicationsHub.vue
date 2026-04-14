@@ -18,16 +18,8 @@ const openActionSheet = (title, type) => emit('openActionSheet', title, type)
 </script>
 
 <template>
-  <div class="flex flex-col h-full overflow-hidden animate-in fade-in slide-in-from-right-10 duration-500">
-     <!-- Top Branding Hub (CENTERED SYNC) -->
-     <header class="flex flex-col items-center pt-[18px] space-y-4 w-full relative z-[600]">
-       <div class="p-0.5 bg-white/10 rounded-full">
-          <img src="/digynex-icon.png" alt="DigyNex" class="h-8 w-auto opacity-50 contrast-125" />
-       </div>
-       <div class="flex flex-col items-center mb-1">
-          <h2 class="text-[14px] font-black text-white/40 uppercase tracking-[0.3em] leading-none">{{ t('apps.title') }}</h2>
-       </div>
-     </header>
+  <div class="flex flex-col h-full overflow-hidden animate-in fade-in slide-in-from-right-10 duration-500 pt-4">
+
 
      <div class="w-full px-1 space-y-3 mt-3">
         <div class="relative group mx-2">

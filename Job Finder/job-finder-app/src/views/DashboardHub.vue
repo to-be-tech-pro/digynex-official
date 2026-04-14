@@ -37,16 +37,17 @@ const handleDashboardAction = (action) => emit('handleAction', action)
 
 <template>
   <div class="flex flex-col h-full overflow-hidden">
-    <slot name="header"></slot>
     <!-- Scrolling Content Wrapper -->
     <div class="flex-1 overflow-y-auto px-4 hub-scroller custom-scrollbar">
        
        <!-- Identity Hub -->
         <div class="flex justify-between items-center mt-[5px] w-full px-1 font-jakarta transition-all duration-1000" :class="isRecalibrating ? 'scale-[1.02] blur-[1px]' : ''">
           <div class="flex-1 min-w-0">
-            <h1 class="text-[18px] font-bold text-white tracking-tight leading-none pt-2 font-jakarta truncate">
-               <span :class="isRecalibrating ? 'animate-pulse text-[#C1A172]' : 'neural-glow'">{{ isAuthenticated ? `Welcome back, ${displayName}` : (displayName === 'Expert' ? t('header.welcome') : `Welcome, ${displayName}`) }}</span>
-            </h1>
+             <h1 class="text-[18px] font-bold text-white tracking-tight leading-none pt-2 font-jakarta truncate">
+                <span :class="isRecalibrating ? 'animate-pulse text-[#C1A172]' : 'neural-glow'">
+                  {{ !isAuthenticated ? t('header.welcome') : (userProfile?.isReturning ? `Welcome back, ${displayName}` : `Welcome, ${displayName}`) }}
+                </span>
+             </h1>
           </div>
           <!-- Avatar Unit -->
          <div class="w-11 h-11 rounded-full border-2 border-white/20 shadow-2xl overflow-hidden ring-1 ring-white/5 transition-all">
@@ -104,15 +105,15 @@ const handleDashboardAction = (action) => emit('handleAction', action)
          </div>
 
          <!-- APPLICATION TRACKING CARD -->
-         <div class="bg-gradient-to-br from-[#BDDAFA]/30 via-[#F8FAFC] to-white rounded-[1.8rem] p-5 pt-2 pb-1.5 shadow-[0_50px_120px_-30px_rgba(0,0,0,0.6)] border border-white relative overflow-hidden ring-1 ring-black/[0.03] group font-jakarta">
-            <div class="flex justify-between items-center mb-0.5 px-1 font-jakarta">
+         <div class="bg-gradient-to-br from-[#BDDAFA]/30 via-[#F8FAFC] to-white rounded-[1.8rem] p-4 pt-2 pb-1.5 shadow-[0_50px_120px_-30px_rgba(0,0,0,0.6)] border border-white relative overflow-hidden ring-1 ring-black/[0.03] group font-jakarta">
+            <div class="flex justify-between items-center mb-0 px-1 font-jakarta">
                <span class="text-[9.5px] font-black text-[#0A2647]/55 uppercase tracking-[0.2em] leading-none font-jakarta">{{ t('sections.tracking') }}</span>
                <button @click.stop="openActionSheet('Tracking Actions', 'tracking')" class="relative z-50 flex items-center justify-center cursor-pointer opacity-30 hover:opacity-100 hover:bg-black/5 transition-all font-jakarta p-2 -mr-2 rounded-full border border-transparent hover:border-black/5 active:scale-90">
                   <MoreHorizontal class="w-[18px] h-[18px] text-[#0A2647]" />
                </button>
             </div>
 
-            <div class="flex items-center justify-center gap-1.5 mb-2.5 px-0.5 relative font-jakarta">
+            <div class="flex items-center justify-center gap-1.5 mb-1.5 px-0.5 relative font-jakarta">
                <template v-for="(v, l, i) in {applied: 'applied', review: 'review', interview: 'interview', offer: 'offer'}" :key="l">
                   <div @click="emit('setPipelineStep', v)"
                        :class="selectedPipelineStep === v 
@@ -135,34 +136,34 @@ const handleDashboardAction = (action) => emit('handleAction', action)
                <span class="text-[7.8px] font-black text-black/25 uppercase leading-none text-right font-jakarta">{{ t('table.date') }}</span>
             </div>
 
-            <div class="space-y-2 pt-0.5 pb-1 px-0.5 font-jakarta min-h-[140px]">
+            <div class="space-y-1 pt-0.5 pb-1 px-0.5 font-jakarta min-h-[80px]">
                <div v-for="(job, i) in filteredJobs" :key="job.c + job.r + i" 
                     @click="openJobDetail(job)"
-                    class="grid grid-cols-[1.5fr_1.2fr_1fr_0.8fr] items-center bg-transparent group cursor-pointer transition-all active:scale-98">
+                    class="grid grid-cols-[1.5fr_1.2fr_1fr_0.8fr] items-center bg-transparent group cursor-pointer transition-all active:scale-98 py-0.5">
                  <div class="flex items-center gap-1">
-                    <div class="w-7 h-7 bg-[#0A2647] rounded-xl flex items-center justify-center p-1.5 shadow-lg border border-white/5 ring-1 ring-white/10 group-hover:scale-110 transition-all font-jakarta" :class="i === 1 ? 'bg-[#73BBA3]' : i === 2 ? 'bg-[#6366F1]/60' : 'bg-[#0A2647]'"> 
+                    <div class="w-6.5 h-6.5 bg-[#0A2647] rounded-xl flex items-center justify-center p-1.5 shadow-lg border border-white/5 ring-1 ring-white/10 group-hover:scale-110 transition-all font-jakarta" :class="i === 1 ? 'bg-[#73BBA3]' : i === 2 ? 'bg-[#6366F1]/60' : 'bg-[#0A2647]'"> 
                       <component :is="job.icon" class="w-full h-full text-white opacity-95 shadow-2xl" /> 
                     </div>
-                    <div class="flex flex-col space-y-0.5 min-w-0 font-jakarta">
-                       <span class="text-[10px] font-black text-[#0A2647] tracking-tighter leading-none">{{job.c}}</span>
-                       <span class="text-[7px] font-bold text-black/25 leading-none uppercase tracking-widest truncate">{{ t('table.company') }}</span>
+                    <div class="flex flex-col space-y-0 min-w-0 font-jakarta">
+                       <span class="text-[9.5px] font-black text-[#0A2647] tracking-tighter leading-none">{{job.c}}</span>
+                       <span class="text-[6.5px] font-bold text-black/25 leading-none uppercase tracking-widest truncate">{{ t('table.company') }}</span>
                     </div>
                  </div>
-                 <span class="text-[9.5px] font-bold text-black/60 truncate leading-none pl-1 transition-all font-jakarta">{{job.r}}</span>
+                 <span class="text-[9px] font-bold text-black/60 truncate leading-none pl-1 transition-all font-jakarta">{{job.r}}</span>
                  <div class="px-2">
-                     <div class="h-1.5 w-full bg-black/[0.08] rounded-full overflow-hidden shadow-inner ring-1 ring-black/[0.01]">
+                     <div class="h-1.2 w-full bg-black/[0.08] rounded-full overflow-hidden shadow-inner ring-1 ring-black/[0.01]">
                         <div class="h-full bg-gradient-to-r from-[#2C74B3] to-[#4F8AFF] opacity-80" :style="{width: job.s}"></div>
                      </div>
                  </div>
-                 <span class="text-[8.5px] font-black text-black/25 text-right leading-none">{{job.d}}</span>
+                 <span class="text-[8px] font-black text-black/25 text-right leading-none">{{job.d}}</span>
                </div>
             </div>
 
             <!-- DETAILED MANAGEMENT TRIGGER -->
-            <div class="mt-2 border-t border-black/[0.03] pt-2 px-1">
-               <button @click="emit('setTab', 'applications')" class="w-full py-2 bg-white/50 border border-black/[0.05] rounded-xl flex items-center justify-center gap-2 hover:bg-[#0A2647]/5 transition-all group/det">
-                  <span class="text-[9px] font-black text-[#0A2647]/40 group-hover/det:text-[#0A2647] uppercase tracking-widest transition-colors">Detailed Submissions Management</span>
-                  <ArrowRight class="w-3 h-3 text-[#0A2647]/30" />
+            <div class="mt-0 border-t border-black/[0.03] pt-0.5 px-0.5">
+               <button @click="emit('setTab', 'applications')" class="w-full py-1.2 bg-white/50 border border-black/[0.05] rounded-xl flex items-center justify-center gap-2 hover:bg-[#0A2647]/5 transition-all group/det">
+                  <span class="text-[8px] font-black text-[#0A2647]/40 group-hover/det:text-[#0A2647] uppercase tracking-widest transition-colors leading-none">Detailed Submissions Management</span>
+                  <ArrowRight class="w-2.5 h-2.5 text-[#0A2647]/30" />
                </button>
             </div>
          </div>
