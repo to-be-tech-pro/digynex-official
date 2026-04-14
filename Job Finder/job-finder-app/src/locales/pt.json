@@ -1,22 +1,26 @@
 {
   "header": {
-    "title": "Acleração de Carreira",
-    "subtitle": "Engine",
-    "welcome": "Bem-vindo, Amila!",
-    "progress": "Visão geral do progresso",
+    "title": "DigyNex AI",
+    "subtitle": "Buscador de Empregos",
+    "welcome": "Bem-vindo",
+    "progress": "Visão geral do seu progresso",
     "globalSuite": "Global Suite"
   },
+  "auth": {
+    "signup": "Inscrever-se",
+    "login": "Entrar"
+  },
   "stats": {
-    "activeApps": "Apps ativos",
-    "aiMatches": "Match IA",
-    "skillScore": "Avaliação"
+    "activeApps": "Candidaturas ativas",
+    "aiMatches": "Matches de IA",
+    "skillScore": "Pontuação de habilidades"
   },
   "actions": {
-    "sync": "Sincronizando dados de IA"
+    "sync": "Sincronizando dados neurais"
   },
   "sections": {
     "tracking": "Rastreamento de candidaturas",
-    "analytics": "Analítica de matching IA"
+    "analytics": "Análise de matching de IA"
   },
   "table": {
     "company": "Empresa",
@@ -25,24 +29,165 @@
     "date": "Data"
   },
   "pipeline": {
-    "applied": "Aplicado",
+    "applied": "Candidatado",
     "review": "Revisão",
     "interview": "Entrevista",
-    "offer": "Oferta"
+    "offer": "Proposta",
+    "rejected": "Rejeitado",
+    "archived": "Arquivado"
   },
   "analytics": {
     "topMatches": "Melhores correspondências",
-    "skillGap": "Análise de competências"
+    "skillGap": "Análise de lacuna de competências",
+    "updateProfile": "Recalibrar perfil de competências"
+  },
+  "apps": {
+    "title": "Submissões ativas",
+    "searchPlaceholder": "Pesquisar por nome, cargo ou data...",
+    "filterAll": "Tudo",
+    "filterPending": "Pendente",
+    "filterInterview": "Entrevista",
+    "filterOffers": "Propostas",
+    "filterArchived": "Arquivado",
+    "location": "Localização",
+    "appliedDate": "Candidatado em",
+    "matchScore": "Pontuação de correspondência",
+    "viewDetails": "Ver detalhes",
+    "loadMore": "Mostrar mais candidaturas"
+  },
+  "notifications": {
+    "newUpdate": "Nova atualização de status recebida",
+    "viewAll": "Ver todas as notificações"
+  },
+  "profile": {
+    "title": "Perfil de Especialista",
+    "cvTitle": "Gestão de CV",
+    "cvUpload": "Carregar CV profissional",
+    "viewCV": "Ver CV atual",
+    "interestsTitle": "Top 5 áreas de interesse",
+    "fieldsPlaceholder": "Adicionar uma área...",
+    "save": "Salvar perfil global",
+    "tailor": "Adaptar CV global",
+    "viewMatch": "Ver pulso do emprego"
+  },
+  "matches": {
+    "discoveryHub": "Hub de descoberta de IA",
+    "instantTailor": "Adaptação instantânea",
+    "applicantsCount": "{count}+ Candidatos",
+    "matchStrength": "Força do match",
+    "posted": "Postado {time}"
   },
   "footer": {
-    "poweredBy": "Desenvolvido por",
-    "engine": "Motor de Descoberta Global",
+    "poweredBy": "Distribuído por",
+    "engine": "Motor de descoberta global",
     "version": "Master V6.0"
   },
   "nav": {
-    "dashboard": "Dashboard",
+    "dashboard": "Painel",
     "applications": "Candidaturas",
     "matches": "Matches",
-    "profile": "Perfil"
+    "profile": "Perfil",
+    "studio": "CV Studio",
+    "login": "Login",
+    "register": "Registrar"
+  },
+  "governance": {
+    "general": "Estratégia Geral",
+    "pricing": "Preços e Assinatura",
+    "about": "Sobre a DigyNex AI",
+    "t3f3": "Tudo desbloqueável. Exportação JSON + Cartas de apresentação",
+    "t3promo": "Gerador de cartas de apresentação incluído",
+    "legal": "Jurídico e Segurança",
+    "privacy": "Política de Privacidade",
+    "terms": "Termos de Serviço",
+    "security": "Segurança de Dados e RGPD",
+    "refund": "Política de Reembolso e Faturamento",
+    "support": "Suporte e Central de Ajuda",
+    "logout": "Sair",
+    "adminTitle": "Controle Mestre Neural",
+    "adminSub": "Governança Global Ativa",
+    "version": "Sincronização Neural",
+    "infoHub": "Centro de Informações",
+    "privacySecurityTitle": "Privacidade e Ética de IA (RGPD)"
+  },
+  "policies": {
+    "version": "v1.2.0-GP",
+    "lastUpdated": "13 de abril de 2026",
+    "privacy": {
+      "title": "Política de Privacidade",
+      "subtitle": "Como protegemos seus dados pessoais na era da IA.",
+      "sections": [
+        { "id": "collection", "title": "Coleta de Informações", "content": "Coletamos dados profissionais dos seus currículos carregados, incluindo detalhes de contato, histórico profissional e habilidades, apenas para melhorar sua experiência de busca de emprego por meio do nosso motor de otimização neural." },
+        { "id": "ai", "title": "Processamento de Dados por IA", "content": "Seus dados são processados via APIs da OpenAI e Google Gemini para gerar palavras-chave e otimizar currículos. Aplicamos protocolos rígidos para garantir que seus dados nunca sejam usados para treinar modelos de IA de terceiros." },
+        { "id": "sovereignty", "title": "Soberania de Dados", "content": "As informações pessoais são armazenadas com segurança no Supabase (clusters baseados na UE). Em estrita conformidade com o GDPR, você mantém o direito de acessar, retificar ou solicitar a exclusão permanente de seus dados." }
+      ]
+    },
+    "terms": {
+      "title": "Termos de Serviço",
+      "subtitle": "Regras para usar o CareerNexus Neural Engine.",
+      "sections": [
+        { "id": "conduct", "title": "Conduta do Usuário", "content": "Os usuários devem fornecer informações profissionais precisas. O uso indevido da plataforma ou a criação de múltiplas contas fraudulentas para explorar limites de IA é estritamente proibido e monitorado." },
+        { "id": "liability", "title": "Responsabilidade da IA", "content": "Embora nosso motor neural forneça otimização de alta fidelidade, o CareerNexus não garante a colocação profissional. A precisão e integridade finais da saída gerada permanecem de responsabilidade exclusiva do usuário." },
+        { "id": "usage", "title": "Uso Justo", "content": "Os limites de candidatura são aplicados estritamente com base no seu nível de assinatura (Discovery, Pro ou Elite). Explorações técnicas deliberadas para contornar esses limites resultarão no encerramento imediato da conta." }
+      ]
+    },
+    "security": {
+      "title": "Segurança de Dados e GDPR",
+      "subtitle": "Segurança de nível cirúrgico para sua identidade profissional.",
+      "sections": [
+        { "id": "encryption", "title": "Criptografia de Ponta a Ponta", "content": "Todas as transferências de dados são protegidas com criptografia SSL/TLS 1.3. Os dados confidenciais do perfil são criptografados em repouso usando protocolos AES-256 de nível industrial." },
+        { "id": "rls", "title": "Segurança em Nível de Linha (RLS)", "content": "Nossa arquitetura de banco de datos usa Postgres RLS para garantir que seus dados estejam isolados. Nenhuma outra entidade pode visualizar seus espécimes de currículo privados." },
+        { "id": "purge", "title": "Exclusão sem Retenção", "content": "Ao acionar o encerramento e a purga de emergência, todos os dados associados, incluindo PDFs originais e modelos gerados por IA, são apagados permanentemente dentro do nosso ciclo de sincronização global de 24 horas." }
+      ]
+    },
+    "refund": {
+      "title": "Política de Reembolso",
+      "subtitle": "Faturamento transparente para nossas suítes Premium.",
+      "sections": [
+        { "id": "cycles", "title": "Ciclos de Assinatura", "content": "Os planos Pro e Elite operam em faturamento recorrente mensal ou anual. Você mantém o controle total para cancelar ou fazer o downgrade a qualquer momento através do portal de Controle Mestre Neural." },
+        { "id": "refunds", "title": "Elegibilidade para Reembolso", "content": "Dada a natureza digital do consumo de tokens de IA, geralmente não oferecemos reembolsos para ciclos de faturamento ativos. No entanto, erros técnicos comprovados serão retificados se relatados em até 48 horas." },
+        { "id": "transparency", "title": "Transparência de Preços", "content": "Quaisquer ajustes em nossas estruturas de preços serão comunicados ao seu e-mail registrado pelo menos 30 dias antes do próximo ciclo de faturamento entrar em vigor." }
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Motor de Assinatura Estratégica",
+    "tier1Name": "Descoberta",
+    "tier1Sub": "Protocolo de sincronização gratuito",
+    "tier2Name": "Neural Pro",
+    "tier2Sub": "Otimização Profunda",
+    "tier3Name": "Neural Elite",
+    "tier3Sub": "Inteligência Definitiva",
+    "priceMonthly": "Por mês",
+    "priceForever": "Para sempre",
+    "popular": "Mais popular",
+    "t1f1": "2 CVs por semana (Máximo de 2 semanas no total)",
+    "t1f2": "5 palavras-chave manuais. Magia de IA: BLOQUEADA 🔒",
+    "t1f3": "1 modelo padrão. Análise básica de PDF",
+    "t2f1": "6 CVs por semana (Limite diário: 3/dia)",
+    "t2f2": "15 palavras-chave de IA. Sincronização em tempo real com LinkedIn",
+    "t2f3": "4 modelos Elite (visual e minimalista). Paletas Pro e Medidor Neural",
+    "t3f1": "Acesso global ilimitado. Sem restrições / Prioridade total",
+    "t3f2": "Palavras-chave ilimitadas. Motor de sugestão neural completo",
+    "t3f3": "Todos os 6 modelos Premium + Branding personalizado. Gerador de cartas de apresentação",
+    "t3promo": "Gerador de cartas de apresentação neural incluído"
+  },
+  "studio": {
+    "title": "Hub CV Studio",
+    "templateGallery": "Galeria de modelos",
+    "eliteSelection": "Seleção de Elite",
+    "hdViewport": "Visualização HD",
+    "activeEngine": "Motor de renderização ativo",
+    "stealthKeywords": "Palavras-chave furtivas de IA",
+    "strategicEdge": "Vantagem estratégica",
+    "aiSuggester": "Sugestor de IA",
+    "flushAll": "Limpar tudo",
+    "aestheticPresets": "Predefinições estéticas",
+    "visualIdentity": "Identidade visual",
+    "syncToMaster": "Sincronizar Estúdio com o Mestre",
+    "coverLetterTitle": "Estúdio de cartas de apresentação",
+    "careerDocumentEngine": "Motor de documentos de carreira",
+    "coverLetterPlaceholder": "Aguarde enquanto a IA sintetiza sua alma profissional...",
+    "neuralContentSynthesis": "Síntese de conteúdo neural ativa"
   }
 }

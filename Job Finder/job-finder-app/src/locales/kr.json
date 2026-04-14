@@ -1,48 +1,193 @@
 {
   "header": {
-    "title": "커리어 가속",
-    "subtitle": "Engine",
-    "welcome": "환영합니다, Amila님!",
-    "progress": "진행 상황 개요",
-    "globalSuite": "Global Suite"
+    "title": "DigyNex AI",
+    "subtitle": "채용 정보 찾기",
+    "welcome": "환영합니다",
+    "progress": "진행 현황 개요",
+    "globalSuite": "글로벌 세트"
+  },
+  "auth": {
+    "signup": "가입하기",
+    "login": "로그인"
   },
   "stats": {
-    "activeApps": "지원 중",
+    "activeApps": "진행 중인 지원",
     "aiMatches": "AI 매칭",
-    "skillScore": "기술 점수"
+    "skillScore": "역량 점수"
   },
   "actions": {
-    "sync": "AI 데이터 동기화 중"
+    "sync": "신경망 데이터 동기화 중"
   },
   "sections": {
-    "tracking": "지원 추적",
+    "tracking": "지원 알림 추적",
     "analytics": "AI 매칭 분석"
   },
   "table": {
-    "company": "기업",
+    "company": "회사",
     "role": "직무",
     "status": "상태",
     "date": "날짜"
   },
   "pipeline": {
     "applied": "지원 완료",
-    "review": "검토",
+    "review": "검토 중",
     "interview": "면접",
-    "offer": "합격"
+    "offer": "합격 제안",
+    "rejected": "불합격",
+    "archived": "보관됨"
   },
   "analytics": {
-    "topMatches": "상위 매칭",
-    "skillGap": "기술 격차 분석"
+    "topMatches": "최고의 직무 매칭",
+    "skillGap": "역량 격차 분석",
+    "updateProfile": "역량 프로필 재조정"
+  },
+  "apps": {
+    "title": "진행 중인 지원서",
+    "searchPlaceholder": "이름, 직무 또는 날짜로 검색...",
+    "filterAll": "전체",
+    "filterPending": "대기 중",
+    "filterInterview": "면접",
+    "filterOffers": "제안",
+    "filterArchived": "보관됨",
+    "location": "위치",
+    "appliedDate": "지원 날짜",
+    "matchScore": "매칭 점수",
+    "viewDetails": "상세 보기",
+    "loadMore": "더 많은 지원 보기"
+  },
+  "notifications": {
+    "newUpdate": "새로운 상태 업데이트 수신",
+    "viewAll": "모든 알림 보기"
+  },
+  "profile": {
+    "title": "전문가 프로필",
+    "cvTitle": "이력서 관리",
+    "cvUpload": "전문 이력서 업로드",
+    "viewCV": "현재 이력서 보기",
+    "interestsTitle": "상위 5개 관심 분야",
+    "fieldsPlaceholder": "분야 추가...",
+    "save": "글로벌 프로필 저장",
+    "tailor": "글로벌 이력서 맞춤화",
+    "viewMatch": "채용 엔진 확인"
+  },
+  "matches": {
+    "discoveryHub": "AI 검색 허브",
+    "instantTailor": "즉시 맞춤화",
+    "applicantsCount": "{count}+명 지원",
+    "matchStrength": "매칭 강도",
+    "posted": "{time} 전 게시됨"
   },
   "footer": {
     "poweredBy": "제공",
-    "engine": "글로벌 발견 엔진",
+    "engine": "글로벌 검색 엔진",
     "version": "Master V6.0"
   },
   "nav": {
     "dashboard": "대시보드",
-    "applications": "지원",
-    "matches": "매칭",
-    "profile": "프로필"
+    "applications": "지원 현황",
+    "matches": "맞춤 채용",
+    "profile": "프로필",
+    "studio": "이력서 스튜디오",
+    "login": "로그인",
+    "register": "가입하기"
+  },
+  "governance": {
+    "general": "일반 전략",
+    "pricing": "가격 및 요금제",
+    "about": "DigyNex AI 정보",
+    "t3f3": "모든 기능 해제. JSON 내보내기 + 자기소개서",
+    "t3promo": "자기소개서 생성기 포함",
+    "legal": "법적 고지 및 보안",
+    "privacy": "개인정보 처리방침",
+    "terms": "서비스 약관",
+    "security": "데이터 보안 및 GDPR",
+    "refund": "환불 및 결제 정책",
+    "support": "지원 및 고객 센터",
+    "logout": "로그아웃",
+    "adminTitle": "신경망 마스터 컨트롤",
+    "adminSub": "글로벌 거버넌스 활성",
+    "version": "신경망 동기화",
+    "infoHub": "정보 허브",
+    "privacySecurityTitle": "개인정보 보호 및 AI 윤리 (GDPR)"
+  },
+  "policies": {
+    "version": "v1.2.0-GP",
+    "lastUpdated": "2026년 4월 13일",
+    "privacy": {
+      "title": "개인정보 처리방침",
+      "subtitle": "AI 시대에 귀하의 개인정보를 보호하는 방법.",
+      "sections": [
+        { "id": "collection", "title": "정보 수집", "content": "당사는 신경망 최적화 엔진을 통해 귀하의 채용 환경을 개선하기 위해 업로드된 이력서에서 연락처, 경력 및 기술을 포함한 전문 데이터를 수집합니다." },
+        { "id": "ai", "title": "AI 데이터 처리", "content": "귀하의 데이터는 OpenAI 및 Google Gemini API를 통해 처리되어 키워드를 생성하고 이력서를 최적화합니다. 당사는 귀하의 데이터가 제3자 AI 모델 학습에 사용되지 않도록 엄격한 프로토콜을 시행합니다." },
+        { "id": "sovereignty", "title": "데이터 주권", "content": "개인 정보는 Supabase(EU 기반 서버)에 안전하게 저장됩니다. GDPR에 따라 귀하는 데이터에 접근, 수정 또는 영구 삭제를 요청할 권리가 있습니다." }
+      ]
+    },
+    "terms": {
+      "title": "서비스 약관",
+      "subtitle": "CareerNexus 신경망 엔진 사용 규칙.",
+      "sections": [
+        { "id": "conduct", "title": "사용자 행동", "content": "사용자는 정확한 전문 정보를 제공해야 합니다. 플랫폼 오용 또는 AI 제한을 우회하기 위한 다중 허위 계정 생성은 엄격히 금지됩니다." },
+        { "id": "liability", "title": "AI 책임 고지", "content": "당사의 신경망 엔진은 고도의 최적화를 제공하지만, 실제 취업을 보장하지는 않습니다. 생성된 결과의 최종 정확성은 사용자의 책임입니다." },
+        { "id": "usage", "title": "공정 사용", "content": "지원 제한은 구독 등급(Discovery, Pro 또는 Elite)에 따라 엄격히 적용됩니다. 이러한 제한을 우회하려는 의도적인 시도는 계정 해지로 이어질 수 있습니다." }
+      ]
+    },
+    "security": {
+      "title": "데이터 보안 및 GDPR",
+      "subtitle": "전문가 아이덴티티를 위한 정밀한 보안.",
+      "sections": [
+        { "id": "encryption", "title": "종단 간 암호화", "content": "모든 데이터 전송은 SSL/TLS 1.3 암호화를 통해 보호됩니다. 민감한 데이터는 업계 표준인 AES-256 프로토콜을 사용하여 암호화됩니다." },
+        { "id": "rls", "title": "행 수준 보안 (RLS)", "content": "당사의 데이터베이스는 Postgres RLS를 사용하여 귀하의 데이터가 격리되도록 보장합니다." },
+        { "id": "purge", "title": "무보존 삭제", "content": "긴급 탈퇴 및 삭제가 트리거되면 원본 PDF 및 AI 생성 모델을 포함한 모든 데이터가 24시간 이내에 영구적으로 삭제됩니다." }
+      ]
+    },
+    "refund": {
+      "title": "환불 및 결제 정책",
+      "subtitle": "프리미엄 서비스에 대한 투명한 결제.",
+      "sections": [
+        { "id": "cycles", "title": "구독 주기", "content": "Pro 및 Elite 플랜은 월간 또는 연간 반복 결제로 운영됩니다. 귀하는 언제든지 구독을 취소하거나 다운그레이드할 권리가 있습니다." },
+        { "id": "refunds", "title": "환불 자격", "content": "디지털 서비스의 특성상 활성 결제 주기에 대한 환불은 제공되지 않습니다. 단, 기술적 오류가 입증된 경우 48시간 이내에 조치됩니다." },
+        { "id": "transparency", "title": "가격 투명성", "content": "가격 구조의 변경 사항은 최소 30일 전에 등록된 이메일을 통해 공지됩니다." }
+      ]
+    }
+  },
+  "pricing": {
+    "title": "전략적 구독 엔진",
+    "tier1Name": "Discovery",
+    "tier1Sub": "무료 동기화 프로토콜",
+    "tier2Name": "Neural Pro",
+    "tier2Sub": "심층 최적화",
+    "tier3Name": "Neural Elite",
+    "tier3Sub": "최상위 지능",
+    "priceMonthly": "월별",
+    "priceForever": "무기한",
+    "popular": "가장 인기 있음",
+    "t1f1": "주당 2개 이력서 (최대 2주 동안만)",
+    "t1f2": "수동 키워드 5개. AI 매직: 잠김 🔒",
+    "t1f3": "1개 표준 템플릿. 기본 PDF 분석",
+    "t2f1": "주당 6개 이력서 (일일 동기화 한도: 3개/일)",
+    "t2f2": "15개 AI 키워드. LinkedIn 실시간 동기화",
+    "t2f3": "4개 엘리트 템플릿. Pro 팔레트 및 신경망 측정기",
+    "t3f1": "무제한 글로벌 액세스. 전체 우선순위",
+    "t3f2": "무제한 키워드. 전체 신경망 제안 엔진",
+    "t3f3": "모든 6개 프리미엄 템플릿 + 맞춤형 브랜딩. 자기소개서 생성기",
+    "t3promo": "신경망 자기소개서 생성기 포함"
+  },
+  "studio": {
+    "title": "이력서 스튜디오",
+    "templateGallery": "템플릿 갤러리",
+    "eliteSelection": "엘리트 선택",
+    "hdViewport": "HD 뷰포트",
+    "activeEngine": "활성 렌더링 엔진",
+    "stealthKeywords": "AI 스텔스 키워드",
+    "strategicEdge": "전략적 우위",
+    "aiSuggester": "AI 어드바이저",
+    "flushAll": "모두 삭제",
+    "aestheticPresets": "심미적 사전 설정",
+    "visualIdentity": "시각적 아이덴티티",
+    "syncToMaster": "스튜디오를 마스터에 동기화",
+    "coverLetterTitle": "자기소개서 스튜디오",
+    "careerDocumentEngine": "경력 문서 엔진",
+    "coverLetterPlaceholder": "AI가 귀하의 전문적인 프로필을 합성할 때까지 기다려 주세요...",
+    "neuralContentSynthesis": "신경망 콘텐츠 합성 활성"
   }
 }

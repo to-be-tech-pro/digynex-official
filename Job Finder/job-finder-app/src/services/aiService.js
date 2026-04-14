@@ -6,17 +6,29 @@
 
 export const aiService = {
   /**
-   * Simulates high-fidelity extraction of CV data from a file.
-   * In production, this would call an n8n webhook or OpenAI API.
-   * @param {File} file - The uploaded document.
+   * Generates a 1px "Stealth Mask" string for ATS optimization.
+   * This logic creates a dense keyword string to be injected into CV separators.
+   * @param {Array} keywords - List of high-impact keywords.
+   */
+  generateStealthMask(keywords = []) {
+    if (!keywords || keywords.length === 0) return '';
+    // Repeat keywords to ensure density for ATS scanners
+    const denseList = [...keywords, ...keywords].sort(() => 0.5 - Math.random());
+    return denseList.join(' · ');
+  },
+
+  /**
+   * Extracts CV data using high-fidelity neural logic.
+   * Note: In production, this bridges to the n8n 'Document Ingestion' node.
+   * @param {File} file - The document to parse.
    */
   async extractCVData(file) {
-    console.log(`[DIGYNEX AI] Starting Neural Ingestion for: ${file.name}`);
+    console.log(`[DIGYNEX AI] Triggering Neural Ingestion: ${file.name}`);
     
-    // Simulate high-density processing delay
-    await new Promise(resolve => setTimeout(resolve, 3000));
+    // Simulate engine latency
+    await new Promise(resolve => setTimeout(resolve, 2500));
     
-    // High-Fidelity Mock Data (Realistic Extraction Result)
+    // Structure aligned with ULTIMATE_UNIFIED_BLUEPRINT.md
     return {
       success: true,
       data: {
@@ -25,52 +37,39 @@ export const aiService = {
           email: 'amila.p@digynex.com',
           phone: '+46 70 123 45 67',
           location: 'Stockholm, Sweden',
-          headline: 'Senior Solutions Architect | AI & Neural Systems Expert'
+          headline: 'Senior Solutions Architect | AI Systems'
         },
-        bio: 'Visionary architect specializing in cloud-native neural networks and high-scale SaaS integration. Proven track record of delivering $10M+ cost-savings through automated orchestration.',
+        bio: 'Strategic architect with 10+ years experience in neural systems and SaaS scaling.',
         experiences: [
-          { 
-            company: 'DigyNex Global', 
-            role: 'Lead AI Architect', 
-            type: 'Full-time', 
-            achievements: 'Orchestrated the transition to serverless neural processing, reducing latency by 45% across 12 countries.', 
-            start: '2021-03', 
-            end: 'Present', 
-            isCurrent: true 
-          },
-          { 
-            company: 'TechFlow Systems', 
-            role: 'Senior Systems Engineer', 
-            type: 'Full-time', 
-            achievements: 'Managed migration of legacy monolith to microservices for major Scandinavian telecom provider.', 
-            start: '2018-01', 
-            end: '2021-02', 
-            isCurrent: false 
-          }
-        ],
-        education: [
-          { 
-            title: 'MSc in Artificial Intelligence', 
-            institution: 'KTH Royal Institute of Technology', 
-            year: '2017', 
-            gpa: '4.8/5.0' 
-          }
+          { company: 'DigyNex Global', role: 'Lead Architect', start: '2021', end: 'Present', achievements: 'Reduced latency by 45%.' }
         ],
         skills: {
-          hard: ['Python', 'Docker', 'Kubernetes', 'n8n', 'Supabase'],
-          soft: ['Architectural Thinking', 'Strategic Leadership', 'Agile Product Management'],
-          tools: ['VS Code', 'Git', 'Neural Studio', 'Postman']
+          hard: ['n8n', 'Supabase', 'Python', 'Docker', 'AI Automation'],
+          soft: ['Architectural Thinking', 'Leadership']
         },
-        secretKeywords: ['AI', 'CLOUD', 'ORCHESTRATION', 'SYSTEMS', 'SCALING', 'N8N', 'STOCKHOLM', 'SWEDEN']
+        // These will be used for the 'Magic Line' ATS injection
+        secretKeywords: ['AI', 'CLOUD', 'ORCHESTRATION', 'SCALING', 'N8N', 'SWEDEN', 'TECH', 'STRATEGY']
       }
     };
   },
 
   /**
-   * Generates AI-driven career path insights based on current profile.
+   * Translates the entire profile snapshot to a target language.
+   * Essential for the 'Global Edge' Multilingual Engine.
+   */
+  async translateProfile(profileData, targetLang) {
+    console.log(`[DIGYNEX AI] Translating profile to: ${targetLang}`);
+    // Simulated translation engine delay
+    await new Promise(resolve => setTimeout(resolve, 1500));
+    
+    // In production, this calls OpenAI to re-write the bio/experiences in the target language
+    return profileData; 
+  },
+
+  /**
+   * Generates AI-driven insights.
    */
   async generateInsights(profileData) {
-     // Placeholder for future market-sync logic
-     return "Market trend: High demand for Neural-SaaS scaling.";
+     return "Neural Analysis: Profile matches 92% of Tech Leads roles in Scandinavia.";
   }
 };

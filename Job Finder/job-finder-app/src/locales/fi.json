@@ -1,22 +1,26 @@
 {
   "header": {
-    "title": "Uran kiihdytys",
-    "subtitle": "Engine",
-    "welcome": "Tervetuloa, Amila!",
-    "progress": "Edistymisesi yleiskatsaus",
+    "title": "DigyNex AI",
+    "subtitle": "Työnhaku",
+    "welcome": "Tervetuloa",
+    "progress": "Edistymisen yleiskatsaus",
     "globalSuite": "Global Suite"
   },
+  "auth": {
+    "signup": "Liity",
+    "login": "Kirjaudu sisään"
+  },
   "stats": {
-    "activeApps": "Aktiiviset sovellukset",
+    "activeApps": "Aktiiviset haut",
     "aiMatches": "AI-osumat",
     "skillScore": "Taitopisteet"
   },
   "actions": {
-    "sync": "Synkronoi AI-tietoja"
+    "sync": "Synkronoidaan neuraalista dataa"
   },
   "sections": {
-    "tracking": "Hakemuksen seuranta",
-    "analytics": "AI-matching analyysi"
+    "tracking": "Hakemusten seuranta",
+    "analytics": "AI-osuma-analytiikka"
   },
   "table": {
     "company": "Yritys",
@@ -26,23 +30,164 @@
   },
   "pipeline": {
     "applied": "Haettu",
-    "review": "Arvostelu",
+    "review": "Tackistuksessa",
     "interview": "Haastattelu",
-    "offer": "Tarjous"
+    "offer": "Tarjous",
+    "rejected": "Hylätty",
+    "archived": "Arkistoitu"
   },
   "analytics": {
-    "topMatches": "Parhaat ottelut",
-    "skillGap": "Taitojen puuteanalyysi"
+    "topMatches": "Parhaat osumat",
+    "skillGap": "Taitovaje-analyysi",
+    "updateProfile": "Uudelleenkalibroi taitoprofiili"
+  },
+  "apps": {
+    "title": "Aktiiviset hakemukset",
+    "searchPlaceholder": "Hae nimellä, roolilla tai päivämäärällä...",
+    "filterAll": "Kaikki",
+    "filterPending": "Odottaa",
+    "filterInterview": "Haastattelu",
+    "filterOffers": "Tarjoukset",
+    "filterArchived": "Arkistoitu",
+    "location": "Sijainti",
+    "appliedDate": "Haettu",
+    "matchScore": "Osumapisteet",
+    "viewDetails": "Näytä tiedot",
+    "loadMore": "Näytä lisää hakemuksia"
+  },
+  "notifications": {
+    "newUpdate": "Uusi tilapäivitys vastaanotettu",
+    "viewAll": "Näytä kaikki ilmoitukset"
+  },
+  "profile": {
+    "title": "Asiantuntijaprofiili",
+    "cvTitle": "CV-hallinta",
+    "cvUpload": "Lataa ammatillinen CV",
+    "viewCV": "Näytä nykyinen CV",
+    "interestsTitle": "Top 5 kiinnostuksen kohdetta",
+    "fieldsPlaceholder": "Lisää ala...",
+    "save": "Tallenna globaali profiili",
+    "tailor": "Räätälöi globaali CV",
+    "viewMatch": "Näytä työnhakupulssi"
+  },
+  "matches": {
+    "discoveryHub": "AI Discovery Hub",
+    "instantTailor": "Pikaräätälöinti",
+    "applicantsCount": "{count}+ Hakijaa",
+    "matchStrength": "Osuman vahvuus",
+    "posted": "Julkaistu {time}"
   },
   "footer": {
-    "poweredBy": "Tuottanut",
-    "engine": "Maailmanlaajuinen Löytömoottori",
+    "poweredBy": "Palvelun tarjoaa",
+    "engine": "Globaali löytökone",
     "version": "Master V6.0"
   },
   "nav": {
     "dashboard": "Dashboard",
     "applications": "Hakemukset",
     "matches": "Osumat",
-    "profile": "Profiili"
+    "profile": "Profiili",
+    "studio": "CV Studio",
+    "login": "Kirjaudu",
+    "register": "Liity"
+  },
+  "governance": {
+    "general": "Yleinen strategia",
+    "pricing": "Hinnoittelu ja tilaus",
+    "about": "Tietoja DigyNex AI:sta",
+    "t3f3": "Kaikki avattavissa. JSON-vienti + saatekirjeet",
+    "t3promo": "Saatekirjegeneraattori sisältyy",
+    "legal": "Laki ja turvallisuus",
+    "privacy": "Tietosuojakäytäntö",
+    "terms": "Käyttöehdot",
+    "security": "Tietoturva ja GDPR",
+    "refund": "Palautus- ja laskutuskäytäntö",
+    "support": "Tuki ja ohjekeskus",
+    "logout": "Kirjaudu ulos",
+    "adminTitle": "Neuraalinen ohjauskeskus",
+    "adminSub": "Globaali hallinta aktiivinen",
+    "version": "Neuraalinen synkronointi",
+    "infoHub": "Tietokeskus",
+    "privacySecurityTitle": "Tietosuoja ja AI-etiikka (GDPR)"
+  },
+  "policies": {
+    "version": "v1.2.0-GP",
+    "lastUpdated": "13. huhtikuuta 2026",
+    "privacy": {
+      "title": "Tietosuojakäytäntö",
+      "subtitle": "Miten suojaamme henkilötietosi tekoälyn aikakaudella.",
+      "sections": [
+        { "id": "collection", "title": "Tiedonkeruu", "content": "Keräämme ammatillista dataa lataamistasi CV:istä, mukaan lukien yhteystiedot, työkokemus ja taidot, ainoastaan työnhakukokemuksesi parantamiseksi neuraalisen optimointimoottorimme kautta." },
+        { "id": "ai", "title": "AI-datan käsittely", "content": "Tietojasi käsitellään OpenAI- ja Google Gemini -rajapintojen kautta avainsanojen luomiseksi ja CV:iden optimoimiseksi. Emme käytä tietojasi kolmansien osapuolten AI-mallien opettamiseen." },
+        { "id": "sovereignty", "title": "Datan suvereniteetti", "content": "Henkilötiedot tallennetaan turvallisesti Supabase-alustalle (EU-pohjaiset klusterit). GDPR:n mukaisesti sinulla on oikeus tarkastaa, korjata tai pyytää tietojesi poistamista." }
+      ]
+    },
+    "terms": {
+      "title": "Käyttöehdot",
+      "subtitle": "Säännöt CareerNexus Neural Enginen käyttöön.",
+      "sections": [
+        { "id": "conduct", "title": "Käyttäjän toiminta", "content": "Käyttäjien on annettava tarkat ammatilliset tiedot. Alustan väärinkäyttö tai useiden tilien luominen AI-rajojen kiertämiseksi on ehdottomasti kielletty." },
+        { "id": "liability", "title": "AI-vastuu", "content": "Vaikka neuraalinen moottorimme tarjoaa korkealaatuista optimointia, CareerNexus ei takaa työllistymistä. Tuotetun tuloksen tarkkuus ja eheys ovat käyttäjän vastuulla." },
+        { "id": "usage", "title": "Reilu käyttö", "content": "Hakemusrajat perustuvat tilaustasoosi (Discovery, Pro tai Elite). Tahallinen tekninen väärinkäyttö johtaa tilin välittömään sulkemiseen." }
+      ]
+    },
+    "security": {
+      "title": "Tietoturva ja GDPR",
+      "subtitle": "Kirurgisen tason turvallisuus ammatilliselle identiteetillesi.",
+      "sections": [
+        { "id": "encryption", "title": "Päästä päähän -salaus", "content": "Kaikki tiedonsiirrot on suojattu SSL/TLS 1.3 -salauksella. Arkaluonteiset profiilitiedot on salattu AES-256-protokollalla." },
+        { "id": "rls", "title": "Row-Level Security (RLS)", "content": "Tietokanta-arkkitehtuurimme käyttää Postgres RLS -suojausta varmistaakseen, että tietosi on eristetty muista." },
+        { "id": "purge", "title": "Nollaretentio-poisto", "content": "Kun poistat tilisi, kaikki siihen liittyvä data, mukaan lukien alkuperäiset PDF-tiedostot, poistetaan 24 tunnin kuluessa." }
+      ]
+    },
+    "refund": {
+      "title": "Palautuskäytäntö",
+      "subtitle": "Läpinäkyvä laskutus Premium-paketeistamme.",
+      "sections": [
+        { "id": "cycles", "title": "Tilausjaksot", "content": "Pro- ja Elite-sopimukset toimivat toistuvalla kuukausittaisella tai vuosittaisella laskutuksella. Voit peruuttaa tilauksesi milloin tahansa." },
+        { "id": "refunds", "title": "Palautusoikeus", "content": "AI-palveluiden luonteen vuoksi emme yleensä tarjoa palautuksia aktiivisista laskutusjaksoista. Tekniset virheet korjataan, jos niistä ilmoitetaan 48 tunnin sisällä." },
+        { "id": "transparency", "title": "Hinnoittelun läpinäkyvyys", "content": "Kaikista hintamuutoksista ilmoitetaan sähköpostitse vähintään 30 päivää ennen niiden voimaantuloa." }
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Strateginen tilausmoottori",
+    "tier1Name": "Discovery",
+    "tier1Sub": "Ilmainen synkronointiprotokolla",
+    "tier2Name": "Neural Pro",
+    "tier2Sub": "Syvä optimointi",
+    "tier3Name": "Neural Elite",
+    "tier3Sub": "Ultimaattinen älykkyys",
+    "priceMonthly": "Kuukaudessa",
+    "priceForever": "Ikuisesti",
+    "popular": "Suosituin",
+    "t1f1": "2 CV:tä viikossa (Enintään 2 viikon ajan)",
+    "t1f2": "5 manuaalista avainsanaa. AI-taika: LUKITTU 🔒",
+    "t1f3": "1 vakiomalli. Perus-PDF-analyysi",
+    "t2f1": "6 CV:tä viikossa (Päivittäinen raja: 3/pv)",
+    "t2f2": "15 AI-avainsanaa. LinkedIn-reaaliaikasynkronointi",
+    "t2f3": "4 Elitemallia. Pro-paletit ja neuraalinen mittari",
+    "t3f1": "Rajoittamaton globaali pääsy. Täysi prioriteetti",
+    "t3f2": "Rajoittamattomat avainsanat. Täysi neuraalinen ehdotusmoottori",
+    "t3f3": "Kaikki 6 Premium-mallia + oma brändäys. Saatekirjegeneraattori",
+    "t3promo": "Neuraalinen saatekirjegeneraattori sisältyy"
+  },
+  "studio": {
+    "title": "CV Studio Hub",
+    "templateGallery": "Malligalleria",
+    "eliteSelection": "Elite-valikoima",
+    "hdViewport": "HD Viewport",
+    "activeEngine": "Aktiivinen renderoinitimoottori",
+    "stealthKeywords": "AI Stealth-avainsanat",
+    "strategicEdge": "Strateginen etu",
+    "aiSuggester": "AI Suggester",
+    "flushAll": "Tyhjennä kaikki",
+    "aestheticPresets": "Esteettiset esiasetukset",
+    "visualIdentity": "Visuaalinen identiteetti",
+    "syncToMaster": "Synkronoi Studio masteriin",
+    "coverLetterTitle": "Saatekirjestudio",
+    "careerDocumentEngine": "Ura-asiakirjamoottori",
+    "coverLetterPlaceholder": "Odota, että AI syntetisoi ammatillisen sielusi...",
+    "neuralContentSynthesis": "Neuraalinen sisällön syntetisointi aktiivinen"
   }
 }

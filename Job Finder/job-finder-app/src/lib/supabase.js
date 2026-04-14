@@ -1,6 +1,10 @@
 import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = 'https://ticmdqeyeiycznfzxqrx.supabase.co'
-const supabaseAnonKey = 'sb_publishable_My_0QQBRse8sYCjGpxdNCA_8fJMZop2'
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('[DIGYNEX AI] Missing Supabase Environment Variables!')
+}
 
 export const supabase = createClient(supabaseUrl, supabaseAnonKey)

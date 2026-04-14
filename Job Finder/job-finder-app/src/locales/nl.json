@@ -1,22 +1,26 @@
 {
   "header": {
-    "title": "Carrièreversnelling",
-    "subtitle": "Engine",
-    "welcome": "Welkom, Amila!",
-    "progress": "Je voortgangsoverzicht",
+    "title": "DigyNex AI",
+    "subtitle": "Jobzoeker",
+    "welcome": "Welkom",
+    "progress": "Overzicht van uw voortgang",
     "globalSuite": "Global Suite"
   },
+  "auth": {
+    "signup": "Aanmelden",
+    "login": "Inloggen"
+  },
   "stats": {
-    "activeApps": "Actieve apps",
-    "aiMatches": "AI matches",
-    "skillScore": "Skill score"
+    "activeApps": "Actieve sollicitaties",
+    "aiMatches": "AI-matches",
+    "skillScore": "Vaardigheidsscore"
   },
   "actions": {
-    "sync": "AI-gegevens synchroniseren"
+    "sync": "Neurale gegevens synchroniseren"
   },
   "sections": {
-    "tracking": "Sollicitaties bijhouden",
-    "analytics": "AI-matching analyse"
+    "tracking": "Sollicitatie tracking",
+    "analytics": "AI-match analyse"
   },
   "table": {
     "company": "Bedrijf",
@@ -25,24 +29,165 @@
     "date": "Datum"
   },
   "pipeline": {
-    "applied": "Toegepast",
-    "review": "Review",
+    "applied": "Gesolliciteerd",
+    "review": "Beoordeling",
     "interview": "Gesprek",
-    "offer": "Aanbod"
+    "offer": "Aanbod",
+    "rejected": "Afgewezen",
+    "archived": "Gearchiveerd"
   },
   "analytics": {
-    "topMatches": "Top job matches",
-    "skillGap": "Vaardighedsanalyse"
+    "topMatches": "Beste jobmatches",
+    "skillGap": "Vaardigheidskloof-analyse",
+    "updateProfile": "Vaardigheidsprofiel herkalibreren"
+  },
+  "apps": {
+    "title": "Actieve inzendingen",
+    "searchPlaceholder": "Zoek op naam, rol of datum...",
+    "filterAll": "Alle",
+    "filterPending": "In afwachting",
+    "filterInterview": "Gesprek",
+    "filterOffers": "Aanbiedingen",
+    "filterArchived": "Gearchiveerd",
+    "location": "Locatie",
+    "appliedDate": "Gesolliciteerd op",
+    "matchScore": "Match-score",
+    "viewDetails": "Details bekijken",
+    "loadMore": "Meer sollicitaties tonen"
+  },
+  "notifications": {
+    "newUpdate": "Nieuwe statusupdate ontvangen",
+    "viewAll": "Bekijk alle meldingen"
+  },
+  "profile": {
+    "title": "Expertprofiel",
+    "cvTitle": "CV-beheeer",
+    "cvUpload": "Upload professioneel CV",
+    "viewCV": "Bekijk huidig CV",
+    "interestsTitle": "Top 5 interessegebieden",
+    "fieldsPlaceholder": "Voeg een veld toe...",
+    "save": "Globaal profiel opslaan",
+    "tailor": "CV globaal aanpassen",
+    "viewMatch": "Bekijk vacaturepuls"
+  },
+  "matches": {
+    "discoveryHub": "AI Discovery Hub",
+    "instantTailor": "Directe aanpassing",
+    "applicantsCount": "{count}+ sollicitanten",
+    "matchStrength": "Matchsterkte",
+    "posted": "{time} geleden geplaatst"
   },
   "footer": {
     "poweredBy": "Mogelijk gemaakt door",
-    "engine": "Globale Ontdekkingsmotor",
+    "engine": "Globale ontdekkingsmotor",
     "version": "Master V6.0"
   },
   "nav": {
     "dashboard": "Dashboard",
     "applications": "Sollicitaties",
     "matches": "Matches",
-    "profile": "Profiel"
+    "profile": "Profiel",
+    "studio": "CV Studio",
+    "login": "Inloggen",
+    "register": "Aanmelden"
+  },
+  "governance": {
+    "general": "Algemene strategie",
+    "pricing": "Prijzen & abonnement",
+    "about": "Over DigyNex AI",
+    "t3f3": "Alles ontgrendelbaar. JSON-export + sollicitatiebrieven",
+    "t3promo": "Sollicitatiebrief-generator inbegrepen",
+    "legal": "Juridisch & veiligheid",
+    "privacy": "Privacybeleid",
+    "terms": "Servicevoorwaarden",
+    "security": "Gegevensbeveiliging & GDPR",
+    "refund": "Restitutie- & factureringsbeleid",
+    "support": "Support & helpcentrum",
+    "logout": "Uitloggen",
+    "adminTitle": "Neural Master Control",
+    "adminSub": "Globale governance actief",
+    "version": "Neurale synchronisatie",
+    "infoHub": "Info Hub",
+    "privacySecurityTitle": "Privacy & AI-ethiek (GDPR)"
+  },
+  "policies": {
+    "version": "v1.2.0-GP",
+    "lastUpdated": "13 april 2026",
+    "privacy": {
+      "title": "Privacybeleid",
+      "subtitle": "Hoe we uw persoonlijke gegevens beschermen in het AI-tijdperk.",
+      "sections": [
+        { "id": "collection", "title": "Informatieverzameling", "content": "We verzamelen professionele gegevens uit uw geüploade CV's, inclusief contactgegevens, werkverleden en vaardigheden, uitsluitend om uw zoektocht naar een baan te verbeteren via onze neurale optimalisatiemotor." },
+        { "id": "ai", "title": "AI-gegevensverwerking", "content": "Uw gegevens worden verwerkt via OpenAI- en Google Gemini-API's om trefwoorden te genereren en CV's te optimaliseren. We hanteren strikte protocollen om ervoor te zorgen dat uw gegevens nooit worden gebruikt om AI-modellen van derden te trainen." },
+        { "id": "sovereignty", "title": "Datasoevereiniteit", "content": "Persoonlijke informatie wordt veilig opgeslagen op Supabase (clusters in de EU). In strikte overeenstemming met de GDPR behoudt u het recht op toegang tot, correctie van of verzoek om permanente verwijdering van uw gegevens." }
+      ]
+    },
+    "terms": {
+      "title": "Servicevoorwaarden",
+      "subtitle": "Regels voor het gebruik van de CareerNexus Neural Engine.",
+      "sections": [
+        { "id": "conduct", "title": "Gebruikersgedrag", "content": "Gebruikers moeten nauwkeurige professionele informatie verstrekken. Misbruik van het platform of het aanmaken van meerdere valse accounts om AI-limieten te exploiteren is strikt verboden." },
+        { "id": "liability", "title": "AI-aansprakelijkheid", "content": "Hoewel onze neurale motor hoogwaardige optimalisatie biedt, garandeert CareerNexus geen baanplaatsing. De uiteindelijke nauwkeurigheid en integriteit van de gegenereerde output blijft de eigen verantwoordelijkheid van de gebruiker." },
+        { "id": "usage", "title": "Eerlijk gebruik", "content": "Sollicitatielimieten worden strikt gehandhacht op basis van uw abonnementsniveau (Discovery, Pro of Elite). Opzettelijke technische pogingen om deze limieten te omzeilen, leiden tot onmiddellijke beëindiging van het account." }
+      ]
+    },
+    "security": {
+      "title": "Gegevensbeveiliging & GDPR",
+      "subtitle": "Beveiliging op chirurgisch niveau voor uw professionele identiteit.",
+      "sections": [
+        { "id": "encryption", "title": "End-to-end versleuteling", "content": "Alle gegevensoverdrachten zijn beveiligd met SSL/TLS 1.3-versleuteling. Gevoelige profielgegevens worden in rust versleuteld met AES-256-protocollen van industriestandaard." },
+        { "id": "rls", "title": "Row-Level Security (RLS)", "content": "Onze database-architectuur gebruikt Postgres RLS om ervoor te zorgen dat uw gegevens geïsoleerd zijn. Geen enkele andere entiteit kan uw privé-CV-gegevens inzien." },
+        { "id": "purge", "title": "Verwijdering zonder retentie", "content": "Bij activering van nooduitlogging en opschoning worden alle bijbehorende gegevens, inclusief originele PDF's en AI-gegenereerde modellen, permanent verwijderd binnen onze 24-uurs globale synchronisatiecyclus." }
+      ]
+    },
+    "refund": {
+      "title": "Restitutiebeleid",
+      "subtitle": "Transparante facturering voor onze Premium-suites.",
+      "sections": [
+        { "id": "cycles", "title": "Abonnementscycli", "content": "Pro- en Elite-plannen werken met terugkerende maandelijkse of jaarlijkse facturering. U behoudt de volledige controle om op elk moment op te zeggen of te downgraden via de Neural Master Control." },
+        { "id": "refunds", "title": "Restitutievoorwaarden", "content": "Gezien de digitale aard van AI-tokenconsumptie bieden wij over het algemeen geen restitutie voor actieve factureringscycli. Technische fouten worden echter hersteld indien gemeld binnen 48 uur." },
+        { "id": "transparency", "title": "Prijstransparantie", "content": "Eventuele aanpassingen aan onze prijsstructuren worden ten minste 30 dagen voordat de volgende factureringscyclus ingaat naar uw geregistreerde e-mailadres gecommuniceerd." }
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Strategische abonnementsmotor",
+    "tier1Name": "Discovery",
+    "tier1Sub": "Gratis synchronisatieprotocol",
+    "tier2Name": "Neural Pro",
+    "tier2Sub": "Diepe optimalisatie",
+    "tier3Name": "Neural Elite",
+    "tier3Sub": "Ultieme intelligentie",
+    "priceMonthly": "Per maand",
+    "priceForever": "Voor altijd",
+    "popular": "Meest populair",
+    "t1f1": "2 CV's per week (Max. 2 weken in totaal)",
+    "t1f2": "5 handmatige trefwoorden. AI-magie: VERGRENDELD 🔒",
+    "t1f3": "1 standaard sjabloon. Basis PDF-analyse",
+    "t2f1": "6 CV's per week (Dagelijkse limiet: 3/dag)",
+    "t2f2": "15 AI-trefwoorden. LinkedIn real-time synchronisatie",
+    "t2f3": "4 elite-sjablonen (visueel & minimalistisch). Pro-paletten & neurale meter",
+    "t3f1": "Onbeperkte globale toegang. Geen beperking / Volledige prioriteit",
+    "t3f2": "Onbeperkte trefwoorden. Volledige neurale suggestiemotor",
+    "t3f3": "Alle 6 Premium-sjablonen + eigen branding. Sollicitatiebrief-generator",
+    "t3promo": "Neurale sollicitatiebrief-generator inbegrepen"
+  },
+  "studio": {
+    "title": "CV Studio Hub",
+    "templateGallery": "Sjabloongalerij",
+    "eliteSelection": "Elite-selectie",
+    "hdViewport": "HD Viewport",
+    "activeEngine": "Actieve renderingmotor",
+    "stealthKeywords": "AI Stealth-trefwoorden",
+    "strategicEdge": "Strategisch voordeel",
+    "aiSuggester": "AI Suggester",
+    "flushAll": "Alles wissen",
+    "aestheticPresets": "Esthetische voorinstellingen",
+    "visualIdentity": "Visuele identiteit",
+    "syncToMaster": "Studio synchroniseren naar Master",
+    "coverLetterTitle": "Sollicitatiebrief Studio",
+    "careerDocumentEngine": "Carrièredocument-motor",
+    "coverLetterPlaceholder": "Wacht terwijl AI uw professionele ziel synthetiseert...",
+    "neuralContentSynthesis": "Neurale inhoudssynthese actief"
   }
 }

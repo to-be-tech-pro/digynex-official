@@ -1,26 +1,30 @@
 {
   "header": {
-    "title": "Kariyer Hızlandırma",
-    "subtitle": "Engine",
-    "welcome": "Hoş geldin, Amila!",
+    "title": "DigyNex AI",
+    "subtitle": "İş Bulucu",
+    "welcome": "Hoş Geldiniz",
     "progress": "İlerleme Özeti",
-    "globalSuite": "Global Suite"
+    "globalSuite": "Küresel Paket"
+  },
+  "auth": {
+    "signup": "Katıl",
+    "login": "Giriş Yap"
   },
   "stats": {
-    "activeApps": "Aktif Başvuru",
-    "aiMatches": "AI Eşleşme",
+    "activeApps": "Aktif Başvurular",
+    "aiMatches": "Yapay Zeka Eşleşmeleri",
     "skillScore": "Yetenek Puanı"
   },
   "actions": {
-    "sync": "AI Verileri Senkronize Ediliyor"
+    "sync": "Nöral Veriler Senkronize Ediliyor"
   },
   "sections": {
     "tracking": "Başvuru Takibi",
-    "analytics": "AI-Eşleştirme Analitiği"
+    "analytics": "Yapay Zeka Eşleştirme Analizi"
   },
   "table": {
     "company": "Şirket",
-    "role": "Rol",
+    "role": "Pozisyon",
     "status": "Durum",
     "date": "Tarih"
   },
@@ -28,11 +32,50 @@
     "applied": "Başvuruldu",
     "review": "İnceleme",
     "interview": "Mülakat",
-    "offer": "Teklif"
+    "offer": "Teklif",
+    "rejected": "Reddedildi",
+    "archived": "Arşivlendi"
   },
   "analytics": {
-    "topMatches": "En İyi Eşleşmeler",
-    "skillGap": "Yetenek Analizi"
+    "topMatches": "En İyi İş Eşleşmeleri",
+    "skillGap": "Yetenek Açığı Analizi",
+    "updateProfile": "Yetenek Profilini Yeniden Ayarla"
+  },
+  "apps": {
+    "title": "Aktif Gönderimler",
+    "searchPlaceholder": "Ad, pozisyon veya tarihe göre ara...",
+    "filterAll": "Hepsi",
+    "filterPending": "Beklemede",
+    "filterInterview": "Mülakat",
+    "filterOffers": "Teklifler",
+    "filterArchived": "Arşivlendi",
+    "location": "Konum",
+    "appliedDate": "Başvuru Tarihi",
+    "matchScore": "Eşleşme Puanı",
+    "viewDetails": "Detayları Görüntüle",
+    "loadMore": "Daha Fazla Başvuru Göster"
+  },
+  "notifications": {
+    "newUpdate": "Yeni Durum Güncellemesi Alındı",
+    "viewAll": "Tüm Bildirimleri Görüntüle"
+  },
+  "profile": {
+    "title": "Uzman Profili",
+    "cvTitle": "Özgeçmiş Yönetimi",
+    "cvUpload": "Profesyonel Özgeçmiş Yükle",
+    "viewCV": "Mevcut Özgeçmişi Görüntüle",
+    "interestsTitle": "En Çok İlgi Duyulan 5 Alan",
+    "fieldsPlaceholder": "Alan ekle...",
+    "save": "Küresel Profili Kaydet",
+    "tailor": "Küresel Özgeçmişi Özelleştir",
+    "viewMatch": "İş Nabzını Görüntüle"
+  },
+  "matches": {
+    "discoveryHub": "Yapay Zeka Keşif Merkezi",
+    "instantTailor": "Anında Özelleştirme",
+    "applicantsCount": "{count}+ Başvuru Sahibi",
+    "matchStrength": "Eşleşme Gücü",
+    "posted": "Paylaşıldı {time}"
   },
   "footer": {
     "poweredBy": "Destekleyen",
@@ -43,6 +86,108 @@
     "dashboard": "Panel",
     "applications": "Başvurular",
     "matches": "Eşleşmeler",
-    "profile": "Profil"
+    "profile": "Profil",
+    "studio": "Özgeçmiş Stüdyosu",
+    "login": "Giriş",
+    "register": "Katıl"
+  },
+  "governance": {
+    "general": "Genel Strateji",
+    "pricing": "Fiyatlandırma ve Abonelik",
+    "about": "DigyNex AI Hakkında",
+    "t3f3": "Her şey açılabilir. JSON Dışa Aktarımı + Ön Yazılar",
+    "t3promo": "Ön Yazı Oluşturucu dahil",
+    "legal": "Hukuki ve Güvenlik",
+    "privacy": "Gizlilik Politikası",
+    "terms": "Hizmet Şartları",
+    "security": "Veri Güvenliği ve GDPR",
+    "refund": "İade ve Faturalandırma Politikası",
+    "support": "Destek ve Yardım Merkezi",
+    "logout": "Çıkış Yap",
+    "adminTitle": "Nöral Ana Kontrol",
+    "adminSub": "Küresel Yönetim Aktif",
+    "version": "Nöral Senkronizasyon",
+    "infoHub": "Bilgi Merkezi",
+    "privacySecurityTitle": "Gizlilik ve Yapay Zeka Etiği (GDPR)"
+  },
+  "policies": {
+    "version": "v1.2.0-GP",
+    "lastUpdated": "13 Nisan 2026",
+    "privacy": {
+      "title": "Gizlilik Politikası",
+      "subtitle": "Yapay zeka çağında kişisel verilerinizi nasıl koruyoruz?",
+      "sections": [
+        { "id": "collection", "title": "Bilgi Toplama", "content": "Yüklediğiniz özgeçmişlerden iletişim bilgileri, iş geçmişi ve yetenekler dahil olmak üzere profesyonel verileri, yalnızca nöral optimizasyon motorumuz aracılığıyla iş arama deneyiminizi geliştirmek için topluyoruz." },
+        { "id": "ai", "title": "Yapay Zeka Veri İşleme", "content": "Verileriniz, anahtar kelimeler oluşturmak ve özgeçmişleri optimize etmek için OpenAI ve Google Gemini API'leri aracılığıyla işlenir. Verilerinizin asla üçüncü taraf yapay zeka modellerini eğitmek için kullanılmamasını sağlamak adına katı protokoller uyguluyoruz." },
+        { "id": "sovereignty", "title": "Veri Egemenliği", "content": "Kişisel bilgiler Supabase (AB tabanlı kümeler) üzerinde güvenli bir şekilde saklanır. GDPR ile tam uyum içinde, Acil Durum Temizleme aracı aracılığıyla verilerinize erişme, düzeltme veya kalıcı olarak silinmesini talep etme hakkınızı saklı tutarsınız." }
+      ]
+    },
+    "terms": {
+      "title": "Hizmet Şartları",
+      "subtitle": "CareerNexus Nöral Motorunu kullanma kuralları.",
+      "sections": [
+        { "id": "conduct", "title": "Kullanıcı Davranışı", "content": "Kullanıcılar doğru profesyonel bilgiler sağlamalıdır. Platformun kötüye kullanılması veya yapay zeka sınırlarını istismar etmek için birden fazla sahte hesap oluşturulması kesinlikle yasaktır ve izlenmektedir." },
+        { "id": "liability", "title": "Yapay Zeka Sorumluluğu", "content": "Nöral motorumuz yüksek kalitede optimizasyon sağlasa da CareerNexus işe yerleştirme garantisi vermez. Oluşturulan çıktının nihai doğruluğu ve bütünlüğü kullanıcının yegane sorumluluğundadır." },
+        { "id": "usage", "title": "Adil Kullanım", "content": "Başvuru sınırları abonelik seviyenize (Discovery, Pro veya Elite) göre katı bir şekilde uygulanır. Bu sınırları aşmak için yapılan kasıtlı teknik girişimler hesabın derhal sonlandırılmasıyla sonuçlanacaktır." }
+      ]
+    },
+    "security": {
+      "title": "Veri Güvenliği ve GDPR",
+      "subtitle": "Profesyonel kimliğiniz için cerrahi düzeyde güvenlik.",
+      "sections": [
+        { "id": "encryption", "title": "Uçtan Uca Şifreleme", "content": "Tüm veri transferleri SSL/TLS 1.3 şifrelemesi ile güvence altına alınmıştır. Hassas profil verileri, çok katmanlı koruma sağlamak için endüstriyel sınıf AES-256 protokolleri kullanılarak şifrelenir." },
+        { "id": "rls", "title": "Satır Düzeyinde Güvenlik (RLS)", "content": "Veritabanı mimarimiz, verilerinizin izole edilmesini sağlamak için Postgres RLS kullanır. Yetkisiz destek personeli de dahil olmak üzere başka hiçbir taraf özel özgeçmiş örneklerinizi görüntüleyemez." },
+        { "id": "purge", "title": "Sıfır Saklama Temizliği", "content": "Acil Durum Çıkışı ve Temizlemesi tetiklendiğinde, orijinal PDF'ler ve yapay zeka tarafından oluşturulan modeller dahil olmak üzere tüm ilişkili veriler, 24 saatlik küresel senkronizasyon döngümüz içinde kalıcı olarak silinir." }
+      ]
+    },
+    "refund": {
+      "title": "İade ve Faturalandırma Politikası",
+      "subtitle": "Premium paketlerimiz için şeffaf faturalandırma.",
+      "sections": [
+        { "id": "cycles", "title": "Abonelik Döngüleri", "content": "Pro ve Elite planları aylık veya yıllık yinelenen faturalandırma üzerinden çalışır. Nöral Ana Kontrol geçidi üzerinden istediğiniz zaman iptal etme veya sürüm düşürme yetkisine sahipsiniz." },
+        { "id": "refunds", "title": "İade Uygunluğu", "content": "Yapay zeka jeton tüketiminin dijital doğası gereği, genellikle aktif faturalandırma döngüleri için iade sunmuyoruz. Ancak, kanıtlanmış teknik hatalar 48 saat içinde bildirilirse düzeltilecektir." },
+        { "id": "transparency", "title": "Fiyat Şeffaflığı", "content": "Fiyatlandırma yapılarımızdaki herhangi bir düzenleme, bir sonraki faturalandırma döngüsü yürürlüğe girmeden en az 30 gün önce kayıtlı e-postanıza bildirilecektir." }
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Stratejik Abonelik Motoru",
+    "tier1Name": "Keşif",
+    "tier1Sub": "Ücretsiz Senkronizasyon Protokolü",
+    "tier2Name": "Nöral Pro",
+    "tier2Sub": "Derin Optimizasyon",
+    "tier3Name": "Nöral Elite",
+    "tier3Sub": "Üstün Zeka",
+    "priceMonthly": "Aylık",
+    "priceForever": "Sonsuza Dek",
+    "popular": "En Popüler",
+    "t1f1": "Haftada 2 özgeçmiş (Toplamda maksimum 2 hafta)",
+    "t1f2": "5 manuel anahtar kelime. Yapay Zeka Büyüsü: KİLİTLİ 🔒",
+    "t1f3": "1 Standart Şablon. Temel PDF İşleme",
+    "t2f1": "Haftada 6 özgeçmiş (Günlük senkronizasyon sınırı: 3/gün)",
+    "t2f2": "15 Yapay Zeka Anahtar Kelimesi. LinkedIn Gerçek Zamanlı Senkronizasyon",
+    "t2f3": "4 Elite Şablon (Görsel ve Minimal). Pro Paletler ve Nöral Metre",
+    "t3f1": "Sınırsız Küresel Erişim. Hız Kısıtlaması Yok / Tam Öncelik",
+    "t3f2": "Sınırsız Anahtar Kelime. Tam Nöral Öneri Motoru",
+    "t3f3": "Tüm 6 Premium Şablon + Özel Markalama. Ön Yazı Oluşturucu",
+    "t3promo": "Nöral Ön Yazı Oluşturucu dahil"
+  },
+  "studio": {
+    "title": "Özgeçmiş Stüdyosu",
+    "templateGallery": "Şablon Galerisi",
+    "eliteSelection": "Elite Seçim",
+    "hdViewport": "HD Görüntü Alanı",
+    "activeEngine": "Aktif İşleme Motoru",
+    "stealthKeywords": "Yapay Zeka Gizli Anahtar Kelimeler",
+    "strategicEdge": "Stratejik Avantaj",
+    "aiSuggester": "Yapay Zeka Önerici",
+    "flushAll": "Hepsini Sil",
+    "aestheticPresets": "Estetik Ayarlar",
+    "visualIdentity": "Görsel Kimlik",
+    "syncToMaster": "Stüdyoyu Ana Sistemle Senkronize Et",
+    "coverLetterTitle": "Ön Yazı Stüdyosu",
+    "careerDocumentEngine": "Kariyer Belge Motoru",
+    "coverLetterPlaceholder": "Yapay zekanın profesyonel ruhunuzu sentezlemesini bekleyin...",
+    "neuralContentSynthesis": "Nöral İçerik Sentezi Aktif"
   }
 }

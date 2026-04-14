@@ -139,6 +139,7 @@ export const templateService = {
    */
   async getCoverLetterHtml(text, colors, profile) {
     const primary = colors.primary || '#0A2647';
+    const secondary = colors.secondary || '#C1A172';
     const name = profile.basic?.fullName || 'Professional Candidate';
     const email = profile.basic?.email || '';
     const phone = profile.basic?.phone || '';
@@ -149,95 +150,144 @@ export const templateService = {
       <!DOCTYPE html>
       <html>
       <head>
-        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
         <style>
           :root {
             --primary: ${primary};
+            --secondary: ${secondary};
           }
           body {
             margin: 0;
-            padding: 40px;
+            padding: 0;
             font-family: 'Inter', sans-serif;
-            color: #1e293b;
-            background: #f1f5f9;
-            display: flex;
-            justify-content: center;
+            background: #f8fafc;
+            -webkit-print-color-adjust: exact;
           }
           .page {
             width: 210mm;
             min-height: 297mm;
             background: white;
-            padding: 25mm 30mm;
+            padding: 25mm 25mm;
+            margin: 0 auto;
+            position: relative;
             box-sizing: border-box;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+          }
+          .accent-bar {
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 12px;
+            background: var(--primary);
           }
           .header {
-            border-bottom: 2px solid var(--primary);
-            padding-bottom: 20px;
-            margin-bottom: 40px;
-            text-align: left;
+            margin-top: 15px;
+            border-bottom: 2.5px solid var(--secondary);
+            padding-bottom: 35px;
+            margin-bottom: 45px;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-end;
+          }
+          .identity {
+            flex: 1;
           }
           .name {
             font-family: 'Playfair Display', serif;
-            font-size: 18pt;
+            font-size: 32pt;
             color: var(--primary);
             margin: 0;
             text-transform: uppercase;
-            letter-spacing: 0.1em;
-            font-weight: 700;
+            letter-spacing: -0.02em;
+            font-weight: 900;
+            line-height: 1;
           }
           .contact {
-            font-size: 8.5pt;
+            font-size: 9pt;
             color: #64748b;
-            margin-top: 8px;
+            margin-top: 15px;
             display: flex;
-            gap: 15px;
-            font-weight: 500;
+            flex-wrap: wrap;
+            gap: 12px;
+            font-weight: 600;
             text-transform: uppercase;
-            letter-spacing: 0.05em;
+            letter-spacing: 0.1em;
+          }
+          .date-block {
+            margin-bottom: 50px;
           }
           .date {
-            margin-bottom: 35px;
-            font-weight: 600;
-            color: #475569;
-            font-size: 10pt;
+            font-weight: 800;
+            color: var(--primary);
+            font-size: 11pt;
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+          }
+          .salutation {
+            margin-bottom: 25px;
+            font-weight: 800;
+            color: #1e293b;
+            font-size: 12pt;
           }
           .content {
             white-space: pre-line;
             color: #334155;
             text-align: justify;
-            font-size: 10.5pt;
-            line-height: 1.8;
+            font-size: 10.8pt;
+            line-height: 1.85;
+            font-weight: 400;
           }
           .footer {
-            margin-top: 60px;
+            margin-top: 80px;
           }
-          .sign-off {
-            margin-top: 10px;
-            font-weight: 700;
+          .closing {
+            font-size: 11pt;
+            color: #64748b;
+            font-weight: 500;
+            margin-bottom: 12px;
+          }
+          .signature-name {
             font-family: 'Playfair Display', serif;
-            font-size: 12pt;
+            font-size: 16pt;
             color: var(--primary);
             text-transform: uppercase;
+            font-weight: 900;
+            letter-spacing: 0.05em;
+          }
+          .watermark {
+            position: absolute;
+            bottom: 20mm;
+            right: 25mm;
+            font-size: 8pt;
+            font-weight: 900;
+            color: #e2e8f0;
+            text-transform: uppercase;
+            letter-spacing: 0.4em;
           }
         </style>
       </head>
       <body>
         <div class="page">
+          <div class="accent-bar"></div>
           <div class="header">
-            <h1 class="name">${name}</h1>
-            <div class="contact">
-              ${email ? `<span>${email}</span>` : ''}
-              ${phone ? `<span>${phone}</span>` : ''}
-              ${location ? `<span>${location}</span>` : ''}
+            <div class="identity">
+              <h1 class="name">${name}</h1>
+              <div class="contact">
+                ${email ? `<span>📧 ${email}</span>` : ''}
+                ${phone ? `<span>📞 ${phone}</span>` : ''}
+                ${location ? `<span>📍 ${location}</span>` : ''}
+              </div>
             </div>
           </div>
-          <div class="date">${date}</div>
-          <div class="content">${text || 'Waiting for AI to synthesize your professional profile into a cover letter specimen...'}</div>
-          <div class="footer">
-            <div>Sincerely,</div>
-            <div class="sign-off">${name}</div>
+          <div class="date-block">
+            <div class="date">${date}</div>
           </div>
+          <div class="salutation">Dear Hiring Manager,</div>
+          <div class="content">${text || 'AI is currently synthesizing your professional narrative into a high-fidelity cover letter specimen...'}</div>
+          <div class="footer">
+            <div class="closing">Sincerely,</div>
+            <div class="signature-name">${name}</div>
+          </div>
+          <div class="watermark">DIGYNEX ENGINE V6.5</div>
         </div>
       </body>
       </html>

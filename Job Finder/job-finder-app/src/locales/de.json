@@ -2,21 +2,25 @@
   "header": {
     "title": "DigyNex AI",
     "subtitle": "Job Finder",
-    "welcome": "Willkommen, Amila!",
-    "progress": "Deine Fortschrittsübersicht",
+    "welcome": "Willkommen",
+    "progress": "Ihre Fortschrittsübersicht",
     "globalSuite": "Global Suite"
   },
+  "auth": {
+    "signup": "Beitreten",
+    "login": "Anmelden"
+  },
   "stats": {
-    "activeApps": "Aktive Apps",
+    "activeApps": "Aktive Bewerbungen",
     "aiMatches": "KI-Matches",
     "skillScore": "Skill-Score"
   },
   "actions": {
-    "sync": "KI-Daten werden synchronisiert"
+    "sync": "Neurale Daten werden synchronisiert"
   },
   "sections": {
     "tracking": "Bewerbungsverfolgung",
-    "analytics": "KI-Match-Analyse"
+    "analytics": "KI-Matching-Analyse"
   },
   "table": {
     "company": "Unternehmen",
@@ -26,26 +30,56 @@
   },
   "pipeline": {
     "applied": "Beworben",
-    "review": "Überprüfung",
-    "interview": "Interview",
-    "offer": "Angebot"
+    "review": "Prüfung",
+    "interview": "Vorstellungsgespräch",
+    "offer": "Angebot",
+    "rejected": "Abgelehnt",
+    "archived": "Archiviert"
   },
   "analytics": {
-    "topMatches": "Top KI-Übereinstimmungen",
-    "skillGap": "Fähigkeitsanalyse"
+    "topMatches": "Top Job-Matches",
+    "skillGap": "Skill-Gap-Analyse",
+    "updateProfile": "Skill-Profil neu kalibrieren"
+  },
+  "apps": {
+    "title": "Aktive Einreichungen",
+    "searchPlaceholder": "Nach Name, Rolle oder Datum suchen...",
+    "filterAll": "Alle",
+    "filterPending": "Ausstehend",
+    "filterInterview": "Interview",
+    "filterOffers": "Angebote",
+    "filterArchived": "Archiviert",
+    "location": "Standort",
+    "appliedDate": "Beworben am",
+    "matchScore": "Match-Score",
+    "viewDetails": "Details anzeigen",
+    "loadMore": "Mehr Bewerbungen laden"
+  },
+  "notifications": {
+    "newUpdate": "Neue Statusaktualisierung erhalten",
+    "viewAll": "Alle Benachrichtigungen anzeigen"
   },
   "profile": {
     "title": "Expertenprofil",
-    "cvTitle": "Lebenslauf-Verwaltung",
-    "cvUpload": "CV hochladen",
-    "viewCV": "CV anzeigen",
-    "interestsTitle": "Top 5 Berufsfelder",
-    "fieldsPlaceholder": "Bereich hinzufügen...",
-    "save": "Profil speichern"
+    "cvTitle": "CV-Management",
+    "cvUpload": "Professionellen Lebenslauf hochladen",
+    "viewCV": "Aktuellen Lebenslauf anzeigen",
+    "interestsTitle": "Top 5 Interessengebiete",
+    "fieldsPlaceholder": "Jobfeld hinzufügen...",
+    "save": "Globales Profil speichern",
+    "tailor": "Globales CV anpassen",
+    "viewMatch": "Job-Puls anzeigen"
+  },
+  "matches": {
+    "discoveryHub": "KI-Discovery-Hub",
+    "instantTailor": "Sofort-Anpassung",
+    "applicantsCount": "{count}+ Bewerber",
+    "matchStrength": "Match-Stärke",
+    "posted": "Gepostet {time}"
   },
   "footer": {
     "poweredBy": "Präsentiert von",
-    "engine": "Global Discovery Automatik",
+    "engine": "Globale Discovery-Engine",
     "version": "Master V6.0"
   },
   "nav": {
@@ -53,25 +87,27 @@
     "applications": "Bewerbungen",
     "matches": "Matches",
     "profile": "Profil",
-    "register": "Mitmachen",
-    "t3f3": "Alles freischaltbar. JSON-Export + Anschreiben",
-    "t3promo": "Inklusive Anschreiben-Generator"
+    "studio": "CV-Studio",
+    "login": "Anmelden",
+    "register": "Beitreten"
   },
   "governance": {
     "general": "Allgemeine Strategie",
     "pricing": "Preise & Abonnement",
     "about": "Über DigyNex AI",
+    "t3f3": "Alles freischaltbar. JSON-Export + Anschreiben",
+    "t3promo": "Anschreiben-Generator enthalten",
     "legal": "Rechtliches & Sicherheit",
-    "privacy": "Datenschutzerklärung",
+    "privacy": "Datenschutzrichtlinie",
     "terms": "Nutzungsbedingungen",
     "security": "Datensicherheit & DSGVO",
-    "refund": "Rückerstattungsrichtlinie",
-    "support": "Support & Hilfezentrum",
+    "refund": "Erstattungs- & Abrechnungsrichtlinie",
+    "support": "Support & Hilfe-Center",
     "logout": "Abmelden",
-    "adminTitle": "Neural Master Control",
+    "adminTitle": "Neurale Master-Steuerung",
     "adminSub": "Globale Governance Aktiv",
-    "version": "Neural Sync",
-    "infoHub": "Informationen",
+    "version": "Neurale Synchronisation",
+    "infoHub": "Informations-Hub",
     "privacySecurityTitle": "Datenschutz & KI-Ethik (DSGVO)"
   },
   "policies": {
@@ -81,41 +117,41 @@
       "title": "Datenschutzrichtlinie",
       "subtitle": "Wie wir Ihre persönlichen Daten im KI-Zeitalter schützen.",
       "sections": [
-        { "id": "collection", "title": "Informationserhebung", "content": "Wir sammeln berufliche Daten aus Ihren hochgeladenen Lebensläufen, um Ihr Jobsuche-Erlebnis durch unsere Neural Optimization Engine zu verbessern." },
-        { "id": "ai", "title": "KI-Datenverarbeitung", "content": "Ihre Daten werden über OpenAI- und Google Gemini-APIs verarbeitet. Wir garantieren, dass Ihre Daten niemals zum Training von Drittanbieter-KI-Modellen verwendet werden." },
-        { "id": "sovereignty", "title": "Datensouveränität", "content": "Alle Informationen werden sicher auf EU-basierten Supabase-Clustern gespeichert. Gemäß DSGVO haben Sie jederzeit das Recht auf Löschung Ihrer Daten." }
+        { "id": "collection", "title": "Datenerhebung", "content": "Wir erfassen professionelle Daten aus Ihren hochgeladenen Lebensläufen, einschließlich Kontaktdaten, Werdegang und Fähigkeiten, ausschließlich um Ihre Jobsuche durch unsere neurale Optimierungs-Engine zu verbessern." },
+        { "id": "ai", "title": "KI-Datenverarbeitung", "content": "Ihre Daten werden über OpenAI- und Google Gemini-APIs verarbeitet, um Keywords zu generieren und Lebensläufe zu optimieren. Wir setzen strenge Protokolle durch, um sicherzustellen, dass Ihre Daten niemals zum Trainieren von KI-Modellen Dritter verwendet werden." },
+        { "id": "sovereignty", "title": "Datensouveränität", "content": "Persönliche Informationen werden sicher auf Supabase (EU-basierte Cluster) gespeichert. In strikter Übereinstimmung mit der DSGVO behalten Sie das Recht, auf Ihre Daten zuzugreifen, diese zu berichtigen oder die dauerhafte Löschung über das Notfall-Löschtool zu beantragen." }
       ]
     },
     "terms": {
       "title": "Nutzungsbedingungen",
       "subtitle": "Regeln für die Nutzung der CareerNexus Neural Engine.",
       "sections": [
-        { "id": "conduct", "title": "Nutzerverhalten", "content": "Sie erklären sich damit einverstanden, korrekte berufliche Informationen bereitzustellen. Missbrauch der Plattform führt zur sofortigen Kontosperrung." },
-        { "id": "liability", "title": "KI-Haftung", "content": "CareerNexus garantiert keine Arbeitsplatzvermittlung. Die endgültige Richtigkeit des erstellten Lebenslaufs liegt in der Verantwortung des Nutzers." },
-        { "id": "usage", "title": "Faire Nutzung", "content": "Anwendungslimits werden basierend auf Ihrem Abonnement (Discovery, Pro oder Elite) durchgesetzt. Umgehungsversuche führen zur Kündigung." }
+        { "id": "conduct", "title": "Nutzerverhalten", "content": "Nutzer müssen genaue berufliche Informationen bereitstellen. Der Missbrauch der Plattform oder das Erstellen mehrerer betrügerischer Konten zur Ausnutzung von KI-Limits ist strengstens untersagt und wird überwacht." },
+        { "id": "liability", "title": "KI-Haftung", "content": "Obwohl unsere neurale Engine eine hochpräzise Optimierung bietet, garantiert CareerNexus keine Arbeitsplatzvermittlung. Die endgültige Genauigkeit und Integrität der generierten Ausgabe liegt in der alleinigen Verantwortung des Nutzers." },
+        { "id": "usage", "title": "Faire Nutzung", "content": "Bewerbungslimits werden strikt basierend auf Ihrer Abonnementstufe (Discovery, Pro oder Elite) durchgesetzt. Vorsätzliche technische Manipulationen zur Umgehung dieser Limits führen zur sofortigen Kündigung des Kontos." }
       ]
     },
     "security": {
       "title": "Datensicherheit & DSGVO",
-      "subtitle": "Sicherheit auf chirurgischem Niveau für Ihre Identität.",
+      "subtitle": "Sicherheit auf höchstem Niveau für Ihre berufliche Identität.",
       "sections": [
-        { "id": "encryption", "title": "Ende-zu-Ende-Verschlüsselung", "content": "Alle Datenübertragungen sind mit SSL/TLS 1.3 gesichert. Sensible Profildaten werden im Ruhezustand mit AES-256-Protokollen verschlüsselt." },
-        { "id": "rls", "title": "Row-Level Security (RLS)", "content": "Unsere Datenbankarchitektur stellt sicher, dass Ihre Daten isoliert sind und nur für Sie zugänglich bleiben. Kein Dritter kann Ihre Dokumente einsehen." },
-        { "id": "purge", "title": "Zero-Retention Löschung", "content": "Nach der Kontolöschung werden alle zugehörigen Dateien innerhalb von 24 Stunden dauerhaft von unseren globalen Servern gelöscht." }
+        { "id": "encryption", "title": "Ende-zu-Ende-Verschlüsselung", "content": "Alle Datenübertragungen sind mit SSL/TLS 1.3-Verschlüsselung gesichert. Sensible Profildaten werden im Ruhezustand mit AES-256-Protokollen nach Industriestandard verschlüsselt." },
+        { "id": "rls", "title": "Row-Level Security (RLS)", "content": "Unsere Datenbankarchitektur verwendet Postgres RLS, um sicherzustellen, dass Ihre Daten isoliert sind. Keine andere Instanz, einschließlich unbefugtem Supportpersonal, kann Ihre privaten Lebenslauf-Exemplare einsehen." },
+        { "id": "purge", "title": "Zero-Retention-Löschung", "content": "Bei Auslösung der Notfall-Abmeldung und Löschung werden alle zugehörigen Daten, einschließlich Original-PDFs und KI-generierter Modelle, innerhalb unseres 24-Stunden-Synchronisationszyklus dauerhaft gelöscht." }
       ]
     },
     "refund": {
-      "title": "Rückerstattungs- & Abrechnungsrichtlinie",
-      "subtitle": "Transparente Abrechnung für unsere Premium-Suiten.",
+      "title": "Erstattungsrichtlinie",
+      "subtitle": "Transparente Abrechnung für unsere Premium-Suites.",
       "sections": [
-        { "id": "cycles", "title": "Abonnement-Zyklen", "content": "Pro- und Elite-Pläne werden monatlich oder jährlich abgerechnet. Abonnements können jederzeit über das Master Control Panel gekündigt werden." },
-        { "id": "refunds", "title": "Rückerstattungsfähigkeit", "content": "Aufgrund der Beschaffenheit von KI-Diensten bieten wir keine Rückerstattungen für teilweise genutzte Zyklen an. Abrechnungsfehler werden jedoch korrigiert." },
-        { "id": "transparency", "title": "Preistransparenz", "content": "Preisänderungen werden mindestens 30 Tage vor der nächsten Abrechnungsperiode per E-Mail an Sie kommuniziert." }
+        { "id": "cycles", "title": "Abonnementzyklen", "content": "Pro- und Elite-Pläne basieren auf monatlicher oder jährlicher Abrechnung. Sie behalten die volle Kontrolle, Ihr Abo jederzeit über das Neurale Master-Steuerungs-Gateway zu kündigen oder herabstufen." },
+        { "id": "refunds", "title": "Erstattungsfähigkeit", "content": "Aufgrund der digitalen Natur des KI-Token-Verbrauchs bieten wir in der Regel keine Rückerstattungen für aktive Abrechnungszyklen an. Nachgewiesene technische Fehler werden jedoch behoben, wenn sie innerhalb von 48 Stunden gemeldet werden." },
+        { "id": "transparency", "title": "Preistransparenz", "content": "Anpassungen unserer Preisstrukturen werden mindestens 30 Tage vor Inkrafttreten des nächsten Abrechnungszyklus an Ihre registrierte E-Mail-Adresse kommuniziert." }
       ]
     }
   },
   "pricing": {
-    "title": "Strategische Abonnements-Engine",
+    "title": "Strategische Abonnement-Engine",
     "tier1Name": "Discovery",
     "tier1Sub": "Kostenloses Sync-Protokoll",
     "tier2Name": "Neural Pro",
@@ -123,17 +159,35 @@
     "tier3Name": "Neural Elite",
     "tier3Sub": "Ultimative Intelligenz",
     "priceMonthly": "Pro Monat",
-    "priceForever": "Für immer",
-    "popular": "Am beliebtesten",
+    "priceForever": "Dauerhaft",
+    "popular": "Beliebtestes",
     "t1f1": "2 Lebensläufe pro Woche (Max. 2 Wochen insgesamt)",
-    "t1f2": "5 manuelle Schlüsselwörter. AI Magic: GESPERRT 🔒",
-    "t1f3": "1 Standardvorlage. Einfache PDF-Übernahme",
-    "t2f1": "6 Lebensläufe pro Woche (Tägliches Limit: 3/Tag)",
-    "t2f2": "15 KI-Schlüsselwörter. LinkedIn Echtzeit-Sync",
-    "t2f3": "4 Elite-Vorlagen (Visuell & Minimal). Pro-Paletten & Neural Meter",
-    "t3f1": "Unbegrenzter globaler Zugriff. Keine Drosselung",
-    "t3f2": "Unbegrenzte Schlüsselwörter. Volle Neural Engine",
-    "t3f3": "Alle 6 Premium-Vorlagen + Custom Branding. Anschreiben-Generator",
-    "t3promo": "Neuraler Anschreiben-Generator Inklusive"
+    "t1f2": "5 manuelle Keywords. KI-Magie: GESPERRT 🔒",
+    "t1f3": "1 Standard-Vorlage. Basis-PDF-Inhaltsanalyse",
+    "t2f1": "6 Lebensläufe pro Woche (Täglicher Sync-Cap: 3/Tag)",
+    "t2f2": "15 KI-Keywords. LinkedIn Echtzeit-Synchronisation",
+    "t2f3": "4 Elite-Vorlagen (Visuell & Minimal). Pro-Paletten & Neurale Anzeige",
+    "t3f1": "Unbegrenzter globaler Zugriff. Keine Drosselung / Volle Priorität",
+    "t3f2": "Unbegrenzte Keywords. Volle neurale Suggestion-Engine",
+    "t3f3": "Alle 6 Premium-Vorlagen + Individuelles Branding. Anschreiben-Generator",
+    "t3promo": "Neuraler Anschreiben-Generator enthalten"
+  },
+  "studio": {
+    "title": "CV-Studio-Hub",
+    "templateGallery": "Vorlagengalerie",
+    "eliteSelection": "Elite-Auswahl",
+    "hdViewport": "HD-Viewport",
+    "activeEngine": "Aktive Rendering-Engine",
+    "stealthKeywords": "KI-Stealth-Keywords",
+    "strategicEdge": "Strategischer Vorteil",
+    "aiSuggester": "KI-Vorschlags-Engine",
+    "flushAll": "Alles leeren",
+    "aestheticPresets": "Ästhetische Presets",
+    "visualIdentity": "Visuelle Identität",
+    "syncToMaster": "Studio mit Master synchronisieren",
+    "coverLetterTitle": "Anschreiben-Studio",
+    "careerDocumentEngine": "Karriere-Dokument-Engine",
+    "coverLetterPlaceholder": "Warten Sie, während die KI Ihre berufliche Seele synthetisiert...",
+    "neuralContentSynthesis": "Neurale Inhalts-Synthese aktiv"
   }
 }

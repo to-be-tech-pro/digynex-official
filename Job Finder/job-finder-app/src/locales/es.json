@@ -1,18 +1,22 @@
 {
   "header": {
-    "title": "Aceleración de carrera",
-    "subtitle": "Engine",
-    "welcome": "¡Bienvenido, Amila!",
-    "progress": "Tu resumen de progreso",
+    "title": "DigyNex AI",
+    "subtitle": "Job Finder",
+    "welcome": "Bienvenido",
+    "progress": "Resumen de su progreso",
     "globalSuite": "Global Suite"
+  },
+  "auth": {
+    "signup": "Unirse",
+    "login": "Iniciar sesión"
   },
   "stats": {
     "activeApps": "Apps activas",
-    "aiMatches": "Match IA",
-    "skillScore": "Puntuación"
+    "aiMatches": "Matchs IA",
+    "skillScore": "Puntuación de habilidades"
   },
   "actions": {
-    "sync": "Sincronizando datos"
+    "sync": "Sincronizando datos neuronales"
   },
   "sections": {
     "tracking": "Seguimiento de aplicaciones",
@@ -25,24 +29,165 @@
     "date": "Fecha"
   },
   "pipeline": {
-    "applied": "Aplicada",
+    "applied": "Aplicado",
     "review": "Revisión",
     "interview": "Entrevista",
-    "offer": "Oferta"
+    "offer": "Oferta",
+    "rejected": "Rechazado",
+    "archived": "Archivado"
   },
   "analytics": {
     "topMatches": "Mejores coincidencias",
-    "skillGap": "Análisis de brecha salarial"
+    "skillGap": "Análisis de déficit de habilidades",
+    "updateProfile": "Recalibrar perfil de habilidades"
+  },
+  "apps": {
+    "title": "Envíos activos",
+    "searchPlaceholder": "Buscar por nombre, puesto o fecha...",
+    "filterAll": "Todo",
+    "filterPending": "Pendiente",
+    "filterInterview": "Entrevista",
+    "filterOffers": "Ofertas",
+    "filterArchived": "Archivado",
+    "location": "Ubicación",
+    "appliedDate": "Aplicado el",
+    "matchScore": "Puntuación de coincidencia",
+    "viewDetails": "Ver detalles",
+    "loadMore": "Mostrar más aplicaciones"
+  },
+  "notifications": {
+    "newUpdate": "Nueva actualización de estado recibida",
+    "viewAll": "Ver todas las notificaciones"
+  },
+  "profile": {
+    "title": "Perfil de Experto",
+    "cvTitle": "Gestión de CV",
+    "cvUpload": "Subir CV profesional",
+    "viewCV": "Ver CV actual",
+    "interestsTitle": "Top 5 campos de interés",
+    "fieldsPlaceholder": "Añadir un campo...",
+    "save": "Guardar perfil global",
+    "tailor": "Adaptar CV global",
+    "viewMatch": "Ver pulso del empleo"
+  },
+  "matches": {
+    "discoveryHub": "Hub de descubrimiento IA",
+    "instantTailor": "Adaptación instantánea",
+    "applicantsCount": "{count}+ Postulantes",
+    "matchStrength": "Fuerza de la coincidencia",
+    "posted": "Publicado {time}"
   },
   "footer": {
-    "poweredBy": "Potenciado por",
+    "poweredBy": "Impulsado por",
     "engine": "Motor de descubrimiento global",
     "version": "Master V6.0"
   },
   "nav": {
-    "dashboard": "Panel",
-    "applications": "Solicitudes",
-    "matches": "Coincidencias",
-    "profile": "Perfil"
+    "dashboard": "Tablero",
+    "applications": "Aplicaciones",
+    "matches": "Matchs",
+    "profile": "Perfil",
+    "studio": "CV Studio",
+    "login": "Login",
+    "register": "Unirse"
+  },
+  "governance": {
+    "general": "Estrategia General",
+    "pricing": "Precios y Suscripción",
+    "about": "Acerca de DigyNex AI",
+    "t3f3": "Todo desbloqueable. Exportación JSON + Cartas de presentación",
+    "t3promo": "Generador de cartas de presentación incluido",
+    "legal": "Legal y Seguridad",
+    "privacy": "Política de Privacidad",
+    "terms": "Términos de Servicio",
+    "security": "Seguridad de Datos y RGPD",
+    "refund": "Política de Reembolso y Facturación",
+    "support": "Soporte y Centro de ayuda",
+    "logout": "Cerrar sesión",
+    "adminTitle": "Control Maestro Neuronal",
+    "adminSub": "Gobernanza Global Activa",
+    "version": "Sincronización Neuronal",
+    "infoHub": "Hub de información",
+    "privacySecurityTitle": "Privacidad y Ética de la IA (RGPD)"
+  },
+  "policies": {
+    "version": "v1.2.0-GP",
+    "lastUpdated": "13 de abril de 2026",
+    "privacy": {
+      "title": "Política de Privacidad",
+      "subtitle": "Cómo protegemos sus datos personales en la era de la IA.",
+      "sections": [
+        { "id": "collection", "title": "Recopilación de información", "content": "Recopilamos datos profesionales de sus CV subidos, incluyendo detalles de contacto, historial laboral y habilidades, únicamente para mejorar su experiencia de búsqueda de empleo a través de nuestro motor de optimización neuronal." },
+        { "id": "ai", "title": "Procesamiento de datos por IA", "content": "Sus datos se procesan a través de las API de OpenAI y Google Gemini para generar palabras clave y optimizar los CV. Aplicamos protocolos estrictos para garantizar que sus datos nunca se utilicen para entrenar modelos de IA de terceros." },
+        { "id": "sovereignty", "title": "Soberanía de datos", "content": "La información personal se almacena de forma segura en Supabase (clústeres basados en la UE). En estricto cumplimiento del RGPD, usted conserva el derecho de acceder, rectificar o solicitar la eliminación permanente de sus datos a través de la herramienta de purga de emergencia." }
+      ]
+    },
+    "terms": {
+      "title": "Términos de Servicio",
+      "subtitle": "Reglas para usar el motor neuronal CareerNexus.",
+      "sections": [
+        { "id": "conduct", "title": "Conducta del usuario", "content": "Los usuarios deben proporcionar información profesional precisa. El uso indebido de la plataforma o la creación de múltiples cuentas fraudulentas para explotar los límites de la IA está estrictamente prohibido y monitoreado." },
+        { "id": "liability", "title": "Responsabilidad de la IA", "content": "Aunque nuestro motor neuronal proporciona una optimización de alta fidelidad, CareerNexus no garantiza la colocación laboral. La precisión e integridad finales de la salida generada siguen siendo responsabilidad exclusiva del usuario." },
+        { "id": "usage", "title": "Uso justo", "content": "Los límites de aplicación se aplican estrictamente según su nivel de suscripción (Discovery, Pro o Elite). Los exploits técnicos deliberados para eludir estos límites resultarán en la terminación inmediata de la cuenta." }
+      ]
+    },
+    "security": {
+      "title": "Seguridad de Datos y RGPD",
+      "subtitle": "Seguridad de nivel quirúrgico para su identidad profesional.",
+      "sections": [
+        { "id": "encryption", "title": "Cifrado de extremo a extremo", "content": "Todas las transferencias de datos están aseguradas con el cifrado SSL/TLS 1.3. Los datos de perfil sensibles se cifran en reposo utilizando protocolos AES-256 de grado industrial." },
+        { "id": "rls", "title": "Seguridad a nivel de fila (RLS)", "content": "Nuestra arquitectura de base de datos utiliza Postgres RLS para garantizar que sus datos estén aislados. Ninguna otra entidad, incluyendo el personal de soporte no autorizado, puede ver sus especímenes de CV privados." },
+        { "id": "purge", "title": "Eliminación sin retención", "content": "Al activar el cierre de sesión y la purga de emergencia, todos los datos asociados, incluidos los PDF originales y los modelos generados por la IA, se borran de forma permanente dentro de nuestro ciclo de sincronización global de 24 horas." }
+      ]
+    },
+    "refund": {
+      "title": "Política de Reembolso",
+      "subtitle": "Facturación transparente para nuestras suites Premium.",
+      "sections": [
+        { "id": "cycles", "title": "Ciclos de suscripción", "content": "Los planes Pro y Elite funcionan con facturación mensual o anual recurrente. Usted conserva el control total para cancelar o degradar en cualquier momento a través de la puerta de enlace del Control Maestro Neuronal." },
+        { "id": "refunds", "title": "Elegibilidad de reembolso", "content": "Dada la naturaleza digital del consumo de tokens de IA, generalmente no ofrecemos reembolsos por ciclos de facturación activos. Sin embargo, los errores técnicos comprobados se rectificarán si se informan dentro de las 48 horas." },
+        { "id": "transparency", "title": "Transparencia de precios", "content": "Cualquier ajuste en nuestras estructuras de precios se comunicará a su correo electrónico registrado al menos 30 días antes de que entre en vigencia el próximo ciclo de facturación." }
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Motor de Suscripción Estratégica",
+    "tier1Name": "Discovery",
+    "tier1Sub": "Protocolo de sincronización gratuito",
+    "tier2Name": "Neural Pro",
+    "tier2Sub": "Optimización profunda",
+    "tier3Name": "Neural Elite",
+    "tier3Sub": "Inteligencia definitiva",
+    "priceMonthly": "Por mes",
+    "priceForever": "Para siempre",
+    "popular": "Más popular",
+    "t1f1": "2 CV por semana (Máximo 2 semanas en total)",
+    "t1f2": "5 palabras clave manuales. Magia IA: BLOQUEADA 🔒",
+    "t1f3": "1 plantilla estándar. Ingesta básica de PDF",
+    "t2f1": "6 CV por semana (Límite de sincronización diaria: 3/día)",
+    "t2f2": "15 palabras clave IA. Sincronización con LinkedIn en tiempo real",
+    "t2f3": "4 plantillas de élite (visual y minimalista). Paletas Pro y Medidor Neuronal",
+    "t3f1": "Acceso global ilimitado. Sin limitaciones / Prioridad total",
+    "t3f2": "Palabras clave ilimitadas. Motor completo de sugerencias neuronales",
+    "t3f3": "Las 6 plantillas Premium + Branding personalizado. Generador de cartas de presentación",
+    "t3promo": "Generador de cartas de presentación neuronal incluido"
+  },
+  "studio": {
+    "title": "Hub de CV Studio",
+    "templateGallery": "Galería de plantillas",
+    "eliteSelection": "Selección de élite",
+    "hdViewport": "Viewport HD",
+    "activeEngine": "Motor de renderizado activo",
+    "stealthKeywords": "Palabras clave furtivas IA",
+    "strategicEdge": "Borde estratégico",
+    "aiSuggester": "Sugeridor IA",
+    "flushAll": "Borrar todo",
+    "aestheticPresets": "Ajustes estéticos",
+    "visualIdentity": "Identidad visual",
+    "syncToMaster": "Sincronizar Studio al Maestro",
+    "coverLetterTitle": "Estudio de carta de presentación",
+    "careerDocumentEngine": "Motor de documentos de carrera",
+    "coverLetterPlaceholder": "Espere a que la IA sintetice su alma profesional...",
+    "neuralContentSynthesis": "Síntesis de contenido neuronal activa"
   }
 }

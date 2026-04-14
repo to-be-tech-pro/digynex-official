@@ -1,22 +1,26 @@
 {
   "header": {
-    "title": "Accelerazione carriera",
-    "subtitle": "Engine",
-    "welcome": "Benvenuto, Amila!",
-    "progress": "Panoramica dei progressi",
+    "title": "DigyNex AI",
+    "subtitle": "Job Finder",
+    "welcome": "Benvenuto",
+    "progress": "Panoramica dei tuoi progressi",
     "globalSuite": "Global Suite"
+  },
+  "auth": {
+    "signup": "Iscriviti",
+    "login": "Accedi"
   },
   "stats": {
     "activeApps": "App attive",
     "aiMatches": "Match IA",
-    "skillScore": "Punteggio"
+    "skillScore": "Punteggio competenze"
   },
   "actions": {
-    "sync": "Sincronizzazione dati IA"
+    "sync": "Sincronizzazione dati neurali"
   },
   "sections": {
-    "tracking": "Monitoraggio candidature",
-    "analytics": "Analitica matching IA"
+    "tracking": "Tracciamento candidature",
+    "analytics": "Analisi di matching IA"
   },
   "table": {
     "company": "Azienda",
@@ -28,14 +32,53 @@
     "applied": "Candidato",
     "review": "Revisione",
     "interview": "Colloquio",
-    "offer": "Offerta"
+    "offer": "Offerta",
+    "rejected": "Rifiutato",
+    "archived": "Archiviato"
   },
   "analytics": {
     "topMatches": "Migliori match",
-    "skillGap": "Analisi delle competenze"
+    "skillGap": "Analisi del gap di competenze",
+    "updateProfile": "Ricalibra profilo competenze"
+  },
+  "apps": {
+    "title": "Invii attivi",
+    "searchPlaceholder": "Cerca per nome, ruolo o data...",
+    "filterAll": "Tutti",
+    "filterPending": "In attesa",
+    "filterInterview": "Colloquio",
+    "filterOffers": "Offerte",
+    "filterArchived": "Archiviato",
+    "location": "Localizzazione",
+    "appliedDate": "Candidato il",
+    "matchScore": "Punteggio di matching",
+    "viewDetails": "Visualizza dettagli",
+    "loadMore": "Mostra altre candidature"
+  },
+  "notifications": {
+    "newUpdate": "Nuovo aggiornamento di stato ricevuto",
+    "viewAll": "Visualizza tutte le notifiche"
+  },
+  "profile": {
+    "title": "Profilo Esperto",
+    "cvTitle": "Gestione del CV",
+    "cvUpload": "Carica CV professionale",
+    "viewCV": "Visualizza CV attuale",
+    "interestsTitle": "Top 5 campi di interesse",
+    "fieldsPlaceholder": "Aggiungi un campo...",
+    "save": "Salva profilo globale",
+    "tailor": "Adatta CV globale",
+    "viewMatch": "Visualizza battito del lavoro"
+  },
+  "matches": {
+    "discoveryHub": "Hub di scoperta IA",
+    "instantTailor": "Adattamento istantaneo",
+    "applicantsCount": "{count}+ Candidati",
+    "matchStrength": "Forza del matching",
+    "posted": "Pubblicato {time}"
   },
   "footer": {
-    "poweredBy": "Offerto da",
+    "poweredBy": "Powered by",
     "engine": "Motore di scoperta globale",
     "version": "Master V6.0"
   },
@@ -43,6 +86,108 @@
     "dashboard": "Dashboard",
     "applications": "Candidature",
     "matches": "Match",
-    "profile": "Profilo"
+    "profile": "Profilo",
+    "studio": "CV Studio",
+    "login": "Accedi",
+    "register": "Iscriviti"
+  },
+  "governance": {
+    "general": "Strategia Generale",
+    "pricing": "Prezzi e Abbonamento",
+    "about": "Su DigyNex AI",
+    "t3f3": "Tutto sbloccabile. Esportazione JSON + Lettere di presentazione",
+    "t3promo": "Generatore di lettere di presentazione incluso",
+    "legal": "Legale e Sicurezza",
+    "privacy": "Informativa sulla Privacy",
+    "terms": "Termini di Servizio",
+    "security": "Sicurezza dei dati e GDPR",
+    "refund": "Politica di rimborso e fatturazione",
+    "support": "Supporto e Centro assistenza",
+    "logout": "Disconnetti",
+    "adminTitle": "Controllo Maestro Neurale",
+    "adminSub": "Governance Globale Attiva",
+    "version": "Sync Neurale",
+    "infoHub": "Info Hub",
+    "privacySecurityTitle": "Privacy ed etica dell'IA (GDPR)"
+  },
+  "policies": {
+    "version": "v1.2.0-GP",
+    "lastUpdated": "13 Aprile 2026",
+    "privacy": {
+      "title": "Informativa sulla Privacy",
+      "subtitle": "Come proteggiamo i tuoi dati personali nell'era dell'IA.",
+      "sections": [
+        { "id": "collection", "title": "Raccolta informazioni", "content": "Raccogliamo dati professionali dai tuoi CV caricati, inclusi dettagli di contatto, storia lavorativa e competenze, esclusivamente per migliorare la tua esperienza di ricerca lavoro attraverso il nostro motore di ottimizzazione neurale." },
+        { "id": "ai", "title": "Elaborazione dati IA", "content": "I tuoi dati vengono elaborati tramite le API di OpenAI e Google Gemini per generare parole chiave e ottimizzare i CV. Applichiamo protocolli rigorosi per garantire che i tuoi dati non vengano mai utilizzati per addestrare modelli IA di terze parti." },
+        { "id": "sovereignty", "title": "Sovranità dei dati", "content": "Le informazioni personali sono archiviate in modo sicuro su Supabase (cluster con sede in UE). In stretta conformità con il GDPR, mantieni il diritto di accedere, rettificare o richiedere la cancellazione permanente dei tuoi dati tramite lo strumento di eliminazione di emergenza." }
+      ]
+    },
+    "terms": {
+      "title": "Termini di Servizio",
+      "subtitle": "Regole per l'utilizzo del CareerNexus Neural Engine.",
+      "sections": [
+        { "id": "conduct", "title": "Condotta dell'utente", "content": "Gli utenti devono fornire informazioni professionali accurate. L'uso improprio della piattaforma o la creazione di più account fraudolenti per sfruttare i limiti dell'IA è severamente vietato e monitorato." },
+        { "id": "liability", "title": "Responsabilità IA", "content": "Sebbene il nostro motore neurale fornisca un'ottimizzazione ad alta fedeltà, CareerNexus non garantisce il collocamento lavorativo. L'accuratezza e l'integrità finale dell'output generato rimangono di esclusiva responsabilità dell'utente." },
+        { "id": "usage", "title": "Uso corretto", "content": "I limiti di candidatura sono applicati rigorosamente in base al livello di abbonamento (Discovery, Pro o Elite). Eventuali exploit tecnici deliberati per aggirare questi limiti comporteranno l'immediata chiusura dell'account." }
+      ]
+    },
+    "security": {
+      "title": "Sicurezza dei dati e GDPR",
+      "subtitle": "Sicurezza di livello chirurgico per la tua identità professionale.",
+      "sections": [
+        { "id": "encryption", "title": "Crittografia end-to-end", "content": "Tutti i trasferimenti di dati sono protetti con crittografia SSL/TLS 1.3. I dati sensibili del profilo sono crittografati a riposo utilizzando protocolli AES-256 di livello industriale per garantire una protezione multi-livello." },
+        { "id": "rls", "title": "Row-Level Security (RLS)", "content": "La nostra architettura di database utilizza Postgres RLS per garantire che i tuoi dati siano isolati. Nessun'altra entità, compreso il personale di supporto non autorizzato, può visualizzare i tuoi campioni di CV privati." },
+        { "id": "purge", "title": "Eliminazione a ritenzione zero", "content": "All'attivazione della disconnessione e dell'eliminazione di emergenza, tutti i dati associati, inclusi i PDF originali e i modelli generati dall'IA, vengono cancellati in modo permanente entro il nostro ciclo di sincronizzazione globale di 24 ore." }
+      ]
+    },
+    "refund": {
+      "title": "Politica di Rimborso",
+      "subtitle": "Fatturazione trasparente per le nostre suite Premium.",
+      "sections": [
+        { "id": "cycles", "title": "Cicli di abbonamento", "content": "I piani Pro ed Elite operano su fatturazione ricorrente mensile o annuale. Mantieni il pieno controllo per annullare o declassare in qualsiasi momento tramite il gateway di Controllo Maestro Neurale." },
+        { "id": "refunds", "title": "Idoneità al rimborso", "content": "Data la natura digitale del consumo di token IA, generalmente non offriamo rimborsi per cicli di fatturazione attivi. Tuttavia, eventuali errori tecnici comprovati verranno rettificati se segnalati entro 48 ore." },
+        { "id": "transparency", "title": "Trasparenza dei prezzi", "content": "Qualsiasi modifica alle nostre strutture tariffarie verrà comunicata al tuo indirizzo email registrato almeno 30 giorni prima dell'entrata in vigore del ciclo di fatturazione successivo." }
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Motore di Abbonamento Strategico",
+    "tier1Name": "Discovery",
+    "tier1Sub": "Protocollo di sincronizzazione gratuito",
+    "tier2Name": "Neural Pro",
+    "tier2Sub": "Ottimizzazione profonda",
+    "tier3Name": "Neural Elite",
+    "tier3Sub": "Intelligenza definitiva",
+    "priceMonthly": "Al mese",
+    "priceForever": "Per sempre",
+    "popular": "Più popolare",
+    "t1f1": "2 CV a settimana (Max 2 settimane totali)",
+    "t1f2": "5 parole chiave manuali. Magia IA: BLOCCATA 🔒",
+    "t1f3": "1 modello standard. Analisi base di PDF",
+    "t2f1": "6 CV a settimana (Limite sync giornaliero: 3/giorno)",
+    "t2f2": "15 parole chiave IA. Sincronizzazione LinkedIn in tempo reale",
+    "t2f3": "4 modelli Elite (visivi e minimalisti). Palette Pro e misuratore neurale",
+    "t3f1": "Accesso globale illimitato. Nessuna limitazione / Priorità totale",
+    "t3f2": "Parole chiave illimitate. Motore di suggerimento neurale completo",
+    "t3f3": "Tutti i 6 modelli Premium + Branding personalizzato. Generatore di lettere di presentazione",
+    "t3promo": "Generatore di lettere di presentazione neurale incluso"
+  },
+  "studio": {
+    "title": "Hub CV Studio",
+    "templateGallery": "Galleria modelli",
+    "eliteSelection": "Selezione Elite",
+    "hdViewport": "Viewport HD",
+    "activeEngine": "Motore di rendering attivo",
+    "stealthKeywords": "Parole chiave furtive IA",
+    "strategicEdge": "Vantaggio strategico",
+    "aiSuggester": "Suggeritore IA",
+    "flushAll": "Svuota tutto",
+    "aestheticPresets": "Preset estetici",
+    "visualIdentity": "Identità visiva",
+    "syncToMaster": "Sincronizza Studio al Master",
+    "coverLetterTitle": "Studio lettere di presentazione",
+    "careerDocumentEngine": "Motore documenti di carriera",
+    "coverLetterPlaceholder": "Attendi che l'IA sintetizzi la tua anima professionale...",
+    "neuralContentSynthesis": "Sintesi contenuti neurale attiva"
   }
 }

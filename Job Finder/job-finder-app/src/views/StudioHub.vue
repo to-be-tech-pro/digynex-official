@@ -41,37 +41,39 @@ const generateCoverLetter = () => emit('generateCoverLetter')
     <div class="mt-2.5 flex-1 overflow-y-auto space-y-4 px-4 hub-scroller custom-scrollbar">
         
         <!-- 1. TEMPLATE GALLERY (PREMIUM DENSITY) -->
-        <div class="bg-gradient-to-br from-white/15 to-white/5 backdrop-blur-3xl rounded-[2.2rem] p-5 border border-white/10 shadow-3xl overflow-visible group relative">
-           <div class="flex justify-between items-center mb-3.5">
+        <div class="bg-gradient-to-br from-white/10 to-white/[0.02] backdrop-blur-3xl rounded-[2.5rem] p-6 border border-white/10 shadow-3xl overflow-visible group relative">
+           <div class="flex justify-between items-end mb-5">
               <div class="flex flex-col">
-                 <span class="text-[9px] font-black text-[#C1A172] uppercase tracking-[0.2em] mb-1">Elite Selection</span>
-                 <h3 class="text-[14px] font-black text-white tracking-tight uppercase">Template Gallery</h3>
+                 <span class="text-[10px] font-black text-[#C1A172] uppercase tracking-[0.3em] mb-1.5">Neural Specimens</span>
+                 <h3 class="text-[16px] font-black text-white tracking-tight uppercase">Template Gallery</h3>
               </div>
-              <span class="text-[9px] font-black text-white/30 uppercase tracking-widest">{{ cvTemplates.length }} Styles Available</span>
+              <div class="px-3 py-1 bg-white/5 rounded-full border border-white/10">
+                 <span class="text-[9px] font-black text-white/40 uppercase tracking-widest">{{ cvTemplates.length }} Elite Styles</span>
+              </div>
            </div>
            
-           <div class="flex flex-nowrap gap-4 overflow-x-auto pb-8 -mx-4 px-4 snap-x snap-mandatory scroll-smooth min-h-[220px] custom-horizontal-scrollbar">
+           <div class="flex flex-nowrap gap-5 overflow-x-auto pb-10 -mx-6 px-6 snap-x snap-mandatory scroll-smooth min-h-[240px] custom-horizontal-scrollbar">
               <div v-for="t in cvTemplates" :key="t.id" 
                    @click="updateSelectedTemplate(t.id)"
-                   class="w-[140px] h-[195px] bg-gradient-to-br from-white/10 to-white/5 rounded-[2rem] shrink-0 border-2 transition-all duration-500 cursor-pointer flex flex-col items-center justify-center relative overflow-hidden group/thumb snap-center"
-                   :class="selectedTemplate === t.id ? 'scale-[1.05]' : 'border-white/5 hover:border-white/20 hover:scale-[1.02]'"
-                   :style="selectedTemplate === t.id ? { borderColor: userProfile.primaryColor, boxShadow: `0 20px 50px ${userProfile.primaryColor}30` } : {}">
+                   class="w-[160px] h-[210px] bg-gradient-to-br from-white/5 to-white/[0.02] rounded-[2.2rem] shrink-0 border-2 transition-all duration-700 cursor-pointer flex flex-col items-center justify-center relative overflow-hidden group/thumb snap-center"
+                   :class="selectedTemplate === t.id ? 'scale-[1.04]' : 'border-white/5 hover:border-white/20 hover:scale-[1.02]'"
+                   :style="selectedTemplate === t.id ? { borderColor: userProfile.primaryColor, boxShadow: `0 25px 60px ${userProfile.primaryColor}40` } : {}">
                  
                  <div class="absolute inset-0 w-full h-full overflow-hidden">
-                    <img :src="t.image" class="w-full h-full object-top opacity-50 group-hover/thumb:opacity-95 group-hover/thumb:scale-110 transition-all duration-1000"
-                         :style="{ filter: `hue-rotate(${userProfile.primaryColor === '#0A2647' ? '0deg' : userProfile.primaryColor === '#334155' ? '180deg' : userProfile.primaryColor === '#1A1A1A' ? '45deg' : '280deg'}) saturate(1.2)` }" />
+                    <img :src="t.image" class="w-full h-full object-top opacity-40 group-hover/thumb:opacity-90 group-hover/thumb:scale-110 transition-all duration-1000 ease-out"
+                         :style="{ filter: `hue-rotate(${userProfile.primaryColor === '#0A2647' ? '0deg' : '180deg'}) saturate(1.4)` }" />
                  </div>
                  
-                 <div class="w-full h-full absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
+                 <div class="w-full h-full absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
                  
-                 <div v-if="selectedTemplate === t.id" class="absolute top-4 right-4 p-2 rounded-full shadow-lg z-20 animate-in zoom-in duration-500"
+                 <div v-if="selectedTemplate === t.id" class="absolute top-5 right-5 p-2.5 rounded-full shadow-2xl z-20 animate-in zoom-in spin-in-90 duration-700"
                       :style="{ backgroundColor: userProfile.primaryColor }">
-                    <Check class="w-4 h-4 text-[#0A2647]" />
+                    <Check class="w-5 h-5 text-[#0A2647] stroke-[3px]" />
                  </div>
                  
-                 <div class="absolute bottom-4 flex flex-col items-center z-10 px-6 text-center">
-                    <span class="text-[11px] font-black text-white uppercase tracking-[0.1em] leading-tight mb-1 shadow-sm">{{ t.name }}</span>
-                    <span class="text-[9px] font-black uppercase tracking-[0.3em]"
+                 <div class="absolute bottom-5 flex flex-col items-center z-10 px-6 text-center">
+                    <span class="text-[12px] font-black text-white uppercase tracking-[0.1em] leading-tight mb-1.5 drop-shadow-lg">{{ t.name }}</span>
+                    <span class="text-[9px] font-black uppercase tracking-[0.4em] drop-shadow-md"
                           :style="{ color: userProfile.primaryColor }">{{ t.tag }}</span>
                  </div>
               </div>
@@ -79,51 +81,54 @@ const generateCoverLetter = () => emit('generateCoverLetter')
         </div>
 
         <!-- 2. HD LIVE VIEWPORT (PREMIUM DENSITY) -->
-        <div class="p-3.5 bg-white/[0.03] rounded-[2rem] border border-white/10 relative z-10 flex flex-col gap-2.5 transition-all hover:bg-white/[0.05]">
-           <div class="flex flex-col gap-3 px-1 mb-1">
+        <div class="p-4 bg-white/[0.04] backdrop-blur-3xl rounded-[2.5rem] border border-white/10 relative z-10 flex flex-col gap-4 transition-all hover:bg-white/[0.06] shadow-2xl">
+           <div class="flex flex-col gap-4 px-1">
               <div class="flex justify-between items-center">
                  <div class="flex flex-col">
-                    <span class="text-[9px] font-black text-[#C1A172] uppercase tracking-widest leading-none mb-1">HD Viewport</span>
-                    <span class="text-[10px] font-black text-white/40 uppercase tracking-tight">Active Rendering Engine</span>
+                    <span class="text-[10px] font-black text-[#73BBA3] uppercase tracking-[0.3em] leading-none mb-1.5 italic">High-Fidelity Engine</span>
+                    <span class="text-[11px] font-black text-white/50 uppercase tracking-tight">Active Neural Rendering</span>
                  </div>
-                 <div class="flex gap-2 items-center">
-                    <div class="w-2 h-2 rounded-full bg-[#73BBA3] animate-pulse shadow-[0_0_8px_#73BBA3]"></div>
-                    <span class="text-[8px] font-black text-[#73BBA3] uppercase tracking-widest">Live Rendering</span>
+                 <div class="flex gap-2.5 items-center px-3 py-1.5 bg-black/40 rounded-full border border-white/5">
+                    <div class="w-2.5 h-2.5 rounded-full bg-[#73BBA3] animate-pulse shadow-[0_0_12px_#73BBA3]"></div>
+                    <span class="text-[9px] font-black text-[#73BBA3] uppercase tracking-widest">Live Preview active</span>
                  </div>
               </div>
 
               <!-- NEURAL SEGMENT CONTROL (ULTRA-SLIM LUXURY) -->
-              <div class="relative w-[180px] h-9 bg-black/60 rounded-full border border-white/10 p-1 flex items-center shadow-2xl group/toggle overflow-hidden">
-                 <!-- NEURAL THUMB (THE KINETIC GLIDE) -->
-                 <div class="absolute h-7 rounded-full transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] shadow-[0_4px_12px_rgba(0,0,0,0.6)] flex items-center justify-center border border-white/20"
+              <div class="relative w-[200px] h-10 bg-black/70 rounded-full border border-white/10 p-1 flex items-center shadow-3xl group/toggle overflow-hidden">
+                 <div class="absolute h-8 rounded-full transition-all duration-700 ease-[cubic-bezier(0.34,1.56,0.64,1)] shadow-[0_8px_20px_rgba(0,0,0,0.8)] flex items-center justify-center border border-white/20"
                       :style="{ 
-                         left: previewMode === 'cv' ? '4px' : '90px', 
-                         width: '86px',
+                         left: previewMode === 'cv' ? '4px' : '100px', 
+                         width: '96px',
                          background: previewMode === 'cv' ? 'linear-gradient(135deg, #C1A172 0%, #8E7345 100%)' : 'linear-gradient(135deg, #73BBA3 0%, #4A8C77 100%)'
                       }">
-                    <!-- Specular Highlight -->
-                    <div class="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-full"></div>
+                    <div class="absolute inset-0 bg-gradient-to-b from-white/30 to-transparent pointer-events-none rounded-full"></div>
                  </div>
                  
                  <button @click="$emit('setPreviewMode', 'cv')"
-                         class="relative z-10 flex-1 h-full text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-500"
+                         class="relative z-10 flex-1 h-full text-[10px] font-black uppercase tracking-[0.3em] transition-all duration-500"
                          :class="previewMode === 'cv' ? 'text-[#0A2647]' : 'text-white/25 group-hover/toggle:text-white/50'">
                     CV
                  </button>
                  <button @click="$emit('setPreviewMode', 'letter')"
-                         class="relative z-10 flex-1 h-full text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-500"
+                         class="relative z-10 flex-1 h-full text-[10px] font-black uppercase tracking-[0.3em] transition-all duration-500"
                          :class="previewMode === 'letter' ? 'text-[#0A2647]' : 'text-white/25 group-hover/toggle:text-white/50'">
                     LETTER
                  </button>
               </div>
            </div>
 
-            <div class="w-full h-[320px] bg-white rounded-[1.5rem] border border-white/10 overflow-hidden shadow-2xl relative transition-all" id="live-viewport">
+            <div class="w-full h-[360px] bg-white rounded-[2rem] border-4 border-black/80 overflow-hidden shadow-3xl relative transition-all group/vp" id="live-viewport">
                <iframe v-if="viewportHtml" 
                        :srcdoc="viewportHtml"
                        class="w-[794px] h-[1123px] border-none absolute left-1/2 top-1 origin-top"
                        style="transform: translateX(-50%) scale(0.32);"
                        title="CV Specimen Preview"></iframe>
+               
+               <!-- Viewport HUD Overlay -->
+               <div class="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-1.5 bg-black/60 backdrop-blur-md rounded-full border border-white/10 opacity-0 group-hover/vp:opacity-100 transition-opacity duration-500">
+                  <span class="text-[8px] font-black text-white/50 uppercase tracking-[0.3em]">A4 Paper | 210mm x 297mm</span>
+               </div>
             </div>
         </div>
 

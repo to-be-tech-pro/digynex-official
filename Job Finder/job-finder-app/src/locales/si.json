@@ -1,0 +1,193 @@
+{
+  "header": {
+    "title": "DigyNex AI",
+    "subtitle": "Job Finder",
+    "welcome": "ආයුබෝවන්",
+    "progress": "ඔබේ ප්‍රගතිය පිළිබඳ දළ විශ්ලේෂණය",
+    "globalSuite": "Global Suite"
+  },
+  "auth": {
+    "signup": "එක්වන්න",
+    "login": "පිවිසෙන්න"
+  },
+  "stats": {
+    "activeApps": "ක්‍රියාකාරී අයදුම්පත්",
+    "aiMatches": "AI ගැලපීම්",
+    "skillScore": "නිපුණතා ලකුණු"
+  },
+  "actions": {
+    "sync": "Neural දත්ත සමමුහුර්ත වෙමින් පවතිී"
+  },
+  "sections": {
+    "tracking": "අයදුම්පත් ලුහුබැඳීම",
+    "analytics": "AI-Matching විශ්ලේෂණය"
+  },
+  "table": {
+    "company": "ආයතනය",
+    "role": "තනතුර",
+    "status": "තත්ත්වය",
+    "date": "දිනය"
+  },
+  "pipeline": {
+    "applied": "අයදුම් කරන ලදී",
+    "review": "පරීක්ෂා කෙරේ",
+    "interview": "සම්මුඛ පරීක්ෂණ",
+    "offer": "යෝජනා/Offers",
+    "rejected": "ප්‍රතික්ෂේපිත",
+    "archived": "සංරක්ෂිත"
+  },
+  "analytics": {
+    "topMatches": "හොඳම රැකියා ගැලපීම්",
+    "skillGap": "නිපුණතා පරතරය විශ්ලේෂණය",
+    "updateProfile": "නිපුණතා පැතිකඩ නැවත සකසන්න"
+  },
+  "apps": {
+    "title": "ක්‍රියාකාරී ඉදිරිපත් කිරීම්",
+    "searchPlaceholder": "නම, තනතුර හෝ දිනය අනුව සොයන්න...",
+    "filterAll": "සියල්ල",
+    "filterPending": "අපේක්ෂිත",
+    "filterInterview": "සම්මුඛ පරීක්ෂණ",
+    "filterOffers": "Offers",
+    "filterArchived": "සංරක්ෂිත",
+    "location": "ස්ථානය",
+    "appliedDate": "අයදුම් කළ දිනය",
+    "matchScore": "ගැලපුම් ලකුණු",
+    "viewDetails": "විස්තර බලන්න",
+    "loadMore": "තවත් අයදුම්පත් පෙන්වන්න"
+  },
+  "notifications": {
+    "newUpdate": "නව තත්ත්ව යාවත්කාලීනයක් ලැබුණි",
+    "viewAll": "සියලුම දැනුම්දීම් බලන්න"
+  },
+  "profile": {
+    "title": "විශේෂඥ පැතිකඩ",
+    "cvTitle": "CV කළමනාකරණය",
+    "cvUpload": "වෘත්තීය CV එකක් එක් කරන්න",
+    "viewCV": "වත්මන් CV එක බලන්න",
+    "interestsTitle": "වැඩිපුරම උනන්දුවක් දක්වන ක්ෂේත්‍ර 5",
+    "fieldsPlaceholder": "ක්ෂේත්‍රයක් එක් කරන්න...",
+    "save": "Global Profile සුරකින්න",
+    "tailor": "Global CV එක සකසන්න",
+    "viewMatch": "Job Pulse බලන්න"
+  },
+  "matches": {
+    "discoveryHub": "AI Discovery Hub",
+    "instantTailor": "ක්ෂණික සැකසුම",
+    "applicantsCount": "{count}+ අයදුම්කරුවන්",
+    "matchStrength": "ගැලපුම් ශක්තිය",
+    "posted": "පළ කළේ {time}"
+  },
+  "footer": {
+    "poweredBy": "පණගන්වන්නේ",
+    "engine": "Global Discovery Engine",
+    "version": "Master V6.0"
+  },
+  "nav": {
+    "dashboard": "පුවරුව",
+    "applications": "අයදුම්පත්",
+    "matches": "ගැලපීම්",
+    "profile": "පැතිකඩ",
+    "studio": "CV Studio",
+    "login": "පිවිසෙන්න",
+    "register": "එක්වන්න"
+  },
+  "governance": {
+    "general": "පොදු උපායමාර්ග",
+    "pricing": "මිල ගණන් සහ දායකත්ව",
+    "about": "DigyNex AI ගැන",
+    "t3f3": "සියල්ල භාවිතා කළ හැක. JSON අපනයනය + කවර ලිපි",
+    "t3promo": "කවර ලිපි සාදන්නා ඇතුළත් කර ඇත",
+    "legal": "නීතිමය සහ ආරක්ෂාව",
+    "privacy": "පුද්ගලිකත්ව ප්‍රතිපත්තිය",
+    "terms": "සේවා කොන්දේසි",
+    "security": "දත්ත ආරක්ෂාව සහ GDPR",
+    "refund": "මුදල් ආපසු ගෙවීමේ සහ බිල්පත් ප්‍රතිපත්තිය",
+    "support": "සහාය සහ උපකාරක මධ්‍යස්ථානය",
+    "logout": "පිටවෙන්න",
+    "adminTitle": "Neural Master Control",
+    "adminSub": "Global Governance ක්‍රියාකාරීයි",
+    "version": "Neural Sync",
+    "infoHub": "තොරතුරු මධ්‍යස්ථානය",
+    "privacySecurityTitle": "පුද්ගලිකත්වය සහ AI ආචාර ධර්ම (GDPR)"
+  },
+  "policies": {
+    "version": "v1.2.0-GP",
+    "lastUpdated": "2026 අප්‍රේල් 13",
+    "privacy": {
+      "title": "පුද්ගලිකත්ව ප්‍රතිපත්තිය",
+      "subtitle": "AI යුගයේදී ඔබේ පුද්ගලික දත්ත අප ආරක්ෂා කරන්නේ කෙසේද?",
+      "sections": [
+        { "id": "collection", "title": "තොරතුරු රැස් කිරීම", "content": "අපගේ neural ප්‍රශස්තකරණ එන්ජිම හරහා ඔබේ රැකියා සෙවුම් අත්දැකීම වැඩිදියුණු කිරීම සඳහා පමණක් ඔබේ නම, සම්බන්ධතා විස්තර, රැකියා ඉතිහාසය සහ කුසලතා ඇතුළත් වෘත්තීය දත්ත අප රැස් කරමු." },
+        { "id": "ai", "title": "AI දත්ත සැකසීම", "content": "ප්‍රධාන පද (keywords) සෑදීමට සහ CV ප්‍රශස්ත කිරීමට ඔබේ දත්ත OpenAI සහ Google Gemini API හරහා සකසනු ලැබේ. ඔබේ දත්ත කිසිවිටෙක තෙවන පාර්ශවීය AI මාදිලි පුහුණු කිරීමට භාවිතා නොකරන බවට අප දැඩි නීති ක්‍රියාත්මක කරමු." },
+        { "id": "sovereignty", "title": "දත්ත ස්වෛරීභාවය", "content": "පුද්ගලික තොරතුරු Supabase (EU මත පදනම් වූ) ආරක්ෂිතව ගබඩා කර ඇත. GDPR වලට අනුකූලව, ඔබේ දත්ත වලට ප්‍රවේශ වීමට, ඒවා නිවැරදි කිරීමට හෝ ස්ථිරවම මකා දැමීමට ඔබට අයිතිය ඇත." }
+      ]
+    },
+    "terms": {
+      "title": "සේවා කොන්දේසි",
+      "subtitle": "CareerNexus Neural Engine භාවිතා කිරීමේ නීති.",
+      "sections": [
+        { "id": "conduct", "title": "පරිශීලක හැසිරීම", "content": "පරිශීලකයින් නිවැරදි වෘත්තීය තොරතුරු සැපයිය යුතුය. AI සීමාවන් අවභාවිත කිරීම සඳහා ව්‍යාජ ගිණුම් සෑදීම දැඩි ලෙස තහනම් කර ඇති අතර එය නිරීක්ෂණය කරනු ලැබේ." },
+        { "id": "liability", "title": "AI වගකීම", "content": "අපගේ neural එන්ජිම ඉහළ මට්ටමේ ප්‍රශස්තකරණයක් ලබා දුන්නද, රැකියාවක් ලැබෙන බවට සහතිකයක් ලබා නොදේ. අවසාන දත්ත වල නිරවද්‍යතාවය පරිශීලකයාගේ වගකීමකි." },
+        { "id": "usage", "title": "සාධාරණ භාවිතය", "content": "ඔබේ දායකත්ව මට්ටම (Discovery, Pro, or Elite) මත පදනම්ව අයදුම්පත් සීමාවන් දැඩි ලෙස ක්‍රියාත්මක වේ. මෙම සීමාවන් මඟ හැරීමට උත්සාහ කිරීම ගිණුම අවලංගු කිරීමට හේතු විය හැක." }
+      ]
+    },
+    "security": {
+      "title": "දත්ත ආරක්ෂාව සහ GDPR",
+      "subtitle": "ඔබේ වෘත්තීය අනන්‍යතාවය සඳහා ඉහළම මට්ටමේ ආරක්ෂාව.",
+      "sections": [
+        { "id": "encryption", "title": "End-to-End Encryption", "content": "සියලුම දත්ත හුවමාරු SSL/TLS 1.3 එන්ක්‍රිප්ෂන් මඟින් ආරක්ෂා කර ඇත. සංවේදී දත්ත කර්මාන්ත මට්ටමේ AES-256 ප්‍රොටෝකෝල භාවිතයෙන් ගබඩා කර ඇත." },
+        { "id": "rls", "title": "Row-Level Security (RLS)", "content": "අපගේ දත්ත සමුදාය Postgres RLS භාවිතා කරයි. අනවසර පුද්ගලයින්ට ඔබේ පෞද්ගලික CV විස්තර බැලීමට නොහැකි බව මෙයින් සහතික කෙරේ." },
+        { "id": "purge", "title": "දත්ත මකා දැමීම", "content": "Emergency Sign Out & Purge සක්‍රිය කළ විට, මුල් PDF සහ AI මඟින් සාදන ලද මාදිලි ඇතුළුව සියලුම දත්ත අපගේ පැය 24 ක ගෝලීය සමමුහුර්ත චක්‍රය තුළ ස්ථිරවම මකා දැමෙනු ඇත." }
+      ]
+    },
+    "refund": {
+      "title": "මුදල් ආපසු ගෙවීමේ සහ බිල්පත් ප්‍රතිපත්තිය",
+      "subtitle": "අපගේ Premium සේවාවන් සඳහා විනිවිද පෙනෙන බිල්පත් කිරීම.",
+      "sections": [
+        { "id": "cycles", "title": "දායකත්ව චක්‍ර", "content": "Pro සහ Elite සැලසුම් මාසික හෝ වාර්ෂික පදනමින් ක්‍රියාත්මක වේ. ඕනෑම වේලාවක ඔබේ දායකත්වය අවලංගු කිරීමට හෝ වෙනස් කිරීමට ඔබට සම්පූර්ණ අයිතිය ඇත." },
+        { "id": "refunds", "title": "මුදල් ආපසු ගෙවීම", "content": "ඩිජිටල් සේවාවක ස්වභාවය නිසා සක්‍රිය දායකත්වයන් සඳහා මුදල් ආපසු නොගෙවනු ලැබේ. කෙසේ වෙතත්, තාක්ෂණික දෝෂයක් සිදුවී ඇති බව ඔප්පු වුවහොත් පැය 48ක් ඇතුළත ඒ පිළිබඳව ක්‍රියා කරනු ලැබේ." },
+        { "id": "transparency", "title": "මිල ගණන් වල විනිවිදභාවය", "content": "මිල ගණන් වල කිසියම් වෙනසක් සිදුවන්නේ නම්, අවම වශයෙන් දින 30 කට පෙර ඔබේ ලියාපදිංචි විද්‍යුත් තැපෑලට ඒ පිළිබඳව දැනුම් දෙනු ලැබේ." }
+      ]
+    }
+  },
+  "pricing": {
+    "title": "උපායමාර්ගික දායකත්ව එන්ජිම",
+    "tier1Name": "Discovery",
+    "tier1Sub": "නොමිලේ සමමුහුර්ත ප්‍රොටෝකෝලය",
+    "tier2Name": "Neural Pro",
+    "tier2Sub": "ගැඹුරු ප්‍රශස්තකරණය",
+    "tier3Name": "Neural Elite",
+    "tier3Sub": "විශිෂ්ට බුද්ධිය",
+    "priceMonthly": "මසකට",
+    "priceForever": "සදාකාලික",
+    "popular": "වඩාත් ජනප්‍රිය",
+    "t1f1": "සතියකට CV 2 ක් (උපරිම සති 2 ක් සඳහා පමණි)",
+    "t1f2": "Manual Keywords 5 ක්. AI Magic: අගුලු දමා ඇත 🔒",
+    "t1f3": "1 Standard සලකුණ. Basic PDF කියවනය",
+    "t2f1": "සතියකට CV 6 ක් (දිනකට උපරිම: 3/day)",
+    "t2f2": "AI Keywords 15 ක්. LinkedIn සමඟ සජීවී සමමුහුර්තකරණය",
+    "t2f3": "Elite සැකිලි 4 ක්. Pro වර්ණ සහ Neural මීටරය",
+    "t3f1": "අසීමිත ගෝලීය ප්‍රවේශය. උපරිම ප්‍රමුඛතාවය",
+    "t3f2": "අසීමිත Keywords. සම්පූර්ණ Neural යෝජනා පද්ධතිය",
+    "t3f3": "සියලුම Premium සැකිලි 6 + Custom Branding. කවර ලිපි සාදන්නා",
+    "t3promo": "Neural කවර ලිපි සාදන්නා ඇතුළත් කර ඇත"
+  },
+  "studio": {
+    "title": "CV Studio Hub",
+    "templateGallery": "සැකිලි ගැලරිය",
+    "eliteSelection": "Elite තේරීම",
+    "hdViewport": "HD Viewport",
+    "activeEngine": "සක්‍රිය විදැහුම්කරණ එන්ජිම",
+    "stealthKeywords": "AI Stealth Keywords",
+    "strategicEdge": "උපායමාර්ගික වාසිය",
+    "aiSuggester": "AI යෝජනාකරු/Suggester",
+    "flushAll": "සියල්ල මකන්න",
+    "aestheticPresets": "සෞන්දර්යාත්මක සැකසුම්",
+    "visualIdentity": "දෘශ්‍ය අනන්‍යතාවය",
+    "syncToMaster": "Studio, Master සමඟ සමමුහුර්ත කරන්න",
+    "coverLetterTitle": "කවර ලිපි Studio",
+    "careerDocumentEngine": "වෘත්තීය ලේඛන එන්ජිම",
+    "coverLetterPlaceholder": "AI ඔබේ වෘත්තීය මට්ටම විලේශනය කරන තෙක් රැඳී සිටින්න...",
+    "neuralContentSynthesis": "Neural අන්තර්ගත සංශ්ලේෂණය සක්‍රියයි"
+  }
+}

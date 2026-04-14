@@ -2,9 +2,13 @@
   "header": {
     "title": "DigyNex AI",
     "subtitle": "Job Finder",
-    "welcome": "Välkommen, Amila!",
+    "welcome": "Välkommen",
     "progress": "Din framstegsöversikt",
     "globalSuite": "Global Suite"
+  },
+  "auth": {
+    "signup": "Gå med",
+    "login": "Logga in"
   },
   "stats": {
     "activeApps": "Aktiva appar",
@@ -12,7 +16,7 @@
     "skillScore": "Färdighetsnivå"
   },
   "actions": {
-    "sync": "Synkroniserar AI-data"
+    "sync": "Synkroniserar neurala data"
   },
   "sections": {
     "tracking": "Ansökningsspårning",
@@ -25,33 +29,165 @@
     "date": "Datum"
   },
   "pipeline": {
-    "applied": "Sökte",
+    "applied": "Sökt",
     "review": "Granskning",
     "interview": "Intervju",
-    "offer": "Erbjudande"
+    "offer": "Erbjudande",
+    "rejected": "Nekad",
+    "archived": "Arkiverad"
   },
   "analytics": {
-    "topMatches": "Bästa Jobbmatchningar",
-    "skillGap": "Kompetensanalys"
+    "topMatches": "Bästa jobbmatchningar",
+    "skillGap": "Kompetensanalys",
+    "updateProfile": "Rekalibrera kompetensprofil"
+  },
+  "apps": {
+    "title": "Aktiva ansökningar",
+    "searchPlaceholder": "Sök på namn, roll eller datum...",
+    "filterAll": "Alla",
+    "filterPending": "Väntande",
+    "filterInterview": "Intervju",
+    "filterOffers": "Erbjudanden",
+    "filterArchived": "Arkiverad",
+    "location": "Plats",
+    "appliedDate": "Sökt den",
+    "matchScore": "Matchningspoäng",
+    "viewDetails": "Visa detaljer",
+    "loadMore": "Visa fler ansökningar"
+  },
+  "notifications": {
+    "newUpdate": "Ny statusuppdatering mottagen",
+    "viewAll": "Visa alla aviseringar"
   },
   "profile": {
     "title": "Expertprofil",
     "cvTitle": "CV-hantering",
-    "cvUpload": "Ladda upp CV",
+    "cvUpload": "Ladda upp professionellt CV",
     "viewCV": "Visa nuvarande CV",
     "interestsTitle": "Topp 5 intresseområden",
-    "fieldsPlaceholder": "Lägg till område...",
-    "save": "Spara profil"
+    "fieldsPlaceholder": "Lägg till ett område...",
+    "save": "Spara global profil",
+    "tailor": "Skräddarsy globalt CV",
+    "viewMatch": "Visa jobbpuls"
+  },
+  "matches": {
+    "discoveryHub": "AI Discovery Hub",
+    "instantTailor": "Instant Tailor",
+    "applicantsCount": "{count}+ Sökande",
+    "matchStrength": "Matchningsstyrka",
+    "posted": "Publicerad {time}"
   },
   "footer": {
     "poweredBy": "Drivs av",
-    "engine": "Global Upptäcktsmotor",
+    "engine": "Global upptäcktsmotor",
     "version": "Master V6.0"
   },
   "nav": {
     "dashboard": "Dashboard",
     "applications": "Ansökningar",
     "matches": "Matchningar",
-    "profile": "Profil"
+    "profile": "Profil",
+    "studio": "CV Studio",
+    "login": "Logga in",
+    "register": "Gå med"
+  },
+  "governance": {
+    "general": "Allmän strategi",
+    "pricing": "Prissättning & abonnemang",
+    "about": "Om DigyNex AI",
+    "t3f3": "Allt upplåsbart. JSON-export + Personliga brev",
+    "t3promo": "Generator för personligt brev ingår",
+    "legal": "Juridik & säkerhet",
+    "privacy": "Integritetspolicy",
+    "terms": "Användarvillkor",
+    "security": "Datasäkerhet & GDPR",
+    "refund": "Återbetalnings- & faktureringpolicy",
+    "support": "Support & hjälpcenter",
+    "logout": "Logga ut",
+    "adminTitle": "Neural Master Control",
+    "adminSub": "Global styrning aktiv",
+    "version": "Neural synkronisering",
+    "infoHub": "Informationshubb",
+    "privacySecurityTitle": "Integritet & AI-etik (GDPR)"
+  },
+  "policies": {
+    "version": "v1.2.0-GP",
+    "lastUpdated": "13 april 2026",
+    "privacy": {
+      "title": "Integritetspolicy",
+      "subtitle": "Hur vi skyddar dina personuppgifter i AI-eran.",
+      "sections": [
+        { "id": "collection", "title": "Insamling av information", "content": "Vi samlar in professionella data från ditt uppladdade CV, inklusive kontaktuppgifter, arbetshistorik och färdigheter, enbart för att förbättra din jobbsökarupplevelse via vår neurala optimeringsmotor." },
+        { "id": "ai", "title": "AI-databehandling", "content": "Dina data behandlas via OpenAI- och Google Gemini-API:er för att generera sökord och optimera ditt CV. Vi tillämpar strikta protokoll för att säkerställa att dina data aldrig används för att träna tredjeparts AI-modeller." },
+        { "id": "sovereignty", "title": "Datasuveränitet", "content": "Personlig information lagras säkert på Supabase (EU-baserade kluster). I strikt överensstämmelse med GDPR behåller du rätten att få tillgång till, korrigera eller begära permanent radering av dina data via verktyget för nödrensning." }
+      ]
+    },
+    "terms": {
+      "title": "Användarvillkor",
+      "subtitle": "Regler för användning av CareerNexus Neural Engine.",
+      "sections": [
+        { "id": "conduct", "title": "Användarbeteende", "content": "Användare måste tillhandahålla korrekt professionell information. Missbruk av plattformen eller skapande av flera falska konton för att utnyttja AI-gränser är strikt förbjudet och övervakas." },
+        { "id": "liability", "title": "AI-ansvar", "content": "Även om vår neurala motor ger optimering med hög kvalitet, garanterar CareerNexus inte anställning. Den slutliga noggrannheten och integriteten i det genererade resultatet förblir användarens eget ansvar." },
+        { "id": "usage", "title": "Rättvis användning", "content": "Ansökningsgränser tillämpas strikt baserat på din prenumerationsnivå (Discovery, Pro eller Elite). Medvetna tekniska försök att kringgå dessa gränser kommer att leda till omedelbar uppsägning av kontot." }
+      ]
+    },
+    "security": {
+      "title": "Datasäkerhet & GDPR",
+      "subtitle": "Säkerhet på kirurgisk nivå för din professionella identitet.",
+      "sections": [
+        { "id": "encryption", "title": "End-to-end-kryptering", "content": "Alla dataöverföringar säkras med SSL/TLS 1.3-kryptering. Känsliga profildata krypteras vid vila med AES-256-protokoll av branschstandard för att säkerställa skydd i flera lager." },
+        { "id": "rls", "title": "Row-Level Security (RLS)", "content": "Vår databasarkitektur använder Postgres RLS för att säkerställa att dina data är isolerade. Ingen annan enhet, inklusive obehörig supportpersonal, kan se dina privata CV-specimen." },
+        { "id": "purge", "title": "Zero-Retention radering", "content": "Vid utlösning av nödutloggning och rensning raderas alla associerade data, inklusive original-PDF-filer och AI-genererade modeller, permanent inom vår 24-timmars globala synkcykel." }
+      ]
+    },
+    "refund": {
+      "title": "Återbetalningspolicy",
+      "subtitle": "Transparent fakturering för våra Premium-sviter.",
+      "sections": [
+        { "id": "cycles", "title": "Prenumerationscykler", "content": "Pro- och Elite-planer fungerar med löpande månatlig eller årlig fakturering. Du behåller full kontroll för att avbryta eller nedgradera när som helst via Neural Master Control-porten." },
+        { "id": "refunds", "title": "Berättigande till återbetalning", "content": "Med tanke på den digitala karaktären hos AI-tokenkonsumtion erbjuder vi i regel inte återbetalningar för aktiva faktureringscykler. Bevisade tekniska fel kommer dock att rättas till om de rapporteras inom 48 timmar." },
+        { "id": "transparency", "title": "Pristransparens", "content": "Eventuella justeringar av våra prisstrukturer kommer att kommuniceras till din registrerade e-postadress minst 30 dagar innan nästa faktureringscykel träder i kraft." }
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Strategisk prenumerationsmotor",
+    "tier1Name": "Discovery",
+    "tier1Sub": "Gratis synkprotokoll",
+    "tier2Name": "Neural Pro",
+    "tier2Sub": "Djup optimering",
+    "tier3Name": "Neural Elite",
+    "tier3Sub": "Ultimat intelligens",
+    "priceMonthly": "Per månad",
+    "priceForever": "För alltid",
+    "popular": "Mest populär",
+    "t1f1": "2 CV per vecka (Max 2 veckor totalt)",
+    "t1f2": "5 manuella sökord. AI-magi: LÅST 🔒",
+    "t1f3": "1 standardmall. Enkel PDF-inläsning",
+    "t2f1": "6 CV per vecka (Daglig synkgräns: 3/dag)",
+    "t2f2": "15 AI-sökord. LinkedIn-synk i realtid",
+    "t2f3": "4 Elitmallar (Visuella & Minimalistiska). Pro-paletter & Neural Meter",
+    "t3f1": "Obegränsad global tillgång. Ingen strypning / Full prioritet",
+    "t3f2": "Obegränsat antal sökord. Komplett neural förslagsmotor",
+    "t3f3": "Alla 6 Premium-mallar + egen branding. Generator för personligt brev",
+    "t3promo": "Neural generator för personligt brev ingår"
+  },
+  "studio": {
+    "title": "CV Studio Hub",
+    "templateGallery": "Mallgalleri",
+    "eliteSelection": "Eliturval",
+    "hdViewport": "HD-viewport",
+    "activeEngine": "Aktiv renderingsmotor",
+    "stealthKeywords": "AI Stealth-sökord",
+    "strategicEdge": "Strategisk fördel",
+    "aiSuggester": "AI Suggester",
+    "flushAll": "Rensa allt",
+    "aestheticPresets": "Estetiska förinställningar",
+    "visualIdentity": "Visuell identitet",
+    "syncToMaster": "Synka Studio till Master",
+    "coverLetterTitle": "Studio för personligt brev",
+    "careerDocumentEngine": "Karriärdokumentmotor",
+    "coverLetterPlaceholder": "Vänta medan AI syntetiserar din professionella själ...",
+    "neuralContentSynthesis": "Neural innehållssyntes aktiv"
   }
 }

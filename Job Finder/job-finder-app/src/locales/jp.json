@@ -1,48 +1,193 @@
 {
   "header": {
-    "title": "キャリア加速",
-    "subtitle": "Engine",
-    "welcome": "アミラさん、ようこそ！",
-    "progress": "進捗概要",
-    "globalSuite": "Global Suite"
+    "title": "DigyNex AI",
+    "subtitle": "ジョブファインダー",
+    "welcome": "ようこそ",
+    "progress": "進捗状況の概要",
+    "globalSuite": "グローバルスイート"
+  },
+  "auth": {
+    "signup": "登録する",
+    "login": "ログイン"
   },
   "stats": {
-    "activeApps": "応募中",
-    "aiMatches": "AIマッチ",
+    "activeApps": "進行中の応募",
+    "aiMatches": "AIマッチング",
     "skillScore": "スキルスコア"
   },
   "actions": {
-    "sync": "AIデータを同期中"
+    "sync": "ニューラルデータを同期中"
   },
   "sections": {
     "tracking": "応募トラッキング",
     "analytics": "AIマッチング分析"
   },
   "table": {
-    "company": "企業",
+    "company": "会社名",
     "role": "職種",
     "status": "ステータス",
     "date": "日付"
   },
   "pipeline": {
     "applied": "応募済み",
-    "review": "審査中",
+    "review": "検討中",
     "interview": "面接",
-    "offer": "内定"
+    "offer": "オファー",
+    "rejected": "不採用",
+    "archived": "アーカイブ済み"
   },
   "analytics": {
-    "topMatches": "上位マッチング",
-    "skillGap": "スキルギャップ分析"
+    "topMatches": "最高のマッチング",
+    "skillGap": "スキルギャップ分析",
+    "updateProfile": "スキルプロファイルの再調整"
+  },
+  "apps": {
+    "title": "進行中の提出物",
+    "searchPlaceholder": "名前、職種、日付で検索...",
+    "filterAll": "すべて",
+    "filterPending": "保留中",
+    "filterInterview": "面接",
+    "filterOffers": "オファー",
+    "filterArchived": "アーカイブ済み",
+    "location": "場所",
+    "appliedDate": "応募日",
+    "matchScore": "マッチ度",
+    "viewDetails": "詳細を表示",
+    "loadMore": "さらに応募を表示"
+  },
+  "notifications": {
+    "newUpdate": "新しいステータス更新を受信",
+    "viewAll": "すべての通知を表示"
+  },
+  "profile": {
+    "title": "エキスパートプロファイル",
+    "cvTitle": "履歴書管理",
+    "cvUpload": "プロフェッショナル履歴書をアップロード",
+    "viewCV": "現在の履歴書を表示",
+    "interestsTitle": "上位5つの興味分野",
+    "fieldsPlaceholder": "分野を追加...",
+    "save": "グローバルプロファイルを保存",
+    "tailor": "グローバル履歴書をカスタマイズ",
+    "viewMatch": "ジョブパルスを表示"
+  },
+  "matches": {
+    "discoveryHub": "AIディスカバリーハブ",
+    "instantTailor": "インスタントカスタマイズ",
+    "applicantsCount": "{count}人以上の応募者",
+    "matchStrength": "マッチング強度",
+    "posted": "{time}前に投稿"
   },
   "footer": {
-    "poweredBy": "提供",
-    "engine": "グローバル発見エンジン",
+    "poweredBy": "Powered by",
+    "engine": "グローバルディスカバリーエンジン",
     "version": "Master V6.0"
   },
   "nav": {
     "dashboard": "ダッシュボード",
-    "applications": "応募",
+    "applications": "応募履歴",
     "matches": "マッチング",
-    "profile": "プロフィール"
+    "profile": "プロファイル",
+    "studio": "CVスタジオ",
+    "login": "ログイン",
+    "register": "登録する"
+  },
+  "governance": {
+    "general": "一般戦略",
+    "pricing": "料金とサブスクリプション",
+    "about": "DigyNex AIについて",
+    "t3f3": "全機能解放。JSONエクスポート + カバーレター",
+    "t3promo": "カバーレター生成機能付き",
+    "legal": "法務とセキュリティ",
+    "privacy": "プライバシーポリシー",
+    "terms": "利用規約",
+    "security": "データセキュリティとGDPR",
+    "refund": "返金および請求ポリシー",
+    "support": "サポートとヘルプセンター",
+    "logout": "ログアウト",
+    "adminTitle": "ニューラルマスターコントロール",
+    "adminSub": "グローバルガバナンス有効",
+    "version": "ニューラル同期",
+    "infoHub": "インフォハブ",
+    "privacySecurityTitle": "プライバシーとAI倫理 (GDPR)"
+  },
+  "policies": {
+    "version": "v1.2.0-GP",
+    "lastUpdated": "2026年4月13日",
+    "privacy": {
+      "title": "プライバシーポリシー",
+      "subtitle": "AI時代における個人情報の保護について",
+      "sections": [
+        { "id": "collection", "title": "情報の収集", "content": "ニューラル最適化エンジンを通じて就職活動体験を向上させるために、アップロードされた履歴書から連絡先、職歴、スキルなどの専門的データを収集します。" },
+        { "id": "ai", "title": "AIデータ処理", "content": "お客様のデータは、キーワード生成と履歴書最適化のためにOpenAIおよびGoogle Gemini APIを通じて処理されます。お客様のデータが第三者のAIモデルのトレーニングに使用されないよう、厳格なプロトコルを適用しています。" },
+        { "id": "sovereignty", "title": "データの主権", "content": "個人情報はSupabase（EUベースのクラスター）に安全に保存されます。GDPRに準拠し、お客様はデータへのアクセス、訂正、または恒久的な削除をリクエストする権利を保持します。" }
+      ]
+    },
+    "terms": {
+      "title": "利用規約",
+      "subtitle": "CareerNexusニューラルエンジンの利用ルール",
+      "sections": [
+        { "id": "conduct", "title": "ユーザーの行動", "content": "ユーザーは正確な専門情報を提供する必要があります。プラットフォームの悪用や、AI制限を回避するための複数の偽アカウントの作成は固く禁じられており、監視されています。" },
+        { "id": "liability", "title": "AI責任免責", "content": "当社のニューラルエンジンは高品質な最適化を提供しますが、就職を保証するものではありません。生成された出力の最終的な正確性と完全性はユーザーの責任となります。" },
+        { "id": "usage", "title": "フェアユース", "content": "応募制限は、サブスクリプションプラン（Discovery、Pro、またはElite）に基づいて厳格に適用されます。これらの制限を回避しようとする意図的な技術的試みは、アカウントの即時停止につながります。" }
+      ]
+    },
+    "security": {
+      "title": "データセキュリティとGDPR",
+      "subtitle": "プロフェッショナルなアイデンティティのための高度なセキュリティ",
+      "sections": [
+        { "id": "encryption", "title": "エンドツーエンド暗号化", "content": "すべてのデータ転送はSSL/TLS 1.3暗号化で保護されています。機密データは業界標準のAES-256プロトコルを使用して保存時に暗号化されます。" },
+        { "id": "rls", "title": "行レベルセキュリティ (RLS)", "content": "当社のデータベースアーキテクチャはPostgres RLSを使用して、お客様のデータが分離されていることを保証します。" },
+        { "id": "purge", "title": "保存期間ゼロの削除", "content": "緊急ログアウトとデータ削除がトリガーされると、元のPDFやAI生成モデルを含むすべての関連データは24時間以内に完全に消去されます。" }
+      ]
+    },
+    "refund": {
+      "title": "返金ポリシー",
+      "subtitle": "プレミアムスイートの透明な請求について",
+      "sections": [
+        { "id": "cycles", "title": "サブスクリプションサイクル", "content": "ProおよびEliteプランは、月次または年次の継続請求で運営されます。ニューラルマスターコントロールを通じていつでもキャンセルまたはダウングレードできます。" },
+        { "id": "refunds", "title": "返金の対象", "content": "AIトークンの消費というデジタルの性質上、通常は有効な請求サイクルに対する返金は提供していません。ただし、報告された技術的な不具合については対応いたします。" },
+        { "id": "transparency", "title": "料金の透明性", "content": "料金体系の調整については、次回の請求サイクルが適用される少なくとも30日前に登録済みのメールアドレスに通知されます。" }
+      ]
+    }
+  },
+  "pricing": {
+    "title": "戦略的サブスクリプションエンジン",
+    "tier1Name": "Discovery",
+    "tier1Sub": "無料同期プロトコル",
+    "tier2Name": "Neural Pro",
+    "tier2Sub": "ディープ最適化",
+    "tier3Name": "Neural Elite",
+    "tier3Sub": "究極のインテリジェンス",
+    "priceMonthly": "月額",
+    "priceForever": "買い切り",
+    "popular": "人気プラン",
+    "t1f1": "週2件の履歴書（合計最大2週間）",
+    "t1f2": "5つの手動キーワード。AIマジック：ロック中 🔒",
+    "t1f3": "標準テンプレート1種。基本的なPDF解析",
+    "t2f1": "週6件の履歴書（1日最大3件）",
+    "t2f2": "15のAIキーワード。LinkedInリアルタイム同期",
+    "t2f3": "エリートテンプレート4種。Proパレットとニューラルメーター",
+    "t3f1": "無制限のグローバルアクセス。完全優先対応",
+    "t3f2": "無制限のキーワード。完全なニューラル提案エンジン",
+    "t3f3": "全6種のプレミアムテンプレート + カスタムブランディング。カバーレター生成機能",
+    "t3promo": "ニューラルカバーレター生成機能付き"
+  },
+  "studio": {
+    "title": "CVスタジオハブ",
+    "templateGallery": "テンプレートギャラリー",
+    "eliteSelection": "エリートセレクション",
+    "hdViewport": "HDビューポート",
+    "activeEngine": "アクティブレンダリングエンジン",
+    "stealthKeywords": "AIステルスキーワード",
+    "strategicEdge": "戦略的優位性",
+    "aiSuggester": "AIサジェスター",
+    "flushAll": "すべてクリア",
+    "aestheticPresets": "デザインプリセット",
+    "visualIdentity": "ビジュアルアイデンティティ",
+    "syncToMaster": "スタジオをマスターに同期",
+    "coverLetterTitle": "カバーレタースタジオ",
+    "careerDocumentEngine": "キャリアドキュメントエンジン",
+    "coverLetterPlaceholder": "AIがあなたのプロフェッショナルな経歴を合成しています...",
+    "neuralContentSynthesis": "ニューラルコンテンツ合成有効"
   }
 }

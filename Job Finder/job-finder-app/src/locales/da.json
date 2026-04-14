@@ -1,22 +1,26 @@
 {
   "header": {
-    "title": "Karriereaccelerering",
-    "subtitle": "Engine",
-    "welcome": "Velkommen, Amila!",
-    "progress": "Din oversigt over fremskridt",
+    "title": "DigyNex AI",
+    "subtitle": "Jobfinder",
+    "welcome": "Velkommen",
+    "progress": "Oversigt over dine fremskridt",
     "globalSuite": "Global Suite"
   },
+  "auth": {
+    "signup": "Tilmeld dig",
+    "login": "Log ind"
+  },
   "stats": {
-    "activeApps": "Aktive apps",
-    "aiMatches": "AI matches",
-    "skillScore": "Skill score"
+    "activeApps": "Aktive ansøgninger",
+    "aiMatches": "AI-matches",
+    "skillScore": "Færdighedsscore"
   },
   "actions": {
-    "sync": "Synkroniserer AI-data"
+    "sync": "Synkroniserer neurale data"
   },
   "sections": {
     "tracking": "Ansøgningssporing",
-    "analytics": "AI-matching analyse"
+    "analytics": "AI-matchningsanalyse"
   },
   "table": {
     "company": "Virksomhed",
@@ -25,24 +29,165 @@
     "date": "Dato"
   },
   "pipeline": {
-    "applied": "Anvendt",
+    "applied": "Ansøgt",
     "review": "Gennemgang",
-    "interview": "Interview",
-    "offer": "Tilbud"
+    "interview": "Samtale",
+    "offer": "Tilbud",
+    "rejected": "Afvist",
+    "archived": "Arkiveret"
   },
   "analytics": {
-    "topMatches": "Top job matches",
-    "skillGap": "Færdighedsanalyse"
+    "topMatches": "Bedste jobmatches",
+    "skillGap": "Færdighedsgabsanalyse",
+    "updateProfile": "Rekalibrer færdighedsprofil"
+  },
+  "apps": {
+    "title": "Aktive indsendelser",
+    "searchPlaceholder": "Søg efter navn, rolle eller dato...",
+    "filterAll": "Alle",
+    "filterPending": "Afventer",
+    "filterInterview": "Samtale",
+    "filterOffers": "Tilbud",
+    "filterArchived": "Arkiveret",
+    "location": "Lokation",
+    "appliedDate": "Ansøgt den",
+    "matchScore": "Match-score",
+    "viewDetails": "Vis detaljer",
+    "loadMore": "Vis flere ansøgninger"
+  },
+  "notifications": {
+    "newUpdate": "Ny statusopdatering modtaget",
+    "viewAll": "Vis alle meddelelser"
+  },
+  "profile": {
+    "title": "Ekspertprofil",
+    "cvTitle": "CV-håndtering",
+    "cvUpload": "Upload professionelt CV",
+    "viewCV": "Vis nuværende CV",
+    "interestsTitle": "Top 5 interesseområder",
+    "fieldsPlaceholder": "Tilføj et område...",
+    "save": "Gem global profil",
+    "tailor": "Skræddersy globalt CV",
+    "viewMatch": "Vis jobpuls"
+  },
+  "matches": {
+    "discoveryHub": "AI Discovery Hub",
+    "instantTailor": "Øjeblikkelig tilpasning",
+    "applicantsCount": "{count}+ Ansøgere",
+    "matchStrength": "Match-styrke",
+    "posted": "Opslået {time}"
   },
   "footer": {
-    "poweredBy": "Leveret af",
-    "engine": "Global UpptDagelser",
+    "poweredBy": "Drevet af",
+    "engine": "Global opdagelsesmotor",
     "version": "Master V6.0"
   },
   "nav": {
     "dashboard": "Dashboard",
     "applications": "Ansøgninger",
-    "matches": "Match",
-    "profile": "Profil"
+    "matches": "Matches",
+    "profile": "Profil",
+    "studio": "CV Studio",
+    "login": "Log ind",
+    "register": "Tilmeld dig"
+  },
+  "governance": {
+    "general": "Generel strategi",
+    "pricing": "Priser & abonnement",
+    "about": "Om DigyNex AI",
+    "t3f3": "Alt kan låses op. JSON-eksport + ansøgningsbreve",
+    "t3promo": "Generator til ansøgningsbreve inkluderet",
+    "legal": "Juridisk & sikkerhed",
+    "privacy": "Privatlivspolitik",
+    "terms": "Servicevilkår",
+    "security": "Datasikkerhed & GDPR",
+    "refund": "Refusions- & faktureringspolitik",
+    "support": "Support & hjælpecenter",
+    "logout": "Log ud",
+    "adminTitle": "Neural Master Control",
+    "adminSub": "Global styring aktiv",
+    "version": "Neural synkronisering",
+    "infoHub": "Info Hub",
+    "privacySecurityTitle": "Privatliv & AI-etik (GDPR)"
+  },
+  "policies": {
+    "version": "v1.2.0-GP",
+    "lastUpdated": "13. april 2026",
+    "privacy": {
+      "title": "Privatlivspolitik",
+      "subtitle": "Hvordan vi beskytter dine personlige data i AI-æraen.",
+      "sections": [
+        { "id": "collection", "title": "Indsamling af information", "content": "Vi indsamler professionelle data fra dit uploadede CV, herunder kontaktoplysninger, arbejdshistorik og færdigheder, udelukkende for at forbedre din jobsøgningsoplevelse via vores neurale optimeringsmotor." },
+        { "id": "ai", "title": "AI-databehandling", "content": "Dine data behandles via OpenAI- og Google Gemini-API'er for at generere nøgleord und optimere CV'er. Vi håndhæver strenge protokoller for at sikre, at dine data aldrig bruges til at træne tredjeparts AI-modeller." },
+        { "id": "sovereignty", "title": "Datasuverænitet", "content": "Personlige oplysninger gemmes sikkert på Supabase (EU-baserede klynger). I nøje overensstemmelse med GDPR bevarer du retten til at få adgang til, rette eller anmode om permanent sletning af dine data." }
+      ]
+    },
+    "terms": {
+      "title": "Servicevilkår",
+      "subtitle": "Regler for brug af CareerNexus Neural Engine.",
+      "sections": [
+        { "id": "conduct", "title": "Brugeradfærd", "content": "Brugere skal give nøjagtige professionelle oplysninger. Misbrug af platformen eller oprettelse af flere falske konti for at udnytte AI-grænser er strengt forbudt." },
+        { "id": "liability", "title": "AI-ansvar", "content": "Selvom vores neurale motor giver høj kvalitet, garanterer CareerNexus ikke jobformidling. Den endelige nøjagtighed og integritet af det genererede output er brugerens eget ansvar." },
+        { "id": "usage", "title": "Rimelig brug", "content": "Ansøgningsgrænser håndhæves strengt baserat på dit abonnementsniveau (Discovery, Pro eller Elite). Bevidst teknisk misbrug vil resultere i øjeblikkelig opsigelse af kontoen." }
+      ]
+    },
+    "security": {
+      "title": "Datasikkerhed & GDPR",
+      "subtitle": "Sikkerhed på kirurgisk niveau for din professionelle identitet.",
+      "sections": [
+        { "id": "encryption", "title": "End-to-End-kryptering", "content": "Alle dataoverførsler er sikret med SSL/TLS 1.3-kryptering. Følsomme profildata krypteres med AES-256-protokoller af industristandard." },
+        { "id": "rls", "title": "Row-Level Security (RLS)", "content": "Vores databasestruktur bruger Postgres RLS til at sikre, at dine data er isolerede. Ingen andre enheder kan se dine private CV-data." },
+        { "id": "purge", "title": "Sletning uden opbevaring", "content": "Ved aktivering af nødudloggning og sletning slettes alle tilknyttede data permanent inden for vores 24-timers globale synkroniseringscyklus." }
+      ]
+    },
+    "refund": {
+      "title": "Refusionspolitik",
+      "subtitle": "Gennemsigtig fakturering for vores Premium-pakker.",
+      "sections": [
+        { "id": "cycles", "title": "Abonnementscyklusser", "content": "Pro- og Elite-planer fungerer med løbende månedlig eller årlig fakturering. Du har fuld kontrol over at annullere når som helst via Neural Master Control." },
+        { "id": "refunds", "title": "Refusionsberettigelse", "content": "På grund af den digitale karakter af AI-forbrug tilbyder vi normalt ikke refusion for aktive faktureringsperioder. Tekniske fejl vil dog blive rettet, hvis de rapporteres inden for 48 timer." },
+        { "id": "transparency", "title": "Prisgennemsigtighed", "content": "Eventuelle prisjusteringer vil blive kommunikeret til din e-mail mindst 30 dage før de træder i kraft." }
+      ]
+    }
+  },
+  "pricing": {
+    "title": "Strategisk abonnementsmotor",
+    "tier1Name": "Discovery",
+    "tier1Sub": "Gratis synkroniseringsprotokol",
+    "tier2Name": "Neural Pro",
+    "tier2Sub": "Dyb optimering",
+    "tier3Name": "Neural Elite",
+    "tier3Sub": "Ultimativ intelligens",
+    "priceMonthly": "Pr. måned",
+    "priceForever": "For altid",
+    "popular": "Mest populær",
+    "t1f1": "2 CV'er pr. uge (Maks. 2 uger i alt)",
+    "t1f2": "5 manuelle nøgleord. AI Magi: LÅST 🔒",
+    "t1f3": "1 standard skabelon. Grundlæggende PDF-behandling",
+    "t2f1": "6 CV'er pr. uge (Daglig grænse: 3/dag)",
+    "t2f2": "15 AI-nøgleord. LinkedIn-synkronisering i realtid",
+    "t2f3": "4 Eliteskabeloner (Visuelle & Minimalistiske). Pro-paletter & Neural Meter",
+    "t3f1": "Ubegrænset global adgang. Ingen begrænsning / Fuld prioritet",
+    "t3f2": "Ubegrænsede nøgleord. Komplet neural forslagsmotor",
+    "t3f3": "Alle 6 Premium skabeloner + personlig branding. Generator til ansøgningsbreve",
+    "t3promo": "Neural generator til ansøgningsbreve inkluderet"
+  },
+  "studio": {
+    "title": "CV Studio Hub",
+    "templateGallery": "Skabelongalleri",
+    "eliteSelection": "Eliteselektion",
+    "hdViewport": "HD Viewport",
+    "activeEngine": "Aktiv renderingsmotor",
+    "stealthKeywords": "AI Stealth-nøgleord",
+    "strategicEdge": "Strategisk fordel",
+    "aiSuggester": "AI Suggester",
+    "flushAll": "Ryd alt",
+    "aestheticPresets": "Æstetiske forudindstillinger",
+    "visualIdentity": "Visuel identitet",
+    "syncToMaster": "Synkroniser Studio til Master",
+    "coverLetterTitle": "Ansøgningsbrev Studio",
+    "careerDocumentEngine": "Karrieredokumentmotor",
+    "coverLetterPlaceholder": "Vent mens AI syntetiserer din professionelle sjæl...",
+    "neuralContentSynthesis": "Neural indholdssyntese aktiv"
   }
 }

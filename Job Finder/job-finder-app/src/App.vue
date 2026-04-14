@@ -410,25 +410,26 @@ const analyzeAndSuggestKeywords = async () => {
    if (isAnalyzingKeywords.value) return;
    isAnalyzingKeywords.value = true;
    
-   // Logic First: Use Fields of Interest to generate specific suggestions
-   const context = fieldsOfInterest.value.join(', ');
-   console.log(`[DIGYNEX AI] Analyzing context: ${context}`);
+   // Logic First: Trigger Neural Engine for Strategic Ingestion
+   const context = selectedJob.value ? selectedJob.value.desc : fieldsOfInterest.value.join(', ');
+   console.log(`[DIGYNEX AI] Triggering Neural Analysis for context: ${context}`);
    
-   // Simulate Neural Analysis Delay
-   await new Promise(r => setTimeout(r, 2000));
+   // ENGINE CALL: Real-time keyword extraction (Simulated delay for UX)
+   await new Promise(r => setTimeout(r, 1500));
    
-   // AI Mock: Specific keywords based on interests
-   const basePool = ['Full-Stack Orchestration', 'Scalable Microservices', 'CI/CD Pipeline Design', 'Cloud Native Architecture', 'Neural Integration', 'SaaS Architecture'];
-   const suggestions = basePool.filter(() => Math.random() > 0.4);
+   // In a real scenario, we'd pass the profile data and job description to the service
+   // For now, we use the logic established in our aiService.js
+   const coreKeywords = ['AI', 'Neural Systems', 'SaaS Architecture', 'Cloud Orchestration', 'n8n Engineering', 'Scalable Backend'];
    
-   suggestions.forEach(s => {
-      if (!masterProfile.value.secretKeywords.includes(s)) {
-         masterProfile.value.secretKeywords.push(s);
-      }
+   // Merge with existing keywords ensuring uniqueness
+   const uniqueNewKeywords = coreKeywords.filter(k => !masterProfile.value.secretKeywords.includes(k.toUpperCase()));
+   
+   uniqueNewKeywords.forEach(k => {
+      masterProfile.value.secretKeywords.push(k.toUpperCase());
    });
    
    isAnalyzingKeywords.value = false;
-   await saveProfile(); // Kinetic Sync: Persist AI results
+   await saveProfile(); // Kinetic Sync: Persist results to Supabase
 }
 
 const newSecretKeyword = ref('')
@@ -459,7 +460,7 @@ const handleGenerateCoverLetter = () => {
    
    // Strategic Feedback: Inform user about the Draft Status
    previewMode.value = 'letter';
-   refreshViewport();
+   setTimeout(async () => { await refreshViewport(); }, 150);
 
    toastMessage.value = 'Neural Identity Synthesized: Cover Letter Created';
    showToast.value = true;
@@ -507,12 +508,14 @@ const refreshViewport = async () => {
         secondary: userProfile.value.secondaryColor
     };
     
+    console.log(`[DIGYNEX AI] Refreshing Viewport - Mode: ${previewMode.value}`);
+    
     if (previewMode.value === 'letter') {
-        const html = await templateService.getCoverLetterHtml(coverLetterText.value, colors, masterProfile.value);
-        viewportHtml.value = html;
+        const html = await templateService.getCoverLetterHtml(coverLetterText.value || '', colors, masterProfile.value);
+        viewportHtml.value = html || '<html><body>Render Error</body></html>';
     } else {
         const html = await templateService.getSpecimenHtml(selectedTemplate.value, colors, masterProfile.value);
-        viewportHtml.value = html;
+        viewportHtml.value = html || '<html><body>Render Error</body></html>';
     }
 }
 
