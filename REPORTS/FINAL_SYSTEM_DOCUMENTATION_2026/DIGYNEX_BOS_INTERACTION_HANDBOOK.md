@@ -1,7 +1,20 @@
 # 👑 DIGYNEX 360: THE INTERACTIVE FUNCTIONAL HANDBOOK
 ## "The Anatomy of Operational Sovereignty" (2026 Edition)
 
-This handbook serves as the **Definitive Guide** for every interactive component deployed within the live DigyNex 360 Business Operating System (`bi-dashboard`). It maps every page, card, tab, and operational outcome based on the latest source code.
+This handbook serves as the **Definitive Guide** for every interactive component deployed within the live DigyNex 360 Business Operating System Ecosystem. It maps every page, card, tab, and operational outcome based on the latest source code.
+
+---
+
+## 🌎 MODULE 00: THE 360 INTELLIGENCE HUB (PUBLIC GATEWAY)
+_File: `360.html` | Context: High-Ticket Lead Acquisition & Showcase._
+
+### 📊 Public Dashboard Interaction
+| Component | Operational Logic | Executive Outcome |
+| :--- | :--- | :--- |
+| **"Explore" CTA Button** | Triggers the **Executive Lead Modal**. Prevents direct system entry until lead verification. | Captures high-intent business leads and indexes them in the CRM. |
+| **Feature Cards (Grid)** | Interactive `onclick` event triggering the **Technical Deep-Dive Modal**. | Proves complex technical value (Bulk Ingest, SCV Audit) without requiring a login. |
+| **Lead Capture Form** | 3-Field validation (Name, Email, Company) with automated redirect to `360.digynex.se` | Streamlines the transition from "Visitor" to "Authenticated Client". |
+| **Live Showcase Frame** | High-contrast YouTube/Video iframe integration. | Provides an instant visual demo of the BI suite's velocity. |
 
 ---
 

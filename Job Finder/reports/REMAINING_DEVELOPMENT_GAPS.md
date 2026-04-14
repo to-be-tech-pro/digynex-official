@@ -1,48 +1,33 @@
-# 🚀 DigyNex Job Finder: Development Gaps & Strategic Roadmap (2026)
+# DigyNex Job Finder: Surgical Development Gaps
+**Status:** Unified Strategic Roadmap (V8.5)
 
-This document tracks the delta between the current **Live Product** and the **Strategic Master Plan (Phase 3)**. It includes critical missing features and architectural suggestions for commercial readiness.
+This document tracks the critical deltas between the current modular UI and the high-fidelity commercial production target.
 
----
+## 1. Core JAAAAS Engine (High Priority)
+- [ ] **Neural CV Ingestion:** Replace current mock data in `aiService.js` with real OpenAI/n8n PDF parsing logic to extract Master JSON.
+- [ ] **ATS Stealth Mode:** Implement 1px black-line masking for special keywords within CV section separators to bypass top-tier ATS filters.
+- [ ] **Multilingual Engine:** Implement logic to auto-tailor CV professional experience into the target country's language (German/Swedish/etc).
+- [ ] **Gotenberg HD PDF:** Switch from basic HTML-to-Canvas to LaTeX-quality Gotenberg PDF generation.
 
-## 🏛️ 1. Phase 3: Administrative Command Center (Missing)
+## 2. Monetization & Guardrails
+- [ ] **Quota Engine Implementation:**
+    - [ ] **Tier 1 (Free):** 2 CVs/week. Lock after 14 days.
+    - [ ] **Tier 2 ($19):** 6 CVs/week (Max 3/day). 15 Keyword limit.
+    - [ ] **Tier 3 ($49):** Unlimited Access + Neural Suggester.
+- [ ] **Success Signal Counter:** Add the "Applications Left" visual counter to the `DashboardHub`.
+- [ ] **Stripe Transactional Bridge:** Connect the "Upgrade" signals to a live Stripe Checkout flow.
 
-Current Admin Hub is a basic user list. To reach the "Master Control" vision, we need:
-- [ ] **Financial Pulse**: Real-time Stripe revenue integration (Daily/Monthly/Annual).
-- [ ] **AI Cost Index**: Tracking OpenAI/Gemini token consumption per user to monitor "Abuse" and ensure profit margins.
-- [ ] **Growth Analytics**: Automated calculation of Onboarding vs Subscription Conversions.
-- [ ] **Maintenance Mode Switch**: A global toggle to secure the app during infrastructure updates.
-- [ ] **Direct n8n Triggering**: Manual button to re-trigger failed workflows for specific users.
+## 3. Admin Command Center
+- [ ] **Real-time Revenue Telemetry:** Track Stripe revenue directly in the Admin Hub.
+- [ ] **AI Cost Indexing:** Track OpenAI/Gemini token consumption per user to monitor margins.
+- [ ] **System Maintenance Toggle:** Implementation of the "Global Maintenance/Recalibration" lock switch.
+- [ ] **User Pagination:** High-scale user management UI.
 
----
-
-## 💰 2. Monetization & Quota Engine (Missing)
-
-The "Million-Dollar" ROI relies on subscription enforcement.
-- [ ] **Neural Quota Engine**: Hard logic to stop "Apply" or "Sync" actions once the weekly/daily limit is reached (Free/Pro/Elite).
-- [ ] **Dynamic Queueing**: "Sync" button should morph into "Queue for Next Reset" UI state when the limit is hit.
-- [ ] **Stripe Checkpoint**: Secure checkout flow for Tier upgrades (Monthly/Annual).
-- [ ] **Slot-Based Access**: Locking the "Discovery Hub" to show only 3/10/Unlimited jobs based on the user's tier.
-
----
-
-## 🤖 3. Engine & UX Interactions (Missing/Mocked)
-
-- [ ] **AI Output Localization**: Demonstrating the AI's ability to generate CVs in non-English languages (German/Swedish) based on the target job.
-- [ ] **Headless Execution (JAAAAS)**: Bridging the "Approve" signal to an actual Puppeteer bot that fills the forms (Final Phase of n8n).
-- [ ] **Cover Letter Deep-Tailoring**: Connecting the "Master Draft" to n8n for an "Elite" polish rather than a frontend template.
+## 4. Compliance & Stability
+- [ ] **Legal Document Content:** Replace placeholders with professional English for Privacy, Terms, and Refund policies.
+- [ ] **GDPR Auto-Expiry Workflow:** n8n logic to purge user assets/PDFs from the server after 14 days of inactivity.
+- [ ] **Robust Error States:** "Neural Sync Failed" UI alerts for API/n8n connection drops.
 
 ---
-
-## 🧠 Antigravity's Strategic Suggestions
-
-1.  **Immediate Priority: The Admin Dashboard upgrade.** 
-    *   *Why?* Without seeing "Cost vs Revenue" in real-time, scaling the app is risky. We need to see how much we pay OpenAI vs what users pay us.
-2.  **Middle-Term Priority: Quota Locking.**
-    *   *Why?* You need to start pushing users to "Elite" status early. If the app is 100% free with no limits, it's just a tool, not a business.
-3.  **Long-Term Priority: The Auto-Apply Bot.**
-    *   *Why?* This is the "Beast Mode" feature. It’s what makes DigyNex unique in the global market.
-
----
-
-**Status**: 90% UI/Logic Complete | 10% Core Commercialization Remaining.
-© 2026 DigyNex Global | Strategic Documentation.
+**Last Updated:** 2026-04-14
+**Authority:** DigyNex Strategic Oversight

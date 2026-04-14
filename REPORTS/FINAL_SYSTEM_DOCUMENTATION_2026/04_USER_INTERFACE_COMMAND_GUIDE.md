@@ -1,6 +1,11 @@
 # 🗺️ 04: USER INTERFACE COMMAND GUIDE
 ## Navigating the DigyNex 360 Ecosystem
 
+### 🌎 0. PUBLIC INTELLIGENCE GATEWAY (360 HUB)
+*   **The Executive Landing (`360.html`):** The starting point for all new enterprise partners.
+*   **"Explore" Action:** Triggers the **Executive Lead Gateway**. You must provide business credentials here to request a dedicated system seat.
+*   **Feature Card Interaction:** Click any Capability Card (e.g., Bulk Ingest) to launch a **Technical Deep-Dive Modal**. Use the "Launch Module" button inside any modal after lead verification to enter the production system.
+
 ### 🔑 1. THE MAIN DASHBOARD (Control Center)
 *   **Strategic Hub Tab:** This is your home screen. It shows the high-level financial health of the company (Revenue vs. Profit).
 *   **Financial Pulse View:** Click this to see detailed charts of operational costs and cash-flow trends.
