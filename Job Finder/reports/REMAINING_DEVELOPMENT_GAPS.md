@@ -1,33 +1,13 @@
-# DigyNex Job Finder: Surgical Development Gaps
-**Status:** Unified Strategic Roadmap (V8.5)
+# DigyNex Job Finder: Development Gaps (Master Sync V10.0)
+**Consolidated via ULTIMATE_UNIFIED_BLUEPRINT.md**
 
-This document tracks the critical deltas between the current modular UI and the high-fidelity commercial production target.
+Please refer to [ULTIMATE_UNIFIED_BLUEPRINT.md](file:///d:/Amila/With%20Antigravity/DigyNex-Official/Job%20Finder/reports/ULTIMATE_UNIFIED_BLUEPRINT.md) for the full technical and strategic details.
 
-## 1. Core JAAAAS Engine (High Priority)
-- [ ] **Neural CV Ingestion:** Replace current mock data in `aiService.js` with real OpenAI/n8n PDF parsing logic to extract Master JSON.
-- [ ] **ATS Stealth Mode:** Implement 1px black-line masking for special keywords within CV section separators to bypass top-tier ATS filters.
-- [ ] **Multilingual Engine:** Implement logic to auto-tailor CV professional experience into the target country's language (German/Swedish/etc).
-- [ ] **Gotenberg HD PDF:** Switch from basic HTML-to-Canvas to LaTeX-quality Gotenberg PDF generation.
+## Quick Summary of Critical Gaps:
+1. **Core JAAAAS Engine**: ATS Stealth Masking, Neural Ingestion, and Multilingual CV logic are currently **Mocked**.
+2. **Monetization**: Tier-based color/keyword locking (plan_type 0, 1, 2) is **Incomplete**.
+3. **n8n Ecosystem**: All 7 core backend workflows need final production injection.
+4. **Admin Hub**: Revenue and Token Cost Indexing are **Missing**.
+5. **Compliance**: GDPR 14-day purge and Legal English content are **Missing**.
 
-## 2. Monetization & Guardrails
-- [ ] **Quota Engine Implementation:**
-    - [ ] **Tier 1 (Free):** 2 CVs/week. Lock after 14 days.
-    - [ ] **Tier 2 ($19):** 6 CVs/week (Max 3/day). 15 Keyword limit.
-    - [ ] **Tier 3 ($49):** Unlimited Access + Neural Suggester.
-- [ ] **Success Signal Counter:** Add the "Applications Left" visual counter to the `DashboardHub`.
-- [ ] **Stripe Transactional Bridge:** Connect the "Upgrade" signals to a live Stripe Checkout flow.
-
-## 3. Admin Command Center
-- [ ] **Real-time Revenue Telemetry:** Track Stripe revenue directly in the Admin Hub.
-- [ ] **AI Cost Indexing:** Track OpenAI/Gemini token consumption per user to monitor margins.
-- [ ] **System Maintenance Toggle:** Implementation of the "Global Maintenance/Recalibration" lock switch.
-- [ ] **User Pagination:** High-scale user management UI.
-
-## 4. Compliance & Stability
-- [ ] **Legal Document Content:** Replace placeholders with professional English for Privacy, Terms, and Refund policies.
-- [ ] **GDPR Auto-Expiry Workflow:** n8n logic to purge user assets/PDFs from the server after 14 days of inactivity.
-- [ ] **Robust Error States:** "Neural Sync Failed" UI alerts for API/n8n connection drops.
-
----
-**Last Updated:** 2026-04-14
-**Authority:** DigyNex Strategic Oversight
+**Status:** Ready for Surgical Implementation.
