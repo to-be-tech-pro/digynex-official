@@ -131,5 +131,116 @@ export const templateService = {
           </div>
        `;
     }
+  },
+
+  /**
+   * Cover Letter Specimen Engine: Generates a professional document preview.
+   * Matches the user's visual identity for maximum brand coherence.
+   */
+  async getCoverLetterHtml(text, colors, profile) {
+    const primary = colors.primary || '#0A2647';
+    const name = profile.basic?.fullName || 'Professional Candidate';
+    const email = profile.basic?.email || '';
+    const phone = profile.basic?.phone || '';
+    const location = profile.basic?.location || '';
+    const date = new Date().toLocaleDateString('en-GB', { day: 'numeric', month: 'long', year: 'numeric' });
+
+    return `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+        <style>
+          :root {
+            --primary: ${primary};
+          }
+          body {
+            margin: 0;
+            padding: 40px;
+            font-family: 'Inter', sans-serif;
+            color: #1e293b;
+            background: #f1f5f9;
+            display: flex;
+            justify-content: center;
+          }
+          .page {
+            width: 210mm;
+            min-height: 297mm;
+            background: white;
+            padding: 25mm 30mm;
+            box-sizing: border-box;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+          }
+          .header {
+            border-bottom: 2px solid var(--primary);
+            padding-bottom: 20px;
+            margin-bottom: 40px;
+            text-align: left;
+          }
+          .name {
+            font-family: 'Playfair Display', serif;
+            font-size: 18pt;
+            color: var(--primary);
+            margin: 0;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-weight: 700;
+          }
+          .contact {
+            font-size: 8.5pt;
+            color: #64748b;
+            margin-top: 8px;
+            display: flex;
+            gap: 15px;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+          }
+          .date {
+            margin-bottom: 35px;
+            font-weight: 600;
+            color: #475569;
+            font-size: 10pt;
+          }
+          .content {
+            white-space: pre-line;
+            color: #334155;
+            text-align: justify;
+            font-size: 10.5pt;
+            line-height: 1.8;
+          }
+          .footer {
+            margin-top: 60px;
+          }
+          .sign-off {
+            margin-top: 10px;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+            font-size: 12pt;
+            color: var(--primary);
+            text-transform: uppercase;
+          }
+        </style>
+      </head>
+      <body>
+        <div class="page">
+          <div class="header">
+            <h1 class="name">${name}</h1>
+            <div class="contact">
+              ${email ? `<span>${email}</span>` : ''}
+              ${phone ? `<span>${phone}</span>` : ''}
+              ${location ? `<span>${location}</span>` : ''}
+            </div>
+          </div>
+          <div class="date">${date}</div>
+          <div class="content">${text || 'Waiting for AI to synthesize your professional profile into a cover letter specimen...'}</div>
+          <div class="footer">
+            <div>Sincerely,</div>
+            <div class="sign-off">${name}</div>
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
   }
 };

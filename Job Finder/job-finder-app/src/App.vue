@@ -58,6 +58,8 @@ const searchQuery = ref('') // Mission-critical state for global filtering
 
 // --- GLOBAL REACTIVE STATE (Neural Core) ---
 const activeTab = ref('dashboard')
+const coverLetterText = ref('')
+const previewMode = ref('cv')
 const selectedTemplate = ref(1) // Default to Classic Elite T1
 const userProfile = ref({
     email: '',
@@ -287,7 +289,8 @@ const saveProfile = async () => {
         secretKeywords: masterProfile.value.secretKeywords,
         resumeData: masterProfile.value, // NEURAL MASTER SYNC
         uploadedCvName: uploadedFileName.value,
-        name: userProfile.value.name
+        name: userProfile.value.name,
+        coverLetterText: coverLetterText.value
       });
       
       if (error) throw error;
@@ -429,6 +432,56 @@ const addSecretKeyword = async () => {
    }
 }
 
+
+const handleGenerateCoverLetter = () => {
+   // NEURAL ENGINE: Authenticated Synthesis Only (Strict Rule Alignment)
+   if (!isAuthenticated.value) {
+      handleDashboardAction('login');
+      return;
+   }
+
+   const text = profileService.generateCoverLetter({
+      name: userProfile.value.name,
+      resume_data: masterProfile.value,
+      secret_keywords: masterProfile.value.secretKeywords,
+      job: selectedJob.value // CROSS-POLLINATION: Tailor letter to the currently active job detail
+   });
+   
+   coverLetterText.value = text;
+   
+   // Strategic Feedback: Inform user about the Draft Status
+   previewMode.value = 'letter';
+   refreshViewport();
+
+   toastMessage.value = 'Neural Identity Synthesized: Cover Letter Created';
+   showToast.value = true;
+   setTimeout(() => { showToast.value = false }, 3000);
+   
+   // Auto-Sync to Database to ensure persistence
+   handleUpdateCoverLetter(text);
+}
+
+const handleUpdateCoverLetter = async (text) => {
+   if (!isAuthenticated.value) return;
+   coverLetterText.value = text;
+   isSavingProfile.value = true;
+   try {
+      const user = await authService.getUser();
+      if (user) {
+         const { error } = await profileService.updateCoverLetter(user.id, text);
+         if (error) throw error;
+         toastMessage.value = 'Strategic Cover Letter Synced';
+         showToast.value = true;
+      }
+   } catch (err) {
+      console.error('Failed to sync cover letter:', err);
+      toastMessage.value = 'Sync Error: Connection Unstable';
+      showToast.value = true;
+   } finally {
+      isSavingProfile.value = false;
+      setTimeout(() => { showToast.value = false }, 3000);
+   }
+}
 const isCompilingLatex = ref(false)
 const isManualFormOpen = ref(false)
 const isCVPreviewOpen = ref(false)
@@ -445,11 +498,17 @@ const refreshViewport = async () => {
         primary: userProfile.value.primaryColor,
         secondary: userProfile.value.secondaryColor
     };
-    const html = await templateService.getSpecimenHtml(selectedTemplate.value, colors, masterProfile.value);
-    viewportHtml.value = html;
+    
+    if (previewMode.value === 'letter') {
+        const html = await templateService.getCoverLetterHtml(coverLetterText.value, colors, masterProfile.value);
+        viewportHtml.value = html;
+    } else {
+        const html = await templateService.getSpecimenHtml(selectedTemplate.value, colors, masterProfile.value);
+        viewportHtml.value = html;
+    }
 }
 
-watch([selectedTemplate, () => userProfile.value.primaryColor, () => userProfile.value.secondaryColor], () => {
+watch([selectedTemplate, previewMode, coverLetterText, () => userProfile.value.primaryColor, () => userProfile.value.secondaryColor], () => {
     refreshViewport();
 })
 
@@ -651,6 +710,9 @@ const fetchUserProfile = async () => {
             if (profile.resume_data && Object.keys(profile.resume_data).length > 0) {
                 // NEURAL RE-HYDRATION: Restoring the full professional core
                 masterProfile.value = { ...masterProfile.value, ...profile.resume_data };
+            }
+            if (profile.cover_letter) {
+                coverLetterText.value = profile.cover_letter;
             }
             if (profile.language_preference) {
                 currentLang.value = profile.language_preference;
@@ -991,6 +1053,11 @@ const handleNotificationClick = (notif) => {
        <!-- CV STUDIO HUB (MAGIC CENTER) -->
        <StudioHub 
           v-else-if="activeTab === 'studio'"
+          :coverLetterText="coverLetterText"
+          :previewMode="previewMode"
+          @generateCoverLetter="handleGenerateCoverLetter"
+          @updateCoverLetter="handleUpdateCoverLetter"
+          @setPreviewMode="(mode) => previewMode = mode"
           v-model:selectedTemplate="selectedTemplate"
           :t="t"
           :userProfile="userProfile"

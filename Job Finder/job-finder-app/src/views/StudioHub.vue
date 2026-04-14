@@ -14,11 +14,13 @@ const props = defineProps({
   isAnalyzingKeywords: Boolean,
   isSavingProfile: Boolean,
   isBrandingSyncing: Boolean,
-  colorPresets: Array
+  colorPresets: Array,
+  coverLetterText: String,
+  previewMode: String
 })
 
 const emit = defineEmits([
-  'update:selectedTemplate', 'selectTemplate', 'removeSecretKeyword', 'addSecretKeyword', 'analyzeKeywords', 'selectPreset', 'saveProfile', 'handleAction'
+  'update:selectedTemplate', 'selectTemplate', 'removeSecretKeyword', 'addSecretKeyword', 'analyzeKeywords', 'selectPreset', 'saveProfile', 'handleAction', 'generateCoverLetter', 'updateCoverLetter', 'setPreviewMode'
 ])
 
 const selectTemplate = (t) => emit('selectTemplate', t)
@@ -29,6 +31,7 @@ const selectPreset = (p) => emit('selectPreset', p)
 const saveProfile = () => emit('saveProfile')
 const handleDashboardAction = (action) => emit('handleAction', action)
 const updateSelectedTemplate = (id) => emit('update:selectedTemplate', id)
+const generateCoverLetter = () => emit('generateCoverLetter')
 </script>
 
 <template>
@@ -77,17 +80,44 @@ const updateSelectedTemplate = (id) => emit('update:selectedTemplate', id)
 
         <!-- 2. HD LIVE VIEWPORT (PREMIUM DENSITY) -->
         <div class="p-3.5 bg-white/[0.03] rounded-[2rem] border border-white/10 relative z-10 flex flex-col gap-2.5 transition-all hover:bg-white/[0.05]">
-           <div class="flex justify-between items-center px-1">
-              <div class="flex flex-col">
-                 <span class="text-[9px] font-black text-[#C1A172] uppercase tracking-widest leading-none mb-1">HD Viewport</span>
-                 <span class="text-[10px] font-black text-white/40 uppercase tracking-tight">Active Rendering Engine</span>
+           <div class="flex flex-col gap-3 px-1 mb-1">
+              <div class="flex justify-between items-center">
+                 <div class="flex flex-col">
+                    <span class="text-[9px] font-black text-[#C1A172] uppercase tracking-widest leading-none mb-1">HD Viewport</span>
+                    <span class="text-[10px] font-black text-white/40 uppercase tracking-tight">Active Rendering Engine</span>
+                 </div>
+                 <div class="flex gap-2 items-center">
+                    <div class="w-2 h-2 rounded-full bg-[#73BBA3] animate-pulse shadow-[0_0_8px_#73BBA3]"></div>
+                    <span class="text-[8px] font-black text-[#73BBA3] uppercase tracking-widest">Live Rendering</span>
+                 </div>
               </div>
-              <div class="flex gap-2 items-center">
-                 <div class="w-2 h-2 rounded-full bg-[#73BBA3] animate-pulse shadow-[0_0_8px_#73BBA3]"></div>
-                 <span class="text-[8px] font-black text-[#73BBA3] uppercase tracking-widest">Live Rendering</span>
+
+              <!-- NEURAL SEGMENT CONTROL (ULTRA-SLIM LUXURY) -->
+              <div class="relative w-[180px] h-9 bg-black/60 rounded-full border border-white/10 p-1 flex items-center shadow-2xl group/toggle overflow-hidden">
+                 <!-- NEURAL THUMB (THE KINETIC GLIDE) -->
+                 <div class="absolute h-7 rounded-full transition-all duration-500 ease-[cubic-bezier(0.34,1.56,0.64,1)] shadow-[0_4px_12px_rgba(0,0,0,0.6)] flex items-center justify-center border border-white/20"
+                      :style="{ 
+                         left: previewMode === 'cv' ? '4px' : '90px', 
+                         width: '86px',
+                         background: previewMode === 'cv' ? 'linear-gradient(135deg, #C1A172 0%, #8E7345 100%)' : 'linear-gradient(135deg, #73BBA3 0%, #4A8C77 100%)'
+                      }">
+                    <!-- Specular Highlight -->
+                    <div class="absolute inset-0 bg-gradient-to-b from-white/20 to-transparent pointer-events-none rounded-full"></div>
+                 </div>
+                 
+                 <button @click="$emit('setPreviewMode', 'cv')"
+                         class="relative z-10 flex-1 h-full text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-500"
+                         :class="previewMode === 'cv' ? 'text-[#0A2647]' : 'text-white/25 group-hover/toggle:text-white/50'">
+                    CV
+                 </button>
+                 <button @click="$emit('setPreviewMode', 'letter')"
+                         class="relative z-10 flex-1 h-full text-[9px] font-black uppercase tracking-[0.2em] transition-all duration-500"
+                         :class="previewMode === 'letter' ? 'text-[#0A2647]' : 'text-white/25 group-hover/toggle:text-white/50'">
+                    LETTER
+                 </button>
               </div>
            </div>
-           
+
             <div class="w-full h-[320px] bg-white rounded-[1.5rem] border border-white/10 overflow-hidden shadow-2xl relative transition-all" id="live-viewport">
                <iframe v-if="viewportHtml" 
                        :srcdoc="viewportHtml"
@@ -106,17 +136,17 @@ const updateSelectedTemplate = (id) => emit('update:selectedTemplate', id)
                     <h3 class="text-[14px] font-black text-white tracking-tight uppercase">AI Stealth Keywords</h3>
                  </div>
                  <div class="flex items-center gap-2">
-                    <span class="text-[8px] font-black text-blue-400/50 uppercase tracking-widest">{{ masterProfile.secretKeywords?.length || 0 }} Active</span>
-                    <Lock class="w-3.5 h-3.5 text-white/30" />
+                    <span class="text-[8px] font-black text-blue-400/80 uppercase tracking-widest">{{ masterProfile.secretKeywords?.length || 0 }} Active</span>
+                    <Lock class="w-3.5 h-3.5 text-white/50" />
                  </div>
               </div>
               
               <!-- Active Keyword Chips (High-Density) -->
               <div v-if="masterProfile.secretKeywords?.length" class="flex flex-wrap gap-1.5 mb-4">
                  <div v-for="k in masterProfile.secretKeywords" :key="k" 
-                      class="px-3 py-1.5 bg-white/5 border border-white/10 rounded-xl flex items-center gap-2 group/k cursor-pointer hover:bg-white/10 transition-all shadow-sm">
-                    <span class="text-[9px] font-black text-white/70">{{ k }}</span>
-                    <X @click="removeSecretKeyword(k)" class="w-2.5 h-2.5 text-white/20 hover:text-red-400 transition-colors" />
+                      class="px-3 py-1.5 bg-white/10 border border-white/20 rounded-xl flex items-center gap-2 group/k cursor-pointer hover:bg-white/20 transition-all shadow-sm">
+                    <span class="text-[9px] font-black text-white/90">{{ k }}</span>
+                    <X @click="removeSecretKeyword(k)" class="w-2.5 h-2.5 text-white/40 hover:text-red-400 transition-colors" />
                  </div>
               </div>
               
@@ -179,6 +209,49 @@ const updateSelectedTemplate = (id) => emit('update:selectedTemplate', id)
                  </div>
               </div>
            </div>
+        </div>
+
+        <!-- 5. COVER LETTER ENGINE (ELITE COMPACT HUB) -->
+        <div class="bg-gradient-to-br from-[#1E3A8A]/15 to-black/40 rounded-[2rem] p-4 border border-white/5 relative overflow-hidden group shadow-2xl transition-all hover:bg-white/[0.04]">
+           <div class="flex justify-between items-center mb-2.5">
+               <div class="flex flex-col">
+                  <span class="text-[8px] font-black text-[#73BBA3] uppercase tracking-[0.2em] mb-0.5">Career Documents</span>
+                  <h3 class="text-[12px] font-black text-white tracking-tight uppercase">Letter Studio</h3>
+               </div>
+               <div class="flex items-center gap-2">
+                  <button @click="generateCoverLetter" 
+                          class="p-2 bg-[#73BBA3]/10 hover:bg-[#73BBA3]/20 rounded-xl transition-all active:scale-95 group/gen border border-[#73BBA3]/20 flex items-center gap-1.5 shadow-[0_0_15px_rgba(115,187,163,0.1)]">
+                     <Sparkles class="w-3.5 h-3.5 text-[#73BBA3] group-hover/gen:animate-pulse" />
+                     <span class="text-[8px] font-black text-white/80 uppercase">AI RE-GEN</span>
+                  </button>
+               </div>
+            </div>
+           
+           <textarea 
+              :value="coverLetterText" 
+              @input="e => emit('updateCoverLetter', e.target.value)"
+              placeholder="Click AI RE-GEN to synthesize your strategy..."
+              class="w-full h-32 bg-black/20 border border-white/5 rounded-2xl p-3.5 text-[11px] text-white/90 placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-[#73BBA3]/40 transition-all no-scrollbar resize-none font-jakarta italic leading-relaxed"
+           ></textarea>
+           
+           <div class="mt-3 flex flex-col gap-2.5">
+               <div class="flex items-center justify-between px-1">
+                  <span class="text-[7.5px] font-black text-white/30 uppercase tracking-[0.2em] italic">Neural Engine Sync Active</span>
+                  <div class="flex items-center gap-1.5">
+                     <div class="w-1 h-1 rounded-full bg-[#73BBA3]/40 animate-pulse"></div>
+                     <Zap class="w-3 h-3 text-[#73BBA3]/60" />
+                  </div>
+               </div>
+               
+               <button @click="saveProfile" 
+                       class="w-full py-3 bg-[#73BBA3] hover:bg-[#5DA08A] rounded-[1.4rem] flex items-center justify-center gap-2 transition-all active:scale-95 shadow-lg group/confirm border border-white/10">
+                  <Check class="w-3.5 h-3.5 text-[#0A2647]" />
+                  <span class="text-[10px] font-black text-[#0A2647] uppercase tracking-widest">Confirm & Sync</span>
+               </button>
+            </div>
+            
+            <!-- Neural Edge Glow -->
+            <div class="absolute -left-10 -bottom-10 w-24 h-24 bg-[#73BBA3]/5 rounded-full blur-[40px] pointer-events-none"></div>
         </div>
 
         <!-- Sync Button (PACKED ELITE VIEW) -->

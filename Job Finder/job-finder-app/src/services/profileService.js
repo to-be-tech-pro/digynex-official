@@ -24,7 +24,8 @@ export const profileService = {
       uploaded_cv_name: profileData.uploadedCvName,
       language_preference: profileData.languagePreference,
       name: profileData.name,
-      email: user.email
+      email: user.email,
+      cover_letter: profileData.coverLetterText // SYNC: Persistent Identity Letter
     });
   },
 
@@ -140,5 +141,52 @@ export const profileService = {
         details: { ...details, timestamp: new Date().toISOString() }
       }
     ]);
+  },
+
+  /**
+   * NEURAL ENGINE: Cover Letter Synthesis Logic
+   * Generates a high-fidelity drafting based on CV specimens and Job details.
+   */
+  generateCoverLetter(data) {
+    const { name, resume_data, secret_keywords, job } = data;
+    const fullName = resume_data?.basic?.fullName || name || 'Professional Candidate';
+    
+    let letter = `Dear Hiring Manager,\n\n`;
+    
+    if (job) {
+       letter += `I am writing to express my strong interest in the ${job.r || job.role} position at ${job.c || job.company} in ${job.l || job.location}, as discovered through the DigyNex AI matching engine.\n\n`;
+    } else {
+       letter += `I am writing to express my interest in joining your organization in a capacity where my experience in high-scale architecture and neural systems can drive strategic value.\n\n`;
+    }
+
+    if (resume_data?.bio) {
+        letter += `${resume_data.bio}\n\n`;
+    }
+
+    if (resume_data?.experiences && resume_data.experiences.length > 0) {
+        const topExp = resume_data.experiences[0];
+        if (topExp.role && topExp.company) {
+            letter += `During my tenure as ${topExp.role} at ${topExp.company}, I have specialized in delivering high-impact solutions. ${topExp.achievements || ''}\n\n`;
+        }
+    }
+
+    const skills = resume_data?.skills?.hard || secret_keywords || [];
+    if (skills.length > 0) {
+        letter += `My core technical stack includes ${skills.slice(0, 6).join(', ')}, making me a strong candidate for this role's requirements.\n\n`;
+    }
+
+    letter += `I look forward to the possibility of discussing how my background and future-facing skills can benefit your team.\n\nSincerely,\n\n${fullName}`;
+    
+    return letter;
+  },
+
+  /**
+   * KINETIC SYNC: Persists the cover letter specimen to Supabase.
+   */
+  async updateCoverLetter(userId, text) {
+    if (!userId) return { error: 'Unauthorized cover letter update' };
+    return await supabase.from('profiles').update({
+       cover_letter: text
+    }).eq('id', userId);
   }
 };

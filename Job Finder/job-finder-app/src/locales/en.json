@@ -171,5 +171,23 @@
     "t3f2": "Unlimited Keywords. Full Neural Suggestion Engine",
     "t3f3": "All 6 Premium Templates + Custom Branding. Cover Letter Generator",
     "t3promo": "Neural Cover Letter Generator Included"
+  },
+  "studio": {
+    "title": "CV Studio Hub",
+    "templateGallery": "Template Gallery",
+    "eliteSelection": "Elite Selection",
+    "hdViewport": "HD Viewport",
+    "activeEngine": "Active Rendering Engine",
+    "stealthKeywords": "AI Stealth Keywords",
+    "strategicEdge": "Strategic Edge",
+    "aiSuggester": "AI Suggester",
+    "flushAll": "Flush All",
+    "aestheticPresets": "Aesthetic Presets",
+    "visualIdentity": "Visual Identity",
+    "syncToMaster": "Sync Studio to Master",
+    "coverLetterTitle": "Cover Letter Studio",
+    "careerDocumentEngine": "Career Document Engine",
+    "coverLetterPlaceholder": "Wait for AI to synthesize your professional soul...",
+    "neuralContentSynthesis": "Neural Content Synthesis Active"
   }
 }
