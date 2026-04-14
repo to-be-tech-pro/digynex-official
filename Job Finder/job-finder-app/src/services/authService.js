@@ -65,5 +65,12 @@ export const authService = {
         redirectTo: window.location.origin
       }
     });
+  },
+
+  /**
+   * Listens for authentication state changes.
+   */
+  onAuthStateChange(callback) {
+    return supabase.auth.onAuthStateChange(callback);
   }
 };

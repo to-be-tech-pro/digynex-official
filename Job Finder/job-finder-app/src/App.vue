@@ -535,7 +535,18 @@ onMounted(async () => {
     cvTemplates.value = data;
   }
   
-  // 2. Initialize user session and profile
+  // 2. Initialize user session and profile with Real-time Sync
+  authService.onAuthStateChange((event, session) => {
+    console.log(`[DIGYNEX AUTH] Event: ${event}`);
+    if (session) {
+      isAuthenticated.value = true;
+      fetchUserProfile();
+    } else {
+      isAuthenticated.value = false;
+      // Reset sensitive states on logout if needed
+    }
+  });
+
   const session = await authService.getSession();
   if (session) {
     await fetchUserProfile();

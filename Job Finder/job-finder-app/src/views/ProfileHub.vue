@@ -1,5 +1,6 @@
 <script setup>
-import { computed } from 'vue'
+import { ref, onMounted, computed, watch } from 'vue'
+import { authService } from '../services/authService'
 import { 
   ShieldCheck, Sparkles, Linkedin, User, FileText, Zap, X, ArrowRight, Lock
 } from 'lucide-vue-next'
@@ -24,6 +25,18 @@ const emit = defineEmits([
   'openAuth', 'openLinkedInModal', 'openManualForm', 'compileLatex', 'triggerFileUpload', 'handleFileUpload', 'saveProfile', 'removeField', 'addField', 'update:newField', 'openCVModal', 'openAdminPanel', 'logout', 'openLegal', 'returnToDashboard'
 ])
 
+// NEURAL SYNC: Internal auth state to prevent modal flicker
+const internalAuth = ref(props.isAuthenticated)
+
+watch(() => props.isAuthenticated, (newVal) => {
+    internalAuth.value = newVal
+})
+
+onMounted(async () => {
+   const user = await authService.getUser();
+   if (user) internalAuth.value = true;
+})
+
 const hasCVData = computed(() => {
   return (props.uploadedFileName && props.uploadedFileName !== 'No CV Uploaded') || 
          (props.masterProfile?.basic?.fullName);
@@ -37,7 +50,7 @@ const hasCVData = computed(() => {
      
       <div class="mt-4 flex-1 overflow-y-auto custom-scrollbar space-y-3 px-4 hub-scroller relative">
          <!-- PROFESSIONAL ACCESS PROMPT (GUEST MODE) -->
-         <div v-if="!isAuthenticated" class="absolute inset-x-0 inset-y-0 z-[100] flex flex-col items-center justify-center px-8 text-center bg-[#0A2647]/20 backdrop-blur-lg rounded-[3rem] h-[calc(100%-110px)] top-1 mx-4">
+         <div v-if="!internalAuth" class="absolute inset-x-0 inset-y-0 z-[100] flex flex-col items-center justify-center px-8 text-center bg-[#0A2647]/20 backdrop-blur-lg rounded-[3rem] h-[calc(100%-110px)] top-1 mx-4">
             <div class="w-full max-w-[280px] bg-[#0A2647]/80 border border-white/5 rounded-[2.5rem] p-8 shadow-3xl flex flex-col items-center gap-6 animate-in zoom-in-95 duration-500">
                <div class="w-full relative">
                   <!-- CLOSE ESCAPE PATH -->
