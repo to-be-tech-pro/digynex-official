@@ -159,11 +159,12 @@ const handleDashboardAction = (action) => emit('handleAction', action)
                </div>
             </div>
 
-            <!-- DETAILED MANAGEMENT TRIGGER -->
-            <div class="mt-0 border-t border-black/[0.03] pt-0.5 px-0.5">
-               <button @click="emit('setTab', 'applications')" class="w-full py-1.2 bg-white/50 border border-black/[0.05] rounded-xl flex items-center justify-center gap-2 hover:bg-[#0A2647]/5 transition-all group/det">
-                  <span class="text-[8px] font-black text-[#0A2647]/40 group-hover/det:text-[#0A2647] uppercase tracking-widest transition-colors leading-none">Detailed Submissions Management</span>
-                  <ArrowRight class="w-2.5 h-2.5 text-[#0A2647]/30" />
+            <!-- DETAILED MANAGEMENT TRIGGER (UI UPGRADE) -->
+            <div class="mt-2 border-t border-black/[0.05] pt-2 px-0.5">
+               <button @click="emit('setTab', 'applications')" 
+                       class="w-full py-3 bg-gradient-to-r from-[#F8FAFC] to-white border border-black/[0.08] rounded-2xl flex items-center justify-center gap-3 hover:shadow-lg hover:scale-[1.01] active:scale-98 transition-all group/det ring-1 ring-black/[0.02]">
+                  <span class="text-[10px] font-black text-[#0A2647]/60 group-hover/det:text-[#0A2647] uppercase tracking-[0.2em] transition-colors leading-none">Detailed Submissions Management</span>
+                  <ArrowRight class="w-3.5 h-3.5 text-[#0A2647]/40 group-hover/det:translate-x-1 transition-transform" />
                </button>
             </div>
          </div>

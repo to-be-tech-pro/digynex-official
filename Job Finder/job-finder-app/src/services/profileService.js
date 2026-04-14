@@ -56,9 +56,9 @@ export const profileService = {
   /**
    * Logs a user event to the activity engine.
    */
-  async logActivity(email, actionId) {
+  async logActivity(email, actionId, details = {}) {
     return await supabase.from('user_activity').insert([
-      { action: actionId, user_id: email }
+      { action: actionId, user_id: email, details }
     ]);
   },
 

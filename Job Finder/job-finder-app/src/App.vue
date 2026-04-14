@@ -380,9 +380,17 @@ const saveLinkedIn = async () => {
   if (!linkedInUrlInput.value) return;
   isLinkedInConnecting.value = true;
   try {
-    await new Promise(res => setTimeout(res, 1500));
+    // NEURAL SIGNAL: Trigger n8n LinkedIn Scraper (Workflow JAAAAS)
+    await profileService.logActivity(userProfile.value.email, 'LINKEDIN_SYNC_REQUESTED', {
+        url: linkedInUrlInput.value,
+        timestamp: new Date().toISOString()
+    });
+    
     linkedInUrl.value = linkedInUrlInput.value;
+    toastMessage.value = 'Neural Sync: LinkedIn Connection Request Dispatched';
+    showToast.value = true;
     isLinkedInModalOpen.value = false;
+    setTimeout(() => { showToast.value = false }, 3500);
   } finally {
     isLinkedInConnecting.value = false;
   }
@@ -636,6 +644,22 @@ const handleApply = async (job) => {
         return;
     }
     
+    // NEURAL GUARDRAIL: Mobile Approval Interception (WA/TG)
+    if (userProfile.value.docStatus !== 'Verified') {
+        toastMessage.value = 'Neural Sync: CV/Letter Approval requested via WhatsApp & Telegram';
+        showToast.value = true;
+        
+        // Signal N8N Trigger: Workflow D (Include Job Metadata)
+        await profileService.logActivity(userProfile.value.email, 'DOC_APPROVAL_PENDING', { 
+            company: job.c, 
+            role: job.r,
+            timestamp: new Date().toISOString()
+        });
+        
+        setTimeout(() => { showToast.value = false }, 5000);
+        return;
+    }
+    
     isRecalibrating.value = true;
     toastMessage.value = `DigyNex Intelligence: Syncing Profile with ${job.c}...`;
     showToast.value = true;
@@ -699,7 +723,8 @@ const fetchUserProfile = async () => {
                 secondaryColor: profile.secondary_color || '#64748b',
                 languagePreference: profile.language_preference || 'EN',
                 isAdmin: profile.is_admin || false,
-                isReturning: true // ENGINE: Mark as returning user
+                isReturning: true, // ENGINE: Mark as returning user
+                docStatus: profile.doc_status || 'Draft' // GUARDRAIL: Document Verification State
             };
             isFirstTime.value = false;
             uploadedFileName.value = profile.uploaded_cv_name || 'No CV Uploaded';
@@ -836,18 +861,13 @@ const handleDashboardAction = async (actionId) => {
     }
 
     if (actionId === 'recalibrate') {
-        isRecalibrating.value = true;
-        toastMessage.value = 'AI Engine: Recalibrating Neural Vectors...';
-        showToast.value = true;
-        
-        // n8n Webhook / Supabase Edge Function Call
+        // SIGNAL: Trigger n8n Workflow B (Neural Optimization)
         try {
-            /* 
-              await fetch('https://your-n8n-instance.com/webhook/recalibrate', { 
-                 method: 'POST', 
-                 body: JSON.stringify({ userId: userProfile.value.email, timestamp: new Date() }) 
-              }); 
-            */
+            await profileService.logActivity(userProfile.value.email, 'NEURAL_RECALIBRATE', {
+                active_tab: activeTab.value,
+                timestamp: new Date().toISOString()
+            });
+            
             await new Promise(r => setTimeout(r, 2500));
             toastMessage.value = 'Sync Complete: Profile Optimized';
         } finally {
@@ -857,6 +877,30 @@ const handleDashboardAction = async (actionId) => {
         return;
     }
 
+    if (actionId === 'broadcast') {
+        toastMessage.value = 'Preparing executive notification broadcast...';
+        showToast.value = true;
+        
+        // BRIDGE: Trigger n8n Workflow A (Global Broadcast)
+        await profileService.logActivity(userProfile.value.email, 'ADMIN_BROADCAST', { 
+            timestamp: new Date().toISOString(),
+            message: 'Global Neural System Upgrade Initiated.' 
+        });
+        
+        setTimeout(() => { showToast.value = false }, 4000);
+        return;
+    }
+
+    if (actionId === 'purge') {
+        toastMessage.value = 'Neural Wipe: Purging System Residue...';
+        showToast.value = true;
+        
+        // BRIDGE: Trigger n8n Workflow C (System Purge)
+        await profileService.logActivity(userProfile.value.email, 'ADMIN_DATA_PURGE');
+        
+        setTimeout(() => { showToast.value = false }, 4000);
+        return;
+    }
     // Generic Action Wrapper for n8n/Supabase Logging
     toastMessage.value = `Dispatching Signal: ${actionId}...`;
     showToast.value = true;
