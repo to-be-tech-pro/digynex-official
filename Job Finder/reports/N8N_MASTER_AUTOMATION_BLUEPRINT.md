@@ -8,14 +8,19 @@ This document is the **Single Source of Truth** for the DigyNex Job Finder autom
 
 The App communicates with n8n via the `user_activity` table in Supabase. Every "Neural Signal" emitted by the UI must be handled by a corresponding n8n Workflow.
 
-| Signal (Action ID) | n8n Workflow Name | Strategic Goal |
-| :--- | :--- | :--- |
-| `DOC_APPROVAL_PENDING` | **Workflow D: Guardrail** | Mandatory mobile approval (WA/TG) before submission. |
-| `LINKEDIN_SYNC_REQUESTED` | **Workflow L: Profiler** | Scrape LinkedIn data and inject into Supabase. |
-| `NEURAL_RECALIBRATE` | **Workflow R: Analyst** | AI market trend sync and skill gap suggestions. |
-| `ADMIN_BROADCAST` | **Workflow A: Broadcaster** | Global multi-channel executive notification. |
-| `ADMIN_DATA_PURGE` | **Workflow P: Purge** | Secure data cleanup and GDPR compliance. |
-| `JOB_APPLY` | **Workflow E: Executor** | Headless browser auto-submission (Post-Approval). |
+> **✅ FRONTEND STATUS (2026-04-15):** `profileService.logActivity()` is wired and calls fire on: `CV_EXPORT`, `broadcast`, `recalibrate`, `purge`, and `JOB_APPLY`. The `handleDashboardAction()` dispatcher in `App.vue` is pre-architected for n8n webhook injection at Step 1.
+
+| Signal (Action ID) | n8n Workflow Name | Strategic Goal | Frontend Status |
+| :--- | :--- | :--- | :--- |
+| `DOC_APPROVAL_PENDING` | **Workflow D: Guardrail** | Mandatory mobile approval (WA/TG) before submission. | ✅ Pre-wired |
+| `LINKEDIN_SYNC_REQUESTED` | **Workflow L: Profiler** | Scrape LinkedIn data and inject into Supabase. | ✅ Pre-wired |
+| `NEURAL_RECALIBRATE` | **Workflow R: Analyst** | AI market trend sync and skill gap suggestions. | ✅ Pre-wired |
+| `ADMIN_BROADCAST` | **Workflow A: Broadcaster** | Global multi-channel executive notification. | ✅ Pre-wired |
+| `ADMIN_DATA_PURGE` | **Workflow P: Purge** | Secure data cleanup and GDPR compliance. | ✅ Pre-wired |
+| `JOB_APPLY` | **Workflow E: Executor** | Headless browser auto-submission (Post-Approval). | ✅ Pre-wired |
+| `CV_EXPORT` | **Workflow X: Logger** | Log export events, enforce quota, trigger Stripe check. | ✅ Pre-wired |
+
+**Next Step (Owner):** Configure n8n webhook URL → add to `profileService.logActivity()` HTTP call.
 
 ---
 

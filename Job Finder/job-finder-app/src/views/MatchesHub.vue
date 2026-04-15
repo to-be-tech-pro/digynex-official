@@ -1,6 +1,6 @@
 <script setup>
 import { 
-  Search, X, Zap, Stars, LayoutDashboard, Briefcase, Globe, Star 
+  Search, X, Zap, Stars, LayoutDashboard, Briefcase, Globe, Star, History 
 } from 'lucide-vue-next'
 import { ref } from 'vue'
 
@@ -24,7 +24,7 @@ const handleScroll = (e) => {
 }
 
 const openJobDetail = (job) => emit('openJobDetail', job)
-const handleDashboardAction = (action) => emit('handleAction', action)
+const handleDashboardAction = (action, jobData) => emit('handleAction', action, jobData)
 
 </script>
 
@@ -37,9 +37,15 @@ const handleDashboardAction = (action) => emit('handleAction', action)
               <LayoutDashboard class="w-3 h-3 text-[#C1A172]" />
               <span class="text-[8px] font-black text-white/60 uppercase tracking-widest">Active Discovery Slots</span>
            </div>
-           <div class="flex items-center gap-1.5">
-              <span class="text-[10px] font-black text-white leading-none">{{ activeFocusSlots.used }}/{{ activeFocusSlots.total }}</span>
-              <div class="w-1.5 h-1.5 rounded-full bg-[#C1A172] animate-pulse shadow-[0_0_8px_#C1A172]"></div>
+           <div class="flex items-center gap-3">
+              <div class="flex items-center gap-1.5 pr-3 border-r border-white/5">
+                 <span class="text-[10px] font-black text-white leading-none">{{ activeFocusSlots.used }}/{{ activeFocusSlots.total }}</span>
+                 <div class="w-1.5 h-1.5 rounded-full bg-[#C1A172] animate-pulse shadow-[0_0_8px_#C1A172]"></div>
+              </div>
+              <button @click="$emit('handleAction', 'open_tracking')" class="flex items-center gap-1.5 group/track">
+                 <History class="w-3 h-3 text-white/30 group-hover:text-[#C1A172] transition-colors" />
+                 <span class="text-[7.5px] font-black text-white/30 tracking-[0.1em] uppercase group-hover:text-white transition-colors">Tracking Lab</span>
+              </button>
            </div>
         </div>
 
@@ -108,7 +114,7 @@ const handleDashboardAction = (action) => emit('handleAction', action)
               </div>
               <div class="flex items-center gap-1.5 bg-[#C1A172]/10 px-2 py-0.5 rounded-lg border border-[#C1A172]/20 group-hover:bg-[#C1A172]/20 transition-all">
                  <Zap class="w-2.5 h-2.5 text-[#C1A172]" />
-                 <span class="text-[8px] font-black text-[#C1A172] uppercase tracking-tighter">{{ t('matches.instantTailorShort') || 'Tailor' }}</span>
+                 <span class="text-[8px] font-black text-[#C1A172] uppercase tracking-tighter">Tailoring Active</span>
               </div>
            </div>
            
@@ -123,11 +129,15 @@ const handleDashboardAction = (action) => emit('handleAction', action)
                  <span class="text-[8.5px] font-black text-[#0A2647]/35 uppercase tracking-wider font-jakarta">{{ t('matches.applicantsCount', { count: 12 }) }}</span>
               </div>
               <div class="flex gap-1.5 justify-end items-center relative z-[100]">
-                 <button @click.stop="handleDashboardAction('save_match')" class="bg-white/5 border border-white/10 text-white/30 w-8 h-8 flex items-center justify-center rounded-xl hover:bg-white/10 hover:text-white transition-all active:scale-90 group-hover:border-white/20">
+                 <button @click.stop="handleDashboardAction('save_match', match)" class="bg-white/5 border border-white/10 text-white/30 w-8 h-8 flex items-center justify-center rounded-xl hover:bg-white/10 hover:text-white transition-all active:scale-90 group-hover:border-white/20">
                     <Star class="w-3 h-3" />
                  </button>
-                 <button @click.stop="handleDashboardAction('tailor_cv')" class="bg-[#C1A172] text-[#0A2647] w-[90px] py-1 rounded-xl text-[8px] font-black uppercase tracking-[0.05em] shadow-[0_8px_15px_rgba(193,161,114,0.25)] hover:scale-[1.02] active:scale-95 transition-all font-jakarta relative overflow-hidden text-center">
-                    {{ t('matches.instantTailorShort') || 'Tailor CV' }}
+                 <button @click.stop="handleDashboardAction('tailor_cv', match)" class="bg-black/10 text-[#0A2647]/60 border border-black/5 w-[80px] py-1 rounded-xl text-[8px] font-black uppercase tracking-[0.05em] hover:bg-black/20 hover:text-[#0A2647] active:scale-95 transition-all font-jakarta text-center">
+                    Tailor
+                 </button>
+                 <button @click.stop="handleDashboardAction('quick_apply', match)" class="bg-[#C1A172] text-[#0A2647] w-[95px] py-1 rounded-xl text-[8px] font-black uppercase tracking-[0.05em] shadow-[0_8px_15px_rgba(193,161,114,0.25)] hover:scale-[1.02] active:scale-95 transition-all font-jakarta relative overflow-hidden text-center group/apply">
+                    <div class="absolute inset-0 bg-white/20 -translate-x-full group-hover/apply:translate-x-full transition-transform duration-1000"></div>
+                    Apply Now
                  </button>
               </div>
            </div>

@@ -20,7 +20,7 @@ const props = defineProps({
   }
 })
 
-const emit = defineEmits(['close', 'apply'])
+const emit = defineEmits(['close', 'onAction'])
 </script>
 
 <template>
@@ -106,14 +106,16 @@ const emit = defineEmits(['close', 'apply'])
            </div>
         </div>
 
-        <!-- Fixed Footer Actions -->
-        <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[#0A2647] via-[#0A2647] to-transparent pt-12 pb-8 flex items-center gap-4 z-20">
-           <button class="w-14 h-14 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-white hover:text-[#C1A172] transition-all active:scale-90">
-              <Bookmark class="w-6 h-6" />
+        <!-- Fixed Footer Actions (V6.5 GLOBAL SYNC) -->
+        <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[#0A2647] via-[#0A2647] to-transparent pt-12 pb-8 flex items-center gap-3 z-20">
+           <button @click="emit('onAction', 'tailor_cv', job)" class="flex-1 bg-white/5 h-14 rounded-[1.25rem] border border-white/10 flex items-center justify-center gap-2 text-white/80 font-black uppercase tracking-widest text-[9px] hover:bg-white/10 transition-all hover:text-white">
+              <Zap class="w-3.5 h-3.5 text-[#C1A172]" />
+              <span>Tailor Specimen</span>
            </button>
-           <button @click="emit('apply', job)" class="flex-1 bg-[#C1A172] h-14 rounded-2xl flex items-center justify-center gap-3 shadow-xl hover:scale-[1.02] active:scale-95 transition-all text-[#0A2647] font-black uppercase tracking-widest text-[12px] group">
-              <span>Apply via DigyNex Sync</span>
-              <ArrowUpRight class="w-5 h-5 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+           <button @click="emit('onAction', 'quick_apply', job)" class="flex-[1.5] bg-[#C1A172] h-14 rounded-[1.25rem] flex items-center justify-center gap-3 shadow-[0_15px_40px_rgba(193,161,114,0.25)] hover:scale-[1.02] active:scale-95 transition-all text-[#0A2647] font-black uppercase tracking-widest text-[11px] group relative overflow-hidden">
+              <div class="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              <span>Instant AI Apply</span>
+              <ArrowUpRight class="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
            </button>
         </div>
 

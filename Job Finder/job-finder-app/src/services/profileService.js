@@ -188,5 +188,15 @@ export const profileService = {
     return await supabase.from('profiles').update({
        cover_letter: text
     }).eq('id', userId);
+  },
+
+  /**
+   * Executive Override: Manually update a user's core identity (Admin only).
+   */
+  async adminUpdateProfile(userId, updates) {
+    return await supabase
+      .from('profiles')
+      .update(updates)
+      .eq('id', userId);
   }
 };

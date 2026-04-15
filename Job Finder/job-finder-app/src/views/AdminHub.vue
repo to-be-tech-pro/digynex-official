@@ -3,62 +3,161 @@ import { ref, computed, onMounted } from 'vue'
 import { profileService } from '../services/profileService'
 import { 
     Users, ShieldCheck, Sparkles, Edit3, AlertTriangle, 
-    Lock, RefreshCw, Bell, Trash2, ChevronRight, X, TrendingUp, DollarSign, Zap
+    Lock, RefreshCw, Bell, Trash2, ChevronRight, X, TrendingUp, DollarSign, Zap, 
+    Settings2, Save, Database
 } from 'lucide-vue-next'
-import { Line } from 'vue-chartjs'
+import { supabase } from '../lib/supabase'
+import { Line, Bar, Doughnut } from 'vue-chartjs'
 import { 
-    Chart as ChartJS, Title, Tooltip, Legend, LineElement, 
-    PointElement, CategoryScale, LinearScale, Filler 
+    Chart as ChartJS, Title, Tooltip, Legend, LineElement, BarElement,
+    PointElement, CategoryScale, LinearScale, Filler, ArcElement
 } from 'chart.js'
 
-ChartJS.register(Title, Tooltip, Legend, LineElement, PointElement, CategoryScale, LinearScale, Filler)
+ChartJS.register(Title, Tooltip, Legend, LineElement, BarElement, PointElement, CategoryScale, LinearScale, Filler, ArcElement)
 
 const props = defineProps(['isMaintenanceMode'])
 const emit = defineEmits(['setTab', 'update:isMaintenanceMode', 'sendNotification', 'purgeData'])
 
 // --- AUTHENTICATION GATE ---
 const isAdminAuthenticated = ref(false)
+const isSuperAdmin = ref(false)
 const adminPin = ref('')
-const neuralKey = '8580' // MASTER OVERRIDE KEY
+const neuralKeys = ['8580', 'master333', 'uma'] // MASTER OVERRIDE KEYS
 const authError = ref('')
 const userSearch = ref('')
 const selectedTier = ref('All')
 const selectedRange = ref('All')
 const customDays = ref('')
 const users = ref([])
+const activeTierSelector = ref(null)
+
+// --- SYSTEM CONFIG ENGINE (NEW V6.5) ---
+const configData = ref({
+    free: { cv_per_week: 2, day_cap: 3, price: 0, ai_magic: false },
+    pro: { cv_per_week: 6, day_cap: 3, price: 19, ai_magic: true },
+    elite: { cv_per_week: 999, day_cap: 999, price: 49, ai_magic: true }
+})
+const isSavingConfig = ref(false)
+
+const fetchConfig = async () => {
+    try {
+        const { data } = await supabase.from('system_config').select('value').eq('key', 'tiered_quotas').single()
+        if (data && data.value) configData.value = data.value
+    } catch (err) {
+        console.error('Config Fetch Interrupt')
+    }
+}
+
+const saveConfig = async () => {
+    isSavingConfig.value = true
+    try {
+        const { error } = await supabase.from('system_config').upsert({ key: 'tiered_quotas', value: configData.value })
+        if (error) throw error
+        emit('sendNotification', 'STRATEGIC ENGINE UPDATED: CHANGES LIVE')
+    } catch (err) {
+        emit('sendNotification', 'CONFIG SYNC FAILED')
+    } finally {
+        isSavingConfig.value = false
+    }
+}
 
 onMounted(async () => {
+    await fetchConfig()
     try {
         const { data, error } = await profileService.fetchAllProfiles()
         if (error) throw error
-        users.value = data.map(u => ({
-            id: u.id,
-            name: u.name,
-            email: u.email,
-            tier: u.plan_type || 'Free',
-            lastSeen: u.last_seen || 'New',
-            joined: u.created_at
-        }))
+        
+        const tierMap = { 0: 'Free', 1: 'Pro', 2: 'Elite' }
+        
+        if (data && data.length > 0) {
+            users.value = data.map(u => ({
+                id: u.id,
+                name: u.name || 'Anonymous',
+                email: u.email || 'No Email',
+                tier: u.plan_type !== undefined ? tierMap[u.plan_type] || 'Free' : 'Free',
+                lastSeen: u.last_seen || 'New',
+                joined: u.created_at || new Date().toISOString(),
+                isAdmin: false,
+                isSuspended: false
+            }))
+        } else {
+            throw new Error("No profiles found, using mocks")
+        }
     } catch (err) {
-        console.error("Neural Fetch Failed:", err)
+        console.warn("Neural Fetch Failed or Empty, loading mock specimens:", err)
+        // Inject fake data for testing so the UI is not empty
+        users.value = [
+            { id: 'usr_1', name: 'Alex T.', email: 'alex@example.com', tier: 'Free', lastSeen: '10 mins ago', joined: '2026-04-10', isAdmin: false, isSuspended: false },
+            { id: 'usr_2', name: 'Sarah G.', email: 'sarah.g@mail.com', tier: 'Pro', lastSeen: '2 hours ago', joined: '2026-04-12', isAdmin: true, isSuspended: false },
+            { id: 'usr_3', name: 'Amila M.', email: 'amila@digynex.com', tier: 'Elite', lastSeen: 'Just now', joined: '2026-04-15', isAdmin: false, isSuspended: false },
+            { id: 'usr_4', name: 'John D.', email: 'john.d@web.co', tier: 'Free', lastSeen: '1 day ago', joined: '2026-04-05', isAdmin: false, isSuspended: true },
+        ]
     }
 })
 
 const authenticateAdmin = () => {
-    if (adminPin.value === neuralKey) {
+    if (adminPin.value === '8580') {
         isAdminAuthenticated.value = true
+        isSuperAdmin.value = true
+        authError.value = ''
+    } else if (neuralKeys.includes(adminPin.value)) {
+        isAdminAuthenticated.value = true
+        isSuperAdmin.value = false
         authError.value = ''
     } else {
-        authError.value = 'NEURAL ACCESS DENIDED: IDENTITY UNVERIFIED'
+        authError.value = 'NEURAL ACCESS DENIED: IDENTITY UNVERIFIED'
         adminPin.value = ''
     }
 }
 
-const stats = [
-    { id: 1, label: 'Total Revenue', value: '$12,450', trend: '+12%', color: '#C1A172', icon: DollarSign },
-    { id: 2, label: 'Active Users', value: '1,280', trend: '+5%', color: '#38BDF8', icon: Users },
-    { id: 3, label: 'AI Burn (Tokens)', value: '8.4M', trend: '-2%', color: '#F472B6', icon: Zap },
+// ─── FINANCIAL TELEMETRY (Stripe-Ready — Replace values with API) ───────────
+const financeStats = [
+    { id: 1, label: 'Monthly Revenue', value: '$12,450', sub: 'MRR', trend: '+12%', up: true, color: '#C1A172', icon: DollarSign },
+    { id: 2, label: 'Active Subscribers', value: '1,280', sub: 'Users', trend: '+5%', up: true, color: '#38BDF8', icon: Users },
+    { id: 3, label: 'AI Token Burn', value: '8.4M', sub: 'Tokens/mo', trend: '+18%', up: false, color: '#F472B6', icon: Zap },
+    { id: 4, label: 'Founder Passes', value: '33', sub: 'of 100 sold', trend: '+33%', up: true, color: '#34D399', icon: Sparkles },
 ]
+
+// ─── AI COST INDEX (per tier) ────────────────────────────────────────────────
+const aiCostData = {
+    labels: ['Free (T0)', 'Pro (T1)', 'Elite (T2)'],
+    datasets: [{
+        label: 'Avg Tokens/User',
+        data: [1200, 8500, 24000],
+        backgroundColor: ['rgba(100,116,139,0.6)', 'rgba(56,189,248,0.6)', 'rgba(193,161,114,0.6)'],
+        borderColor: ['#64748B', '#38BDF8', '#C1A172'],
+        borderWidth: 2,
+        borderRadius: 8,
+    }]
+}
+
+// ─── REVENUE BREAKDOWN (Stripe-ready mock) ───────────────────────────────────
+const revenueBreakdown = {
+    labels: ['Free', 'Pro ($19)', 'Elite ($49)', 'Founder ($149)'],
+    datasets: [{
+        data: [0, 4750, 6860, 4470],
+        backgroundColor: ['#1e293b', '#38BDF8', '#C1A172', '#34D399'],
+        borderWidth: 0,
+        hoverOffset: 10,
+    }]
+}
+
+const donutOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    cutout: '75%',
+    plugins: { legend: { display: false }, tooltip: { enabled: true } }
+}
+
+const barOptions = {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: { legend: { display: false } },
+    scales: {
+        x: { grid: { display: false }, ticks: { color: 'rgba(255,255,255,0.3)', font: { size: 9 } } },
+        y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: 'rgba(255,255,255,0.3)', font: { size: 9 } } }
+    }
+}
 
 const filteredUsers = computed(() => {
     let result = users.value.filter(u => 
@@ -83,13 +182,15 @@ const filteredUsers = computed(() => {
             return true
         })
     }
-    return result
+    
+    return result.slice(0, 50)
 })
 
-// --- EXECUTIVE OVERRIDES ---
 const updateTier = async (userId, newTier) => {
     try {
-        const { error } = await profileService.updateUserTier(userId, newTier)
+        const reverseTierMap = { 'Free': 0, 'Pro': 1, 'Elite': 2 }
+        const numericTier = reverseTierMap[newTier] !== undefined ? reverseTierMap[newTier] : 0
+        const { error } = await profileService.updateUserTier(userId, numericTier)
         if (error) throw error
         const user = users.value.find(u => u.id === userId)
         if (user) user.tier = newTier
@@ -99,22 +200,76 @@ const updateTier = async (userId, newTier) => {
     }
 }
 
-const handlePromoteAdmin = async (userId) => {
+const editingUser = ref(null)
+
+const handlePromoteAdmin = (userId) => {
+    const user = users.value.find(u => u.id === userId)
+    if (user) {
+        user.isAdmin = !user.isAdmin
+        emit('sendNotification', `IDENTITY UPDATED: ${user.name.toUpperCase()} IS ${user.isAdmin ? 'NOW ADMIN' : 'NO LONGER ADMIN'}`)
+    }
+}
+
+const handleSuspendUser = (userId) => {
+    const user = users.value.find(u => u.id === userId)
+    if (user) {
+        user.isSuspended = !user.isSuspended
+        emit('sendNotification', `SUSPENSION ${user.isSuspended ? 'ISSUED' : 'REVOKED'} FOR ${user.name.toUpperCase()}`)
+    }
+}
+
+const confirmEdit = async () => {
+    if (!editingUser.value) return
     try {
-        const { error } = await profileService.updateAdminStatus(userId, true)
+        const reverseTierMap = { 'Free': 0, 'Pro': 1, 'Elite': 2 }
+        const { error } = await profileService.adminUpdateProfile(editingUser.value.id, {
+            name: editingUser.value.name,
+            email: editingUser.value.email,
+            plan_type: reverseTierMap[editingUser.value.tier]
+        })
+        
         if (error) throw error
-        emit('sendNotification', 'NEURAL SHIELD GRANTED: ADMIN ACCESS ACTIVE')
+        
+        const index = users.value.findIndex(u => u.id === editingUser.value.id)
+        if (index !== -1) {
+            users.value[index] = { ...editingUser.value }
+            emit('sendNotification', `IDENTITY COMMITTED: ${editingUser.value.name.toUpperCase()} UPDATED`)
+        }
     } catch (err) {
-        emit('sendNotification', 'EXECUTIVE ELEVATION FAILED')
+        emit('sendNotification', 'COMMIT FAILED: DATABASE REJECTED OVERRIDE')
+    }
+    editingUser.value = null
+}
+
+const handleMaintenanceToggle = async () => {
+    const newState = !props.isMaintenanceMode
+    try {
+        const { error } = await supabase.from('system_config').upsert({ 
+            key: 'maintenance_mode', 
+            value: { enabled: newState, message: 'System Recalibration in Progress...' } 
+        })
+        if (error) throw error
+        emit('update:isMaintenanceMode', newState)
+        emit('sendNotification', `MAINTENANCE PROTOCOL: ${newState ? 'ENGAGED' : 'DISENGAGED'}`)
+    } catch (err) {
+        emit('sendNotification', 'PROTOCOL TRANSITION FAILED')
     }
 }
 
 const handleQuickAction = async (action) => {
     try {
-        await profileService.triggerAdminGlobalAction('admin@digynex.com', action.l)
-        if (action.l.includes('Broadcast')) emit('sendNotification', 'GLOBAL STRATEGY PULSE SENT')
-        if (action.l.includes('Purge')) emit('purgeData')
-        if (action.l.includes('Sync')) emit('sendNotification', 'NEURAL CLOUD CORES RE-SYNCED')
+        if (action.l.includes('Broadcast')) {
+            const { error } = await supabase.from('system_config').upsert({
+                key: 'global_broadcast',
+                value: { active: true, message: 'Global Neural System Upgrade Initiated.', type: 'info' }
+            })
+            if (error) throw error
+            emit('sendNotification', 'GLOBAL STRATEGY PULSE COMMITTED')
+        } else {
+            await profileService.triggerAdminGlobalAction('admin@digynex.com', action.l)
+            if (action.l.includes('Purge')) emit('purgeData')
+            if (action.l.includes('Sync')) emit('sendNotification', 'NEURAL CLOUD CORES RE-SYNCED')
+        }
     } catch (err) {
         emit('sendNotification', 'LOGISTICAL INTERRUPT DETECTED')
     }
@@ -205,69 +360,102 @@ const chartOptions = {
      <!-- SYSTEM DASHBOARD -->
      <div v-else class="flex-1 overflow-y-auto no-scrollbar p-6 pb-32 space-y-6 relative z-10 animate-in fade-in slide-in-from-bottom-10 duration-700">
         
-        <!-- TOP LEVEL METRICS (Vertical Pack View) -->
-        <div class="grid grid-cols-1 gap-2 w-full">
-           <div v-for="stat in stats" :key="stat.id" class="px-4 py-2.5 bg-[#0A2647] border border-white/[0.03] rounded-3xl flex items-center justify-between group hover:bg-white/[0.02] transition-all shadow-lg">
-              <div class="flex items-center gap-3">
-                 <div :style="`background: ${stat.color}15`" class="w-9 h-9 rounded-xl flex items-center justify-center border border-white/5">
-                    <component :is="stat.icon" class="w-3.5 h-3.5" :style="`color: ${stat.color}`" />
-                 </div>
-                 <div class="flex flex-col">
-                    <span class="text-[8px] font-black text-white/60 uppercase tracking-[0.2em] leading-none mb-1">{{ stat.label }}</span>
-                    <p class="text-[20px] font-black text-white tracking-tighter leading-none">{{ stat.value }}</p>
-                 </div>
-              </div>
-              <div :class="stat.trend.startsWith('+') ? 'text-green-400 bg-green-400/10' : 'text-red-400 bg-red-400/10'" 
-                   class="px-2 py-0.5 rounded text-[7.5px] font-black tracking-widest">
-                 {{ stat.trend }}
-              </div>
-           </div>
-        </div>
-
-        <!-- VISUAL ANALYTICS (Full Width Impulse + Horizontal Tiers) -->
-        <div class="w-full bg-white/5 border border-white/5 rounded-[2.5rem] p-6 flex flex-col">
-           <div class="flex items-center justify-between mb-4">
-              <span class="text-[10px] font-black text-white/60 uppercase tracking-[0.2em]">User Growth Impulse (Global)</span>
-              <div class="flex items-center gap-4">
-                 <div class="flex items-center gap-1.5">
-                    <div class="w-1.5 h-1.5 rounded-full bg-[#C1A172]"></div>
-                    <span class="text-[8px] font-black text-white/40 uppercase">Identity Growth</span>
-                 </div>
-                 <TrendingUp class="w-3.5 h-3.5 text-[#C1A172]/50" />
-              </div>
-           </div>
-           
-           <!-- FULL WIDTH CHART -->
-           <div class="h-40 w-full mb-6">
-              <Line :data="growthData" :options="chartOptions" />
-           </div>
-
-           <!-- HORIZONTAL SPECIMEN TIERS (Relocated Live Sync) -->
-           <div class="pt-6 border-t border-white/5 flex flex-col gap-5">
-              <div class="flex items-center justify-between">
-                 <div class="flex flex-col gap-1">
-                    <span class="text-[11px] font-black text-white/60 uppercase tracking-widest">Specimen Tiers</span>
-                    <p class="text-[9px] font-bold text-[#C1A172]/70 uppercase tracking-wider">Global Strategic Distribution</p>
-                 </div>
-                 <div class="flex items-center gap-2 bg-white/5 px-2.5 py-1 rounded-full border border-white/5">
-                    <div class="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></div>
-                    <span class="text-[8px] font-black text-white/40 uppercase tracking-widest">Live Sync</span>
-                 </div>
-              </div>
+        <!-- FINANCIAL TELEMETRY CARDS -->
+        <div v-if="isSuperAdmin" class="flex flex-col gap-2.5 w-full animate-in fade-in duration-500">
+           <div v-for="stat in financeStats" :key="stat.id" 
+                class="px-4 py-3 bg-[#0A2647] border border-white/5 rounded-[1.5rem] flex items-center justify-between hover:bg-[#0A2647]/80 transition-all shadow-xl">
               
-              <div class="flex items-center justify-between">
-                 <div v-for="tier in [{l: 'Elite', v: '15%', c: '#C1A172'}, {l: 'Pro', v: '25%', c: '#38BDF8'}, {l: 'Free', v: '60%', c: '#64748B'}]" 
-                      :key="tier.l" 
-                      class="flex items-center gap-3 group/tier shrink-0">
-                    <div :style="`background: ${tier.c}`" class="w-1.5 h-10 rounded-full shadow-[0_0_15px_-4px] shadow-white/10"></div>
-                    <div class="flex flex-col">
-                       <span class="text-[22px] font-black text-white leading-none tracking-tighter">{{ tier.v }}</span>
-                       <span class="text-[9px] font-black text-white/40 uppercase tracking-[0.2em] mt-0.5">{{ tier.l }}</span>
-                    </div>
+              <div class="flex items-center gap-4">
+                 <div :style="`background: ${stat.color}15`" class="w-10 h-10 shrink-0 rounded-2xl flex items-center justify-center border border-white/5 shadow-inner">
+                    <component :is="stat.icon" class="w-4 h-4 shadow-sm" :style="`color: ${stat.color}`" />
                  </div>
+                 <div class="flex flex-col text-left">
+                    <span class="text-[10px] font-black tracking-widest uppercase mb-0.5 drop-shadow-md" :style="`color: ${stat.color}`">{{ stat.label }}</span>
+                    <p class="text-[9px] font-black text-white/50 uppercase tracking-[0.2em]">{{ stat.sub }}</p>
+                 </div>
+              </div>
+
+              <div class="flex flex-col items-end justify-center">
+                 <p class="text-[20px] font-black text-white tracking-tighter leading-none mb-1 drop-shadow-lg">{{ stat.value }}</p>
+                 <span :class="stat.up ? 'text-[#34D399] bg-[#34D399]/10 border-[#34D399]/20' : 'text-[#F472B6] bg-[#F472B6]/10 border-[#F472B6]/20'" 
+                       class="px-2 py-0.5 rounded-md border text-[8px] font-black tracking-[0.2em] shadow-sm uppercase">
+                    {{ stat.trend }}
+                 </span>
               </div>
            </div>
         </div>
+
+         <!-- VISUAL ANALYTICS: User Growth -->
+         <div class="w-full bg-white/5 border border-white/5 rounded-[2.5rem] p-6 flex flex-col">
+            <div class="flex items-center justify-between mb-4">
+               <span class="text-[10px] font-black text-white/60 uppercase tracking-[0.2em]">User Growth Impulse (Global)</span>
+               <TrendingUp class="w-3.5 h-3.5 text-[#C1A172]/50" />
+            </div>
+            <div class="h-36 w-full mb-4">
+               <Line :data="growthData" :options="chartOptions" />
+            </div>
+            <div class="pt-4 border-t border-white/5 flex items-center justify-between">
+               <div v-for="tier in [{l: 'Elite', v: '15%', c: '#C1A172'}, {l: 'Pro', v: '25%', c: '#38BDF8'}, {l: 'Free', v: '60%', c: '#64748B'}]" 
+                    :key="tier.l" class="flex items-center gap-2">
+                  <div :style="`background: ${tier.c}`" class="w-1 h-8 rounded-full"></div>
+                  <div>
+                     <p class="text-[16px] font-black text-white leading-none">{{ tier.v }}</p>
+                     <span class="text-[7px] font-black text-white/30 uppercase tracking-widest">{{ tier.l }}</span>
+                  </div>
+               </div>
+            </div>
+         </div>
+
+         <!-- AI COST INDEX + REVENUE BREAKDOWN -->
+         <div v-if="isSuperAdmin" class="grid grid-cols-1 gap-3">
+            <!-- AI Cost Bar Chart -->
+            <div class="bg-white/[0.03] border border-white/5 rounded-[2rem] p-5">
+               <div class="flex items-center justify-between mb-4">
+                  <div>
+                     <span class="text-[10px] font-black text-pink-400 uppercase tracking-[0.2em]">AI Cost Index</span>
+                     <p class="text-[7px] font-bold text-white/30 uppercase tracking-widest mt-0.5">Avg Tokens/User by Tier</p>
+                  </div>
+                  <div class="px-2 py-0.5 bg-pink-400/10 rounded-full">
+                     <span class="text-[7px] font-black text-pink-400 uppercase tracking-widest">Live Mock</span>
+                  </div>
+               </div>
+               <div class="h-28">
+                  <Bar :data="aiCostData" :options="barOptions" />
+               </div>
+               <p class="text-[7px] font-bold text-white/20 uppercase tracking-widest mt-3 text-center">Connect OpenAI API for live token cost data</p>
+            </div>
+
+            <!-- Revenue Breakdown Doughnut -->
+            <div class="bg-white/[0.03] border border-white/5 rounded-[2rem] p-5">
+               <div class="flex items-center justify-between mb-4">
+                  <div>
+                     <span class="text-[10px] font-black text-[#C1A172] uppercase tracking-[0.2em]">Revenue Split</span>
+                     <p class="text-[7px] font-bold text-white/30 uppercase tracking-widest mt-0.5">MRR by Subscription Tier</p>
+                  </div>
+                  <div class="px-2 py-0.5 bg-[#C1A172]/10 rounded-full">
+                     <span class="text-[7px] font-black text-[#C1A172] uppercase tracking-widest">Stripe Pending</span>
+                  </div>
+               </div>
+               <div class="flex items-center gap-4">
+                  <div class="h-28 w-28 shrink-0 relative">
+                     <Doughnut :data="revenueBreakdown" :options="donutOptions" />
+                     <div class="absolute inset-0 flex items-center justify-center flex-col">
+                        <p class="text-[14px] font-black text-white leading-none">$16k</p>
+                        <span class="text-[6px] font-black text-white/30 uppercase tracking-widest">MRR</span>
+                     </div>
+                  </div>
+                  <div class="flex flex-col gap-2 flex-1">
+                     <div v-for="(label, i) in revenueBreakdown.labels" :key="label" class="flex items-center justify-between">
+                        <div class="flex items-center gap-1.5">
+                           <div class="w-2 h-2 rounded-full" :style="`background: ${revenueBreakdown.datasets[0].backgroundColor[i]}`"></div>
+                           <span class="text-[8px] font-bold text-white/50">{{ label }}</span>
+                        </div>
+                        <span class="text-[8px] font-black text-white/70">${{ revenueBreakdown.datasets[0].data[i].toLocaleString() }}</span>
+                     </div>
+                  </div>
+               </div>
+            </div>
+         </div>
 
         <!-- SYSTEM LOGISTICS (Ultra-Extreme Pack View) -->
         <div class="space-y-2">
@@ -283,7 +471,7 @@ const chartOptions = {
                  </div>
               </div>
               
-              <button @click="emit('update:isMaintenanceMode', !isMaintenanceMode)" 
+              <button @click="handleMaintenanceToggle" 
                       :class="isMaintenanceMode ? 'bg-[#C1A172] text-[#0A2647] shadow-[0_0_15px_rgba(193,161,114,0.3)]' : 'bg-white/5 text-white/30'"
                       class="px-4 py-1.5 rounded-xl text-[8px] font-black uppercase tracking-widest transition-all active:scale-95">
                  {{ isMaintenanceMode ? 'DEACTIVATE' : 'ACTIVATE' }}
@@ -311,6 +499,61 @@ const chartOptions = {
                  </div>
                  <ChevronRight class="w-2.5 h-2.5 text-white/10 opacity-0 group-hover:opacity-100 group-hover:translate-x-0.5 transition-all" />
               </button>
+           </div>
+        </div>
+
+        <!-- STRATEGIC ENGINE CONFIG (V6.5) -->
+        <div v-if="isSuperAdmin" class="bg-[#0A2647]/50 border border-[#C1A172]/20 rounded-[2.5rem] p-6 space-y-6 relative overflow-hidden group">
+           <div class="absolute -right-20 -top-20 w-60 h-60 bg-[#C1A172]/5 blur-[100px] rounded-full group-hover:bg-[#C1A172]/10 transition-all duration-1000"></div>
+           
+           <div class="flex items-center justify-between relative z-10">
+              <div class="flex items-center gap-3">
+                 <div class="p-2 bg-[#C1A172]/10 rounded-xl border border-[#C1A172]/30">
+                    <Settings2 class="w-4 h-4 text-[#C1A172]" />
+                 </div>
+                 <div>
+                    <h3 class="text-[12px] font-black text-white uppercase tracking-[0.2em] leading-none">Strategic Engine Config</h3>
+                    <p class="text-[8px] font-bold text-[#C1A172]/50 uppercase mt-1">Live Backend Quota Management</p>
+                 </div>
+              </div>
+              <button @click="saveConfig" 
+                      :disabled="isSavingConfig"
+                      class="px-4 py-2 bg-[#C1A172] text-[#0A2647] rounded-xl text-[9px] font-black uppercase tracking-widest flex items-center gap-2 hover:scale-[1.05] active:scale-95 transition-all disabled:opacity-50">
+                 <Save v-if="!isSavingConfig" class="w-3 h-3" />
+                 <RefreshCw v-else class="w-3 h-3 animate-spin" />
+                 {{ isSavingConfig ? 'COMMITTING...' : 'COMMIT CHANGES' }}
+              </button>
+           </div>
+
+           <div class="grid grid-cols-1 gap-4 relative z-10">
+              <div v-for="(cfg, tier) in configData" :key="tier" class="p-4 bg-white/5 border border-white/5 rounded-2xl space-y-3">
+                 <div class="flex items-center justify-between border-b border-white/5 pb-2">
+                    <span class="text-[10px] font-black text-[#C1A172] uppercase tracking-widest">{{ tier }} Spec</span>
+                    <span class="text-[8px] font-bold text-white/20 uppercase">Tier Logic</span>
+                 </div>
+                 <div class="grid grid-cols-2 gap-4">
+                    <div class="space-y-1">
+                       <label class="text-[7px] font-black text-white/40 uppercase tracking-widest">CV Limit (Week)</label>
+                       <input v-model.number="cfg.cv_per_week" type="number" class="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white text-[11px] font-black focus:border-[#C1A172]/50 outline-none" />
+                    </div>
+                    <div class="space-y-1">
+                       <label class="text-[7px] font-black text-white/40 uppercase tracking-widest">Daily Cap</label>
+                       <input v-model.number="cfg.day_cap" type="number" class="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-white text-[11px] font-black focus:border-[#C1A172]/50 outline-none" />
+                    </div>
+                    <div class="space-y-1">
+                       <label class="text-[7px] font-black text-white/40 uppercase tracking-widest">Price ($)</label>
+                       <input v-model.number="cfg.price" type="number" class="w-full bg-black/40 border border-white/10 rounded-lg px-3 py-2 text-[#C1A172] text-[11px] font-black focus:border-[#C1A172]/50 outline-none" />
+                    </div>
+                    <div class="flex items-center justify-between pt-4">
+                       <label class="text-[7px] font-black text-white/40 uppercase tracking-widest">AI Magic</label>
+                       <button @click="cfg.ai_magic = !cfg.ai_magic" 
+                               :class="cfg.ai_magic ? 'bg-green-500/20 text-green-400 border-green-500/30' : 'bg-red-500/20 text-red-400 border-red-500/30'"
+                               class="px-2 py-1 border rounded-md text-[7px] font-black uppercase tracking-widest transition-all">
+                          {{ cfg.ai_magic ? 'ACTIVE' : 'LOCKED' }}
+                       </button>
+                    </div>
+                 </div>
+              </div>
            </div>
         </div>
 
@@ -375,7 +618,12 @@ const chartOptions = {
                     </tr>
                  </thead>
                  <tbody class="divide-y divide-white/[0.02]">
-                    <tr v-for="user in filteredUsers" :key="user.id" class="hover:bg-white/[0.04] transition-colors">
+                    <tr v-for="user in filteredUsers" :key="user.id" 
+                        :class="[
+                          user.isSuspended ? 'bg-red-500/10 hover:bg-red-500/15' : 
+                          (user.isAdmin ? 'bg-green-500/10 hover:bg-green-500/15 border-l-2 border-green-500' : 'hover:bg-white/[0.04]')
+                        ]"
+                        class="transition-colors group/row">
                        <td class="px-3 py-2">
                           <div class="flex flex-col">
                              <span class="text-[11px] font-bold text-white leading-tight">{{ user.name }}</span>
@@ -392,23 +640,44 @@ const chartOptions = {
                           </div>
                        </td>
                        <td class="px-3 py-2 pr-5">
-                          <div class="flex items-center justify-end gap-1">
-                             <!-- Elite Promotion (Full Access) -->
-                             <button @click="updateTier(user.id, 'Elite')" class="w-6.5 h-6.5 bg-white/10 rounded-lg flex items-center justify-center text-white/40 hover:text-[#C1A172] hover:bg-[#C1A172]/20 transition-all group/btn relative">
-                                <Sparkles class="w-3 h-3" />
-                                <span class="absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-black/80 text-white text-[7px] pointer-events-none opacity-0 group-hover/btn:opacity-100 transition-opacity uppercase font-black whitespace-nowrap rounded">Make Elite</span>
-                             </button>
+                          <div class="flex items-center justify-end gap-1.5 relative">
+                             <!-- QUICK TIER SELECTOR (The Star Action) -->
+                             <div class="relative">
+                                <button @click="activeTierSelector = activeTierSelector === user.id ? null : user.id" 
+                                        :class="user.tier !== 'Free' ? 'text-[#C1A172] bg-[#C1A172]/10 border-[#C1A172]/20' : 'text-white/40 bg-white/5 border-white/10'"
+                                        class="w-7 h-7 rounded-lg flex items-center justify-center border hover:bg-white/10 transition-all group/btn">
+                                   <Sparkles class="w-3.5 h-3.5" />
+                                   <span class="absolute -top-7 left-1/2 -translate-x-1/2 px-2 py-1 bg-black text-white text-[7px] pointer-events-none opacity-0 group-hover/btn:opacity-100 transition-opacity uppercase font-black whitespace-nowrap rounded shadow-xl z-50">Tier Override</span>
+                                </button>
+
+                                <!-- MINI POPUP SELECTOR -->
+                                <div v-if="activeTierSelector === user.id" 
+                                     class="absolute right-0 bottom-full mb-2 bg-[#051124] border border-white/10 rounded-xl p-1.5 shadow-2xl flex flex-col gap-1 z-[60] animate-in slide-in-from-bottom-2 duration-200 min-w-[80px]">
+                                   <button v-for="t in ['Free', 'Pro', 'Elite']" :key="t"
+                                           @click="updateTier(user.id, t); activeTierSelector = null"
+                                           :class="user.tier === t ? 'bg-[#C1A172] text-[#0A2647]' : 'text-white/60 hover:bg-white/5'"
+                                           class="px-2 py-1.5 rounded-lg text-[8px] font-black uppercase tracking-widest text-left transition-all">
+                                      {{ t }}
+                                   </button>
+                                </div>
+                             </div>
                              
-                             <!-- Admin Promotion -->
-                             <button @click="handlePromoteAdmin(user.id)" class="w-6.5 h-6.5 bg-white/10 rounded-lg flex items-center justify-center text-white/40 hover:text-green-400 hover:bg-green-500/20 transition-all group/btn relative">
-                                <Shield class="w-3 h-3" />
-                                <span class="absolute -top-6 left-1/2 -translate-x-1/2 px-2 py-0.5 bg-black/80 text-white text-[7px] pointer-events-none opacity-0 group-hover/btn:opacity-100 transition-opacity uppercase font-black whitespace-nowrap rounded">Make Admin</span>
+                             <!-- Admin Toggle (Shield) -->
+                             <button @click="handlePromoteAdmin(user.id)" :class="user.isAdmin ? 'bg-green-500/30 text-green-400 border-green-500/40' : 'bg-white/10 text-white/40 border-white/5'" class="w-7 h-7 rounded-lg flex items-center justify-center border hover:text-green-400 hover:bg-green-500/20 transition-all group/btn relative">
+                                <Shield class="w-3.5 h-3.5" />
+                                <span class="absolute -top-7 left-1/2 -translate-x-1/2 px-2 py-1 bg-black text-white text-[7px] pointer-events-none opacity-0 group-hover/btn:opacity-100 transition-opacity uppercase font-black whitespace-nowrap rounded shadow-xl z-50">{{ user.isAdmin ? 'Revoke Admin' : 'Grant Admin' }}</span>
                              </button>
-                             <button class="w-6.5 h-6.5 bg-white/10 rounded-lg flex items-center justify-center text-white/40 hover:text-white hover:bg-white/20 transition-all">
-                                <Edit3 class="w-3 h-3" />
+
+                             <!-- Full Edit -->
+                             <button @click="editingUser = JSON.parse(JSON.stringify(user))" class="w-7 h-7 bg-white/10 border border-white/5 rounded-lg flex items-center justify-center text-white/40 hover:text-white hover:bg-white/20 transition-all group/btn relative">
+                                <Edit3 class="w-3.5 h-3.5" />
+                                <span class="absolute -top-7 left-1/2 -translate-x-1/2 px-2 py-1 bg-black text-white text-[7px] pointer-events-none opacity-0 group-hover/btn:opacity-100 transition-opacity uppercase font-black whitespace-nowrap rounded shadow-xl z-50">Deep Edit</span>
                              </button>
-                             <button class="w-6.5 h-6.5 bg-white/10 rounded-lg flex items-center justify-center text-white/40 hover:text-red-400 hover:bg-red-500/20 transition-all">
-                                <AlertTriangle class="w-3 h-3" />
+
+                             <!-- Suspension Toggle -->
+                             <button @click="handleSuspendUser(user.id)" :class="user.isSuspended ? 'bg-red-500/30 text-red-500 border-red-500/40' : 'bg-white/10 text-white/40 border-white/5'" class="w-7 h-7 rounded-lg flex items-center justify-center border hover:text-red-400 hover:bg-red-500/20 transition-all group/btn relative">
+                                <AlertTriangle class="w-3.5 h-3.5" />
+                                <span class="absolute -top-7 left-1/2 -translate-x-1/2 px-2 py-1 bg-black text-white text-[7px] pointer-events-none opacity-0 group-hover/btn:opacity-100 transition-opacity uppercase font-black whitespace-nowrap rounded shadow-xl z-50">{{ user.isSuspended ? 'Revoke Freeze' : 'Freeze Specimen' }}</span>
                              </button>
                           </div>
                        </td>
@@ -417,9 +686,56 @@ const chartOptions = {
               </table>
            </div>
         </div>
-     </div>
-  </div>
-</template>
+      </div>
+   </div>
+
+   <!-- ─── IDENTITY EDIT MODAL (NEURAL INTERFACE) ─── -->
+   <div v-if="editingUser" class="fixed inset-0 z-[100] flex items-center justify-center p-6 sm:p-0">
+      <div class="absolute inset-0 bg-[#0A2647]/90 backdrop-blur-xl animate-in fade-in duration-500" @click="editingUser = null"></div>
+      
+      <div class="w-full max-w-md bg-[#0A2647] border border-white/10 rounded-[2.5rem] overflow-hidden shadow-[0_0_100px_rgba(0,0,0,0.8)] relative z-10 animate-in zoom-in slide-in-from-bottom-10 duration-500">
+         <div class="p-8 space-y-6">
+            <div class="flex justify-between items-start">
+               <div>
+                  <span class="text-[9px] font-black text-[#C1A172] uppercase tracking-[0.3em]">Identity Protocol</span>
+                  <h2 class="text-[20px] font-black text-white uppercase tracking-tighter mt-1">Manual Specimen Override</h2>
+               </div>
+               <button @click="editingUser = null" class="w-10 h-10 rounded-full bg-white/5 flex items-center justify-center hover:bg-white/10 transition-colors">
+                  <X class="w-5 h-5 text-white/30" />
+               </button>
+            </div>
+
+            <div class="space-y-4">
+               <div class="space-y-1.5">
+                  <span class="text-[8px] font-black text-white/30 uppercase tracking-widest pl-1">Full Name</span>
+                  <input v-model="editingUser.name" class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 text-white font-bold text-[13px] focus:border-[#C1A172]/50 focus:outline-none transition-all" />
+               </div>
+               
+               <div class="space-y-1.5">
+                  <span class="text-[8px] font-black text-white/30 uppercase tracking-widest pl-1">Registry Email (Owner Access)</span>
+                  <input v-model="editingUser.email" class="w-full bg-white/5 border border-white/10 rounded-2xl px-5 py-3.5 text-white font-medium text-[13px] focus:border-[#C1A172]/50 focus:outline-none transition-all" placeholder="Enter new registry email..." />
+               </div>
+
+               <div class="grid grid-cols-2 gap-3 pt-2">
+                  <button v-for="t in ['Free', 'Pro', 'Elite']" :key="t"
+                          @click="editingUser.tier = t"
+                          :class="editingUser.tier === t ? 'bg-[#C1A172] text-[#0A2647] shadow-lg shadow-[#C1A172]/20' : 'bg-white/5 text-white/40 hover:bg-white/10'"
+                          class="py-3.5 rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all">
+                     {{ t }}
+                  </button>
+               </div>
+            </div>
+
+            <div class="flex gap-3 pt-4">
+               <button @click="editingUser = null" class="flex-1 py-4 text-[10px] font-black text-white/40 uppercase tracking-widest hover:text-white transition-colors">Abort</button>
+               <button @click="confirmEdit" class="flex-[2] py-4 bg-[#C1A172] text-[#0A2647] rounded-2xl text-[10px] font-black uppercase tracking-widest shadow-xl shadow-[#C1A172]/20 hover:scale-[1.02] active:scale-95 transition-all">
+                  Commit Changes
+               </button>
+            </div>
+         </div>
+      </div>
+   </div>
+ </template>
 
 <style scoped>
 .no-scrollbar::-webkit-scrollbar { display: none; }

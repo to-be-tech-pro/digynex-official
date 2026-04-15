@@ -1,6 +1,6 @@
 <script setup>
 import { 
-  Sparkles, Check, Lock, X, RefreshCw, ArrowRight, Stars, Zap
+  Sparkles, Check, Lock, X, RefreshCw, ArrowRight, Stars, Zap, DownloadCloud
 } from 'lucide-vue-next'
 
 const props = defineProps({
@@ -20,7 +20,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  'update:selectedTemplate', 'selectTemplate', 'removeSecretKeyword', 'addSecretKeyword', 'analyzeKeywords', 'selectPreset', 'saveProfile', 'handleAction', 'generateCoverLetter', 'updateCoverLetter', 'setPreviewMode'
+  'update:selectedTemplate', 'selectTemplate', 'removeSecretKeyword', 'addSecretKeyword', 'analyzeKeywords', 'selectPreset', 'saveProfile', 'handleAction', 'generateCoverLetter', 'updateCoverLetter', 'setPreviewMode', 'downloadPdf'
 ])
 
 const selectTemplate = (t) => emit('selectTemplate', t)
@@ -66,9 +66,9 @@ const generateCoverLetter = () => emit('generateCoverLetter')
                  
                  <div class="w-full h-full absolute inset-0 bg-gradient-to-t from-black via-black/50 to-transparent"></div>
                  
-                 <div v-if="selectedTemplate === t.id" class="absolute top-5 right-5 p-2.5 rounded-full shadow-2xl z-20 animate-in zoom-in spin-in-90 duration-700"
+                 <div v-if="selectedTemplate === t.id" class="absolute top-4 right-4 w-7 h-7 flex items-center justify-center rounded-full shadow-2xl z-20 animate-in zoom-in spin-in-90 duration-700"
                       :style="{ backgroundColor: userProfile.primaryColor }">
-                    <Check class="w-5 h-5 text-[#0A2647] stroke-[3px]" />
+                    <Check class="w-3.5 h-3.5 text-white stroke-[4px]" />
                  </div>
                  
                  <div class="absolute bottom-5 flex flex-col items-center z-10 px-6 text-center">
@@ -118,7 +118,9 @@ const generateCoverLetter = () => emit('generateCoverLetter')
               </div>
            </div>
 
-            <div class="w-full h-[360px] bg-white rounded-[2rem] border-4 border-black/80 overflow-hidden shadow-3xl relative transition-all group/vp" id="live-viewport">
+             <div class="w-full h-[360px] bg-white rounded-[2rem] border-4 overflow-hidden shadow-3xl relative transition-all duration-700 ease-in-out group/vp" 
+                  id="live-viewport"
+                  :class="isStealthUnlocked ? 'border-blue-400/80 shadow-[0_0_30px_rgba(59,130,246,0.3)]' : 'border-black/80'">
                <iframe v-if="viewportHtml" 
                        :srcdoc="viewportHtml"
                        class="w-[794px] h-[1123px] border-none absolute left-1/2 top-1 origin-top"
@@ -126,8 +128,17 @@ const generateCoverLetter = () => emit('generateCoverLetter')
                        title="CV Specimen Preview"></iframe>
                
                <!-- Viewport HUD Overlay -->
-               <div class="absolute bottom-4 left-1/2 -translate-x-1/2 px-4 py-1.5 bg-black/60 backdrop-blur-md rounded-full border border-white/10 opacity-0 group-hover/vp:opacity-100 transition-opacity duration-500">
-                  <span class="text-[8px] font-black text-white/50 uppercase tracking-[0.3em]">A4 Paper | 210mm x 297mm</span>
+               <div class="absolute bottom-4 left-1/2 -translate-x-1/2 flex flex-col items-center gap-1 opacity-0 group-hover/vp:opacity-100 transition-opacity duration-500 z-30">
+                  <div v-if="isStealthUnlocked" class="px-4 py-1.5 bg-blue-500/10 border border-blue-400/30 backdrop-blur-md rounded-full shadow-[0_0_15px_rgba(59,130,246,0.2)] animate-pulse">
+                     <span class="text-[8px] font-black text-blue-400 uppercase tracking-widest">AI Stealth Divider Active</span>
+                  </div>
+                  <div class="px-4 py-1.5 bg-black/60 backdrop-blur-md rounded-full border border-white/10 flex items-center gap-2 shadow-2xl">
+                     <span class="text-[8px] font-black text-white/50 uppercase tracking-[0.3em] pr-2 border-r border-white/10">A4 Specimen</span>
+                     <button @click="$emit('downloadPdf')" class="flex items-center gap-1.5 group/dl transition-all hover:scale-105">
+                        <DownloadCloud class="w-3 h-3 text-[#C1A172] group-hover/dl:animate-bounce" />
+                        <span class="text-[8px] font-black text-[#C1A172] uppercase tracking-[0.1em]">Download HD PDF</span>
+                     </button>
+                  </div>
                </div>
             </div>
         </div>
