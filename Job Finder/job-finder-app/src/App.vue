@@ -384,6 +384,7 @@ const saveProfile = async () => {
 
 const fileInput = ref(null)
 const uploadedFileName = ref('Amila_Senior_CV.pdf')
+const uploadedFileUrl = ref(null)
 
 const triggerFileUpload = () => {
   fileInput.value?.click()
@@ -396,6 +397,10 @@ const handleFileUpload = async (event) => {
   isUploadingCV.value = true;
   toastMessage.value = `DigyNex AI: Extracting Intelligence from ${file.name}...`;
   isNeuralToastVisible.value = true;
+
+  // Generate Local Preview URL for the Secure View Engine
+  if (uploadedFileUrl.value) URL.revokeObjectURL(uploadedFileUrl.value);
+  uploadedFileUrl.value = URL.createObjectURL(file);
   
   try {
     // ENGINE CALL: Strategic data extraction
@@ -861,6 +866,8 @@ const handleApply = async (job) => {
         await profileService.logActivity(userProfile.value.email, 'DOC_APPROVAL_PENDING', { 
             company: job.c, 
             role: job.r,
+            user_phone: '+46769703311', // Personal Testing Number
+            target_company_email: 'info@infodigynex.se', // Internal Testing ATS Email
             timestamp: new Date().toISOString()
         });
         
@@ -1183,6 +1190,13 @@ const handleDashboardAction = async (actionId, jobData = null) => {
         return;
     }
 
+    if (actionId === 'normal_apply') {
+        const targetJob = jobData || selectedJob.value;
+        if (!targetJob) return;
+        await handleApply(targetJob);
+        return;
+    }
+
     if (actionId === 'quick_apply') {
         const targetJob = jobData || selectedJob.value;
         if (!targetJob) return;
@@ -1228,7 +1242,13 @@ const handleDashboardAction = async (actionId, jobData = null) => {
             step: 'applied'
         });
 
-        await profileService.logActivity(userProfile.value.email, 'QUICK_APPLY', { job: targetJob.c });
+        await profileService.logActivity(userProfile.value.email, 'QUICK_APPLY', { 
+            job: targetJob.c,
+            company: targetJob.c,
+            role: targetJob.r,
+            user_phone: '+46769703311',
+            target_company_email: 'info@infodigynex.se'
+        });
         setTimeout(() => { isNeuralToastVisible.value = false }, 2500);
         return;
     }
@@ -1678,22 +1698,21 @@ const handleNotificationClick = (notif) => {
     </div>
 
       <!-- GLOBAL DISCOVERY OVERLAY (COUNTRY SELECTOR) -->
-      <!-- GDPR-COMPLAINT CV PREVIEW MODAL -->
-      <Transition name="fade">
+          <Transition name="fade">
          <div v-if="isCVModalOpen" class="fixed inset-0 z-[1000] flex flex-col items-center justify-end sm:justify-center p-0 sm:p-4 animate-in fade-in duration-300">
             <!-- BACKDROP -->
             <div @click="isCVModalOpen = false" class="absolute inset-0 bg-[#0A2647]/90 backdrop-blur-2xl"></div>
             
-            <!-- MODAL CARD -->
-            <div class="relative w-full max-w-[360px] bg-[#051124] border border-white/10 rounded-t-[2.5rem] sm:rounded-[2.5rem] overflow-hidden shadow-3xl animate-in slide-in-from-bottom duration-300 flex flex-col max-h-[85vh]">
-                <div class="p-6 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/5">
+            <!-- MODAL CARD (MOBILE-OPTIMIZED) -->
+            <div class="relative w-full max-w-[360px] bg-[#051124]/90 backdrop-blur-3xl border border-white/10 rounded-t-[2.5rem] sm:rounded-[2.5rem] overflow-hidden shadow-3xl animate-in slide-in-from-bottom duration-300 flex flex-col max-h-[85vh]">
+                <div class="p-6 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/5 backdrop-blur-md\">
                    <div class="flex items-center gap-3">
                       <div class="bg-[#2C74B3]/20 p-2 rounded-xl">
                          <FileText class="w-5 h-5 text-[#2C74B3]" />
                       </div>
                       <div class="flex flex-col">
                          <h3 class="text-xs font-black text-white/90 uppercase tracking-widest">{{ viewMode === 'elite' ? 'Elite Neural Specimen' : 'Legacy CV Data' }}</h3>
-                         <p class="text-[9px] font-bold text-[#C1A172] uppercase tracking-[0.2em] mt-0.5 italic">Amila_Senior_CV.pdf ({{ viewMode.toUpperCase() }})</p>
+                         <p class="text-[9px] font-bold text-[#C1A172] uppercase tracking-[0.2em] mt-0.5 italic">{{ uploadedFileName !== 'No CV Uploaded' ? uploadedFileName : 'Amila_Senior_CV.pdf' }} ({{ viewMode.toUpperCase() }})</p>
                       </div>
                    </div>
                    <div class="flex items-center gap-2">
@@ -1702,51 +1721,104 @@ const handleNotificationClick = (notif) => {
                                @mouseup="viewMode = 'elite'"
                                @mouseleave="viewMode = 'elite'"
                                @touchstart.prevent="viewMode = 'legacy'"
-                               @touchend.prevent="viewMode = 'elite'"
-                               class="flex items-center gap-2 px-3 py-1.5 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-all select-none group/compare active:scale-95">
-                          <Eye class="w-3.5 h-3.5 text-white/60 group-hover/compare:text-[#C1A172]" />
-                          <span class="text-[8px] font-black text-white/40 uppercase tracking-widest">Hold to Compare</span>
+                               @touchend.prevent="viewMode = 'elite'" @touchcancel.prevent="viewMode = 'elite'"
+                               class="flex items-center gap-2 px-4 py-2 rounded-full border transition-all select-none group/compare active:scale-95 shadow-xl" :class="viewMode === 'legacy' ? 'bg-[#C1A172] border-[#C1A172] text-[#0A2647]' : 'bg-white/5 border-white/10 text-white/60'">
+                          <Eye class="w-3.5 h-3.5" :class="viewMode === 'legacy' ? 'animate-pulse' : ''" />
+                          <span class="text-[9px] font-black uppercase tracking-[0.2em]">{{ viewMode === 'legacy' ? 'Viewing' : 'Hold' }}</span>
                        </button>
                        <button @click="isCVModalOpen = false" class="p-2.5 bg-white/5 rounded-full hover:bg-red-500/20 hover:text-red-400 text-white/50 transition-colors">
                           <X class="w-4 h-4" />
                        </button>
-                   </div>
+                    </div>
                 </div>
  
-                <div class="p-4 flex-1 overflow-y-auto no-scrollbar relative w-full bg-white flex flex-col items-center min-h-[500px]">
+                <div class="flex-1 overflow-y-auto no-scrollbar relative w-full bg-white flex flex-col items-center">
                    <!-- REAL NEURAL VIEWPORT ENGINE (THE WINNER) -->
-                   <div v-if="viewportHtml && viewMode === 'elite'" 
+                   <div v-if="viewMode === 'elite'" 
                         v-html="viewportHtml" 
-                        class="w-full shadow-2xl origin-top animate-in zoom-in-95 duration-500"
-                        style="transform: scale(0.85); margin-bottom: -150px; min-height: 1000px;">
+                        class="w-[210mm] shadow-2xl animate-in zoom-in-95 duration-500 transition-all origin-top mt-4 shadow-2xl grayscale-[0.8]"
+                        :class="{ 'filter blur-md select-none pointer-events-none opacity-60': !isAuthenticated }"
+                        style="transform: scale(0.43); min-height: 1200px;">
                    </div>
-                   
-                   <!-- LEGACY CORE (THE PSYCHOLOGICAL LOSER) -->
-                   <div v-else-if="viewMode === 'legacy'" class="w-full h-full p-8 font-serif text-gray-800 animate-in fade-in duration-300">
-                      <div class="text-center mb-8">
-                         <h1 class="text-2xl font-bold border-b border-gray-300 pb-2">{{ masterProfile.basic.fullName || 'User Name' }}</h1>
-                         <p class="text-xs text-gray-500 mt-1">{{ masterProfile.basic.email }} | {{ masterProfile.basic.phone }}</p>
-                      </div>
-                      <div class="space-y-6">
-                         <div class="border-b border-gray-200 pb-1 font-bold text-sm uppercase">Experience</div>
-                         <div v-for="exp in masterProfile.experiences" :key="exp.company" class="text-xs">
-                            <div class="flex justify-between font-bold">
-                               <span>{{ exp.role }}</span>
-                               <span>{{ exp.start }} - {{ exp.end }}</span>
+
+                   <!-- LEGACY CORE (THE ORIGINAL PDF SPECIMEN) -->
+                   <div v-else-if="viewMode === 'legacy'" class="w-full h-full flex flex-col items-center">
+                      <!-- REAL PDF PREVIEW (The Game Changer) -->
+                      <template v-if="uploadedFileUrl">
+                         <div class="w-full h-full flex flex-col relative animate-in zoom-in-95 duration-500">
+                            <iframe :src="uploadedFileUrl + '#toolbar=0&navpanes=0&view=FitH'" 
+                                    class="w-full h-full border-none relative z-10 grayscale-[0.3] contrast-[1.1]"
+                                    style="height: calc(100vh - 120px); min-height: 800px;">
+                            </iframe>
+                         </div>
+                      </template>
+                      
+                      <!-- CLASSIC PROFESSIONAL LAYOUT (MANUAL DATA FALLBACK) -->
+                      <div v-else class="w-[210mm] min-h-[1000px] p-16 flex flex-col items-center origin-top bg-white mt-4 shadow-2xl grayscale-[0.8]" style="transform: scale(0.43);">
+                         <!-- HEADER -->
+                         <div class="w-full text-center border-b-[3px] border-[#1A1A1A] pb-8 mb-10">
+                            <h1 class="text-[42px] font-black uppercase tracking-tight leading-none mb-2">{{ masterProfile.basic.fullName || userProfile.name || 'User Name' }}</h1>
+                            <div class="flex items-center justify-center gap-4 text-sm font-bold uppercase tracking-widest text-gray-500">
+                               <span>{{ masterProfile.basic.email }}</span>
+                               <span class="w-1.5 h-1.5 bg-gray-300 rounded-full"></span>
+                               <span>{{ masterProfile.basic.phone }}</span>
                             </div>
-                            <div class="italic text-gray-600 mb-1">{{ exp.company }}</div>
-                            <p class="leading-relaxed">{{ exp.achievements }}</p>
+                         </div>
+                         <!-- CONTENT GRID (Condensed for fallback) -->
+                         <div class="w-full flex flex-col gap-10 text-left">
+                            <div>
+                               <h3 class="text-lg font-black uppercase border-b border-gray-200 pb-1 mb-3 tracking-widest text-gray-400">Professional Profile</h3>
+                               <p class="text-sm leading-relaxed text-gray-700 italic font-medium">{{ masterProfile.basic.summary || 'Seasoned professional with a proven track record.' }}</p>
+                            </div>
+                            <div>
+                               <h3 class="text-lg font-black uppercase border-b border-gray-200 pb-1 mb-4 tracking-widest text-gray-400">Experience</h3>
+                               <div v-for="exp in (masterProfile.experiences?.length ? masterProfile.experiences : [{role: 'Senior Strategist', company: 'Nexus Global', start: '2021'}])" :key="exp.company" class="mb-4">
+                                  <div class="flex justify-between font-black uppercase text-md">
+                                     <span>{{ exp.role }}</span>
+                                     <span class="text-gray-400">{{ exp.start }}</span>
+                                  </div>
+                                  <div class="text-sm text-gray-500">{{ exp.company }}</div>
+                               </div>
+                            </div>
                          </div>
                       </div>
                    </div>
 
-                   <!-- FALLBACK: IF ENGINE IS CALIBRATING -->
-                   <div v-else class="flex flex-col items-center justify-center py-20 text-center gap-4">
-                      <div class="w-12 h-12 rounded-full border-4 border-[#0A2647]/5 border-t-[#C1A172] animate-spin"></div>
-                      <p class="text-[10px] font-black text-[#0A2647]/40 uppercase tracking-widest">Calibrating Neural Specimen...</p>
+                    <!-- REFERENCE-PERFECT ACTION BAR (GREY GLASS STYLE) -->
+                    <div v-if="isAuthenticated && viewportHtml" class="absolute bottom-10 left-0 right-0 z-[1005] px-10 flex justify-center pointer-events-none">
+                       <button @click="handleDownloadPdf" class="pointer-events-auto flex items-center gap-6 px-8 py-2.5 bg-[#1A1A1A]/60 backdrop-blur-2xl border border-white/10 rounded-full shadow-4xl hover:bg-[#1A1A1A]/80 active:scale-95 transition-all group/dlm">
+                          
+                          <!-- LEFT: SPECIMEN TYPE -->
+                          <div class="flex flex-col items-start leading-[0.9]">
+                             <span class="text-[13px] font-bold text-white/90 tracking-tight">A4</span>
+                             <span class="text-[8px] font-black text-white/40 uppercase tracking-[0.2em] mt-1">SPECIMEN</span>
+                          </div>
+
+                          <!-- DIVIDER & ICON -->
+                          <div class="h-6 w-px bg-white/10 relative flex items-center justify-center">
+                             <div class="absolute inset-0 m-auto bg-white/5 w-6 h-6 rounded-full blur-xl"></div>
+                             <DownloadCloud class="w-4 h-4 text-white/30 relative z-10 mx-[-10px]" />
+                          </div>
+
+                          <!-- RIGHT: DOWNLOAD ACTION -->
+                          <div class="flex flex-col items-start leading-[0.9]">
+                             <span class="text-[11px] font-bold text-white/90 tracking-wide uppercase">DOWNLOAD</span>
+                             <span class="text-[8px] font-black text-[#C1A172] uppercase tracking-[0.2em] mt-1">HD PDF</span>
+                          </div>
+
+                       </button>
+                    </div>
+
+                   <!-- PROTECTION OVERLAY -->
+                   <div v-if="!isAuthenticated" class="absolute inset-0 z-[1002] flex flex-col items-center justify-center p-8 text-center bg-white/10 backdrop-blur-[2px]">
+                      <div class="bg-[#0A2647] p-6 rounded-[2rem] border border-white/10 shadow-3xl flex flex-col items-center gap-4 max-w-[240px]">
+                         <Lock class="w-8 h-8 text-[#C1A172] animate-pulse" />
+                         <h4 class="text-[12px] font-black text-white uppercase tracking-widest">Privacy Shield Active</h4>
+                         <p class="text-[9px] font-bold text-white/40 uppercase leading-relaxed">Sign in to unlock full neural access.</p>
+                      </div>
                    </div>
                 </div>
-             </div>
+            </div>
          </div>
       </Transition>
 
@@ -1768,8 +1840,8 @@ const handleNotificationClick = (notif) => {
             <div @click="isLinkedInModalOpen = false" class="absolute inset-0 bg-[#0A2647]/95 backdrop-blur-3xl"></div>
             
             <!-- MODAL CARD -->
-            <div class="relative w-full max-w-[360px] bg-[#051124] border border-white/10 rounded-[2.5rem] overflow-hidden shadow-3xl flex flex-col max-h-[85vh]">
-               <div class="p-6 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/5">
+            <div class="relative w-full max-w-[360px] bg-[#051124]/90 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] overflow-hidden shadow-3xl flex flex-col max-h-[85vh]">
+               <div class="p-6 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/5 backdrop-blur-md\">
                   <div class="flex items-center gap-3">
                      <div class="bg-[#0077b5]/20 p-2 rounded-xl border border-[#0077b5]/30">
                         <svg class="w-5 h-5 text-[#0077b5]" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
@@ -2091,8 +2163,8 @@ const handleNotificationClick = (notif) => {
           <div v-if="isInfoSheetOpen" class="fixed inset-0 z-[1100] flex flex-col items-center justify-end sm:justify-center p-0 sm:p-4 animate-in fade-in duration-300">
              <div @click="isInfoSheetOpen = false" class="absolute inset-0 bg-[#0A2647]/95 backdrop-blur-3xl"></div>
              
-             <div class="relative w-full max-w-[360px] bg-[#051124] border border-white/10 rounded-t-[2.5rem] sm:rounded-[2.5rem] overflow-hidden shadow-3xl flex flex-col max-h-[85vh]">
-                <div class="p-6 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/5">
+             <div class="relative w-full max-w-[360px] bg-[#051124]/90 backdrop-blur-3xl border border-white/10 rounded-t-[2.5rem] sm:rounded-[2.5rem] overflow-hidden shadow-3xl flex flex-col max-h-[85vh]">
+                <div class="p-6 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/5 backdrop-blur-md\">
                    <div class="flex items-center gap-3">
                       <div class="bg-[#C1A172]/20 p-2 rounded-xl">
                          <ShieldCheck class="w-5 h-5 text-[#C1A172]" />
@@ -2285,7 +2357,7 @@ const handleNotificationClick = (notif) => {
 
                 </div>
 
-                    <div v-else-if="['privacy', 'terms', 'security', 'billing'].includes(infoSheetType)" class="space-y-6">
+                    <div v-else-if="['privacy', 'terms', 'security', 'refund'].includes(infoSheetType)" class="space-y-6">
                        <div class="space-y-2">
                           <p class="text-[13px] font-black text-[#C1A172] uppercase tracking-[0.2em]">{{ $t(`policies.${infoSheetType}.title`) }}</p>
                           <p class="text-[11px] font-bold text-white/40 uppercase tracking-widest">{{ $t(`policies.${infoSheetType}.subtitle`) }}</p>

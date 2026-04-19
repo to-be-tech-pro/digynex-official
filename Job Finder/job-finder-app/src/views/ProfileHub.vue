@@ -148,12 +148,25 @@ const hasCVData = computed(() => {
                     {{ isUploadingCV ? 'Syncing...' : (uploadedFileName !== 'No CV Uploaded' ? 'REPLACE ACTIVE CV' : 'Upload Professional CV') }}
                  </span>
               </button>
-              <button @click="hasCVData ? $emit('openCVModal') : null" 
-                      :class="hasCVData ? 'bg-[#0A2647] hover:scale-[1.02] shadow-xl shadow-[#0A2647]/20' : 'bg-[#0A2647]/20 cursor-not-allowed opacity-40'"
-                      class="w-[88%] mx-auto py-3.5 rounded-2xl flex items-center justify-center gap-3 transition-all">
-                 <span class="text-[11px] font-black text-white uppercase tracking-widest">{{ hasCVData ? 'SECURE VIEW ENGINE' : 'VIEW ENGINE LOCKED' }}</span>
-                 <Lock v-if="!hasCVData" class="w-3 h-3 text-white/40" />
-              </button>
+               <button @click="hasCVData ? $emit('openCVModal') : null" 
+                       :class="hasCVData ? 'bg-[#0A2647] hover:scale-[1.02] shadow-xl shadow-[#0A2647]/20 border border-white/10' : 'bg-[#0A2647]/20 cursor-not-allowed opacity-40'"
+                       class="w-[88%] mx-auto py-3.5 rounded-2xl flex items-center justify-center gap-3 transition-all">
+                  <span class="text-[11px] font-black text-white uppercase tracking-widest">{{ hasCVData ? 'SECURE VIEW ENGINE' : 'VIEW ENGINE LOCKED' }}</span>
+                  <Lock v-if="!hasCVData" class="w-3 h-3 text-white/40" />
+               </button>
+
+               <!-- NEURAL SYNC SUCCESS MESSAGE -->
+               <div v-if="uploadedFileName !== 'No CV Uploaded'" 
+                    class="pt-1 animate-in slide-in-from-top-2 duration-700 fade-in flex flex-col items-center">
+                  <div class="px-3 py-1 bg-[#C1A172]/10 border border-[#C1A172]/20 rounded-full flex items-center gap-2">
+                     <span class="relative flex h-1.5 w-1.5">
+                        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#C1A172] opacity-75"></span>
+                        <span class="relative inline-flex rounded-full h-1.5 w-1.5 bg-[#C1A172]"></span>
+                     </span>
+                     <span class="text-[8px] font-black text-[#C1A172] uppercase tracking-[0.15em]">Neural Specimen Ready!</span>
+                  </div>
+                  <span class="text-[7px] font-bold text-[#0A2647]/30 uppercase tracking-widest mt-1">Tap Engine above to preview upgrade</span>
+               </div>
            </div>
         </div>
         

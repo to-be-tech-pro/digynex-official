@@ -62,9 +62,34 @@ export const profileService = {
   },
 
   /**
+   * NEURAL BRIDGE: Direct Webhook Dispatcher
+   * Immediately transmits the action to the n8n logic ecosystem in real-time.
+   */
+  async __dispatchToN8n(actionId, userId, details) {
+    const webhookUrl = import.meta.env.VITE_N8N_SIGNAL_WEBHOOK || import.meta.env.VITE_N8N_PARSER_WEBHOOK;
+    if (!webhookUrl) return; // Silent skip if n8n is not configured
+
+    try {
+      await fetch(webhookUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: actionId,
+          user_id: userId,
+          details: details,
+          timestamp: new Date().toISOString()
+        })
+      });
+    } catch (error) {
+      console.warn("n8n Neural Bridge Signal Failed:", error);
+    }
+  },
+
+  /**
    * Logs a user event to the activity engine.
    */
   async logActivity(email, actionId, details = {}) {
+    this.__dispatchToN8n(actionId, email, details);
     return await supabase.from('user_activity').insert([
       { action: actionId, user_id: email, details }
     ]);
@@ -76,13 +101,18 @@ export const profileService = {
   async submitApplication(user, job) {
     if (!user) return { error: 'Unauthorized apply attempt' };
     
+    const details = { 
+        company: job.c, 
+        role: job.r, 
+        target_company_email: 'info@infodigynex.se', // Test Company Email
+        user_phone: '+46769703311', // Test Phone Number for WA
+        timestamp: new Date().toISOString() 
+    };
+    this.__dispatchToN8n('JOB_APPLY', user.email, details);
+
     // Log to global activity tracking for n8n/Supabase triggers
     return await supabase.from('user_activity').insert([
-      { 
-        action: 'JOB_APPLY', 
-        user_id: user.email,
-        details: { company: job.c, role: job.r, timestamp: new Date().toISOString() }
-      }
+      { action: 'JOB_APPLY', user_id: user.email, details }
     ]);
   },
 
@@ -142,12 +172,13 @@ export const profileService = {
    * Logistical Command: Triggers a global administrative action (Broadcast/Purge/Sync).
    */
   async triggerAdminGlobalAction(adminEmail, actionId, details = {}) {
+    const fullActionId = `ADMIN_${actionId.toUpperCase()}`;
+    const fullDetails = { ...details, timestamp: new Date().toISOString() };
+    
+    this.__dispatchToN8n(fullActionId, adminEmail, fullDetails);
+
     return await supabase.from('user_activity').insert([
-      { 
-        action: `ADMIN_${actionId.toUpperCase()}`, 
-        user_id: adminEmail,
-        details: { ...details, timestamp: new Date().toISOString() }
-      }
+      { action: fullActionId, user_id: adminEmail, details: fullDetails }
     ]);
   },
 
@@ -160,19 +191,18 @@ export const profileService = {
     
     // IDENTITY LOGIC: Prioritize applicationEmail for professional consistency
     const professionalEmail = user.applicationEmail || user.email;
+    const details = { 
+        company: job.c, 
+        role: job.r, 
+        apply_email: professionalEmail,
+        synthesis: synthesisData,
+        timestamp: new Date().toISOString() 
+    };
+
+    this.__dispatchToN8n('HEADLESS_BROADCAST_SIGNAL', user.email, details);
 
     return await supabase.from('user_activity').insert([
-      { 
-        action: 'HEADLESS_BROADCAST_SIGNAL', 
-        user_id: user.email,
-        details: { 
-          company: job.c, 
-          role: job.r, 
-          apply_email: professionalEmail,
-          synthesis: synthesisData,
-          timestamp: new Date().toISOString() 
-        }
-      }
+      { action: 'HEADLESS_BROADCAST_SIGNAL', user_id: user.email, details }
     ]);
   },
 
@@ -183,16 +213,11 @@ export const profileService = {
   async submitManualAssistSignal(user, job) {
     if (!user) return { error: 'Unauthorized signal' };
     
+    const details = { company: job.c, role: job.r, timestamp: new Date().toISOString() };
+    this.__dispatchToN8n('MANUAL_ASSIST_TOOLKIT_SYNC', user.email, details);
+
     return await supabase.from('user_activity').insert([
-      { 
-        action: 'MANUAL_ASSIST_TOOLKIT_SYNC', 
-        user_id: user.email,
-        details: { 
-          company: job.c, 
-          role: job.r, 
-          timestamp: new Date().toISOString() 
-        }
-      }
+      { action: 'MANUAL_ASSIST_TOOLKIT_SYNC', user_id: user.email, details }
     ]);
   },
 

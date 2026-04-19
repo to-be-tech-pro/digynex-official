@@ -142,11 +142,14 @@
     },
     "refund": {
       "title": "Refund & Billing Policy",
-      "subtitle": "Transparent billing for our Premium Suites.",
+      "subtitle": "Clear, secure, and fully compliant billing guidelines tailored for our global and EU users.",
       "sections": [
-        { "id": "cycles", "title": "Subscription Cycles", "content": "Pro and Elite plans operate on recurring monthly or annual billing. You retain full control to cancel or downgrade at any time via the Neural Master Control gateway." },
-        { "id": "refunds", "title": "Refund Eligibility", "content": "Given the digital nature of AI token consumption, we generally do not offer refunds for active billing cycles. However, proven technical errors will be rectified if reported within 48 hours." },
-        { "id": "transparency", "title": "Pricing Transparency", "content": "Any adjustments to our pricing structures will be communicated to your registered email at least 30 days prior to the next billing cycle taking effect." }
+        { "id": "withdrawal", "title": "14-Day Right of Withdrawal", "content": "In accordance with EU consumer protection laws, you retain the right to request a full refund within 14 days of your purchase without providing any specific reason, subject to the Digital Content Exception below." },
+        { "id": "digital_exception", "title": "The Digital Content Exception", "content": "If you have already utilized our Neural Engine to synthesize a CV, generate a Cover Letter, or initiated a job application sync, the digital service is legally considered delivered in full. In these instances, the 14-day withdrawal right is instantly forfeited and no refunds can be issued." },
+        { "id": "partial_abuse", "title": "Partial Refunds & Account Integrity", "content": "We do not offer prorated or partial refunds for unused time if you choose to cancel mid-cycle. Furthermore, accounts terminated due to Terms of Service violations, platform abuse, or fraudulent banking chargebacks are permanently barred and strictly ineligible for refunds." },
+        { "id": "processing", "title": "Refund Request & Processing", "content": "To request an eligible refund, email support@digynex.se quoting your Order ID and reason. Once officially approved, your refund will be processed and credited exclusively back to your original payment method via Stripe within 5-10 business days." },
+        { "id": "billing_taxes", "title": "Secure Billing, Invoicing & Taxes", "content": "All global payments are encrypted and handled seamlessly by Stripe; we never store your card data natively. Platform pricing incorporates applicable regional VAT/taxes with zero hidden fees. Upon completion, an official e-invoice identifying our Swedish corporate headquarters is dispatched to your registered email immediately." },
+        { "id": "renewals_currency", "title": "Renewals & Currency Transparency", "content": "Annual structures (like the Founder's Pass) will automatically renew unless proactively canceled at least 24 hours prior to the next designated billing date. While billed broadly in USD, local bank statements and your final receipt may reflect SEK or EUR equivalencies dynamically. Should a payment pulse fail, system access is temporarily suppressed until resolved." }
       ]
     }
   },

@@ -115,7 +115,7 @@ const emit = defineEmits(['close', 'onAction'])
            </button>
 
            <!-- Main Action: Auto-Broadcast -->
-           <button v-if="job.applyType !== 'manual'" @click="emit('onAction', 'quick_apply', job)" class="flex-[1.5] bg-[#C1A172] h-14 rounded-[1.25rem] flex items-center justify-center gap-3 shadow-[0_15px_40px_rgba(193,161,114,0.25)] hover:scale-[1.02] active:scale-95 transition-all text-[#0A2647] font-black uppercase tracking-widest text-[11px] group relative overflow-hidden">
+           <button v-if="job.applyType !== 'manual'" @click="emit('onAction', 'normal_apply', job)" class="flex-[1.5] bg-[#C1A172] h-14 rounded-[1.25rem] flex items-center justify-center gap-3 shadow-[0_15px_40px_rgba(193,161,114,0.25)] hover:scale-[1.02] active:scale-95 transition-all text-[#0A2647] font-black uppercase tracking-widest text-[11px] group relative overflow-hidden">
               <div class="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
               <span>Instant AI Apply</span>
               <ArrowUpRight class="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />

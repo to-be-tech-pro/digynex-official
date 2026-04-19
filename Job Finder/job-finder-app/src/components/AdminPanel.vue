@@ -9,12 +9,16 @@ const props = defineProps({
 const emit = defineEmits(['update:isMaintenanceMode', 'setTab'])
 
 const isAdminAuthenticated = ref(false)
+const isSuperAdmin = ref(false)
 const adminPin = ref('')
-const neuralKey = 'master333'
 
 const authenticateAdmin = () => {
-    if (adminPin.value === neuralKey) {
+    if (adminPin.value === '8580') {
         isAdminAuthenticated.value = true
+        isSuperAdmin.value = true
+    } else if (adminPin.value === 'master333') {
+        isAdminAuthenticated.value = true
+        isSuperAdmin.value = false
     } else {
         alert('NEURAL KEY REJECTED. IDENTITY NOT VERIFIED.')
         adminPin.value = ''
@@ -87,7 +91,7 @@ const authenticateAdmin = () => {
         </div>
 
         <!-- System Pulse Mock -->
-        <div class="bg-gradient-to-br from-[#0A2647] via-[#1a3a5f] to-[#0A2647] rounded-[2.5rem] p-7 text-white shadow-2xl relative overflow-hidden group">
+        <div v-if="isSuperAdmin" class="bg-gradient-to-br from-[#0A2647] via-[#1a3a5f] to-[#0A2647] rounded-[2.5rem] p-7 text-white shadow-2xl relative overflow-hidden group">
           <div class="absolute -right-4 -top-4 opacity-10 group-hover:scale-150 transition-transform duration-1000">
             <Zap class="w-24 h-24" />
           </div>

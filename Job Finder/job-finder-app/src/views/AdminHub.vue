@@ -374,6 +374,12 @@ const handleQuickAction = async (action) => {
 
     try {
         if (action.l.includes('Broadcast')) {
+            // Signal n8n Neural Bridge: Output 2 (Broadcast Engine)
+            await profileService.logActivity('admin@digynex.com', 'ADMIN_BROADCAST', { 
+                message: broadcastMessage.value,
+                timestamp: new Date().toISOString()
+            });
+
             const { error } = await supabase
                 .from('system_config')
                 .upsert({
