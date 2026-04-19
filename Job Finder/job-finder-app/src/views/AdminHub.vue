@@ -38,7 +38,18 @@ const configData = ref({
     elite: { cv_per_week: 999, day_cap: 999, price: 49, ai_magic: true }
 })
 const isSavingConfig = ref(false)
-const broadcastMessage = ref('Global Neural System Upgrade Initiated.')
+const broadcastMessage = ref(`⚡ **DIGYNEX SYSTEM UPDATE** ⚡
+━━━━━━━━━━━━━━━━━━
+🛠 **Status:** \`UPGRADING\`
+📡 **Mode:** \`NEURAL SYNC\`
+
+📝 **Message:**
+*Global Neural System Upgrade Initiated.* Operations are temporarily paused for optimization. 
+(Work stopped at (time) Sweden Time)
+
+🚀 **Strategic Pulse:** \`Neural Master Hub\`
+━━━━━━━━━━━━━━━━━━
+_Efficiency is our priority._`)
 
 const fetchConfig = async () => {
     try {
@@ -376,6 +387,8 @@ const handleQuickAction = async (action) => {
         if (action.l.includes('Broadcast')) {
             // Signal n8n Neural Bridge: Output 2 (Broadcast Engine)
             await profileService.logActivity('admin@digynex.com', 'ADMIN_BROADCAST', { 
+                active: true,
+                type: 'System Upgrade',
                 message: broadcastMessage.value,
                 timestamp: new Date().toISOString()
             });

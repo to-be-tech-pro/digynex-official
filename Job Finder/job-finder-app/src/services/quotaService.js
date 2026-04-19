@@ -144,23 +144,27 @@ export const quotaService = {
         const oneDayAgo = new Date(now.getTime() - (24 * 60 * 60 * 1000)).toISOString();
         const oneWeekAgo = new Date(now.getTime() - (7 * 24 * 60 * 60 * 1000)).toISOString();
 
-        const { count: weeklyCount } = await supabase
+        const { data: weeklyData } = await supabase
             .from('user_activity')
-            .select('*', { count: 'exact', head: true })
+            .select('created_at')
             .eq('user_id', userEmail)
             .eq('action', 'CV_EXPORT')
-            .gt('created_at', oneWeekAgo);
+            .gt('created_at', oneWeekAgo)
+            .order('created_at', { ascending: true });
 
-        const { count: dailyCount } = await supabase
+        const { data: dailyData } = await supabase
             .from('user_activity')
-            .select('*', { count: 'exact', head: true })
+            .select('created_at')
             .eq('user_id', userEmail)
             .eq('action', 'CV_EXPORT')
-            .gt('created_at', oneDayAgo);
+            .gt('created_at', oneDayAgo)
+            .order('created_at', { ascending: true });
 
         return {
-          weeklyCount: weeklyCount || 0, 
-          dailyCount: dailyCount || 0
+          weeklyCount: weeklyData?.length || 0, 
+          dailyCount: dailyData?.length || 0,
+          oldestDaily: dailyData?.[0]?.created_at,
+          oldestWeekly: weeklyData?.[0]?.created_at
         };
     } catch (error) {
         return { weeklyCount: 0, dailyCount: 0 };
@@ -189,11 +193,13 @@ export const quotaService = {
     const tier = this.TIERS[index];
 
     if (stats.weeklyCount >= tier.cv_weekly_limit) {
-      return { can: false, reason: 'WEEKLY_LIMIT', limit: tier.cv_weekly_limit };
+      const nextDate = stats.oldestWeekly ? new Date(new Date(stats.oldestWeekly).getTime() + (7 * 24 * 60 * 60 * 1000)) : null;
+      return { can: false, reason: 'WEEKLY_LIMIT', limit: tier.cv_weekly_limit, nextActivation: nextDate };
     }
 
     if (tier.cv_daily_limit && stats.dailyCount >= tier.cv_daily_limit) {
-      return { can: false, reason: 'DAILY_LIMIT', limit: tier.cv_daily_limit };
+      const nextDate = stats.oldestDaily ? new Date(new Date(stats.oldestDaily).getTime() + (24 * 60 * 60 * 1000)) : null;
+      return { can: false, reason: 'DAILY_LIMIT', limit: tier.cv_daily_limit, nextActivation: nextDate };
     }
 
     return { can: true };

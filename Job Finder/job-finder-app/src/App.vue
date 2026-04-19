@@ -186,9 +186,36 @@ const synthesisData = ref({ job: null, letter: '', summary: '' })
 
 const handleDownloadPdf = async () => {
     try {
-        const viewport = document.querySelector('#live-viewport iframe');
-        if (!viewport || !viewport.srcdoc) {
-            toastMessage.value = 'Error: Viewport not ready';
+        // --- REAL-TIME QUOTA ENGINE (V13.8) ---
+        // Check DB immediately before allowing generation
+        const quota = await quotaService.canPerformAction(userProfile.value, 'CV_EXPORT');
+
+        if (!quota.can) {
+            let msg = `Quota Reached: ${quota.reason.replace('_', ' ')}.`;
+            if (quota.nextActivation) {
+                const next = new Date(quota.nextActivation);
+                const isToday = next.toDateString() === new Date().toDateString();
+                const dateStr = isToday ? 'Today' : next.toLocaleDateString([], { month: 'short', day: 'numeric' });
+                const timeStr = next.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                msg = `Limit Reached. Reactivates at ${timeStr} ${dateStr}. Upgrade for Unlimited Pulse.`;
+            }
+            showNeuralToast(msg, 'warning', 5000);
+            return;
+        }
+
+        // STRATEGIC RECOVERY: Check for reactive HTML first (V13.8 Modal Compatibility)
+        let htmlSource = viewportHtml.value;
+        
+        // FALLBACK: Look for the DOM iframe (StudioHub Compatibility)
+        if (!htmlSource) {
+            const viewport = document.querySelector('#live-viewport iframe');
+            if (viewport && viewport.srcdoc) {
+                htmlSource = viewport.srcdoc;
+            }
+        }
+
+        if (!htmlSource) {
+            toastMessage.value = 'Error: Neural Specimen not ready';
             isNeuralToastVisible.value = true;
             return;
         }
@@ -196,15 +223,24 @@ const handleDownloadPdf = async () => {
         toastMessage.value = 'Preparing Ultra-HD Specimen...';
         isNeuralToastVisible.value = true;
         
-        await pdfService.generateFromHtml(viewport.srcdoc, `DigyNex_${userProfile.value.name.replace(/\s/g, '_')}_Specimen.pdf`, {
+        const fileName = pdfService.buildFileName(
+            masterProfile.value.basic?.fullName || userProfile.value.name || 'DigyNex',
+            cvTemplates.value.find(t => t.id === selectedTemplate.value)?.name || 'Elite'
+        );
+
+        await pdfService.generateFromHtml(htmlSource, fileName, {
             userName: userProfile.value.name,
             tier: userProfile.value.plan_type || 0,
             primaryColor: userProfile.value.primaryColor
         });
         
-        // n8n Signal: Log export activity
+        // n8n Signal: Log export activity (Mission Critical for Quota Engine)
         if (isAuthenticated.value && userProfile.value.email) {
-            await profileService.logActivity(userProfile.value.email, 'CV_EXPORT', { method: 'specimen_viewport' });
+            await profileService.logActivity(userProfile.value.email, 'CV_EXPORT', { 
+                method: 'neural_bridge_export',
+                template_id: selectedTemplate.value,
+                timestamp: new Date().toISOString()
+            });
         }
         
         toastMessage.value = 'Neural PDF Exported Successfully';
@@ -383,7 +419,7 @@ const saveProfile = async () => {
 }
 
 const fileInput = ref(null)
-const uploadedFileName = ref('Amila_Senior_CV.pdf')
+const uploadedFileName = ref('No CV Uploaded')
 const uploadedFileUrl = ref(null)
 
 const triggerFileUpload = () => {
@@ -1182,8 +1218,10 @@ const handleDashboardAction = async (actionId, jobData = null) => {
         
         // BRIDGE: Trigger n8n Workflow A (Global Broadcast)
         await profileService.logActivity(userProfile.value.email, 'ADMIN_BROADCAST', { 
-            timestamp: new Date().toISOString(),
-            message: 'Global Neural System Upgrade Initiated.' 
+            active: true,
+            type: 'System Upgrade',
+            message: 'Global Neural System Upgrade Initiated. Operations are temporarily paused for optimization.',
+            timestamp: new Date().toISOString()
         });
         
         setTimeout(() => { isNeuralToastVisible.value = false }, 4000);
@@ -1205,8 +1243,15 @@ const handleDashboardAction = async (actionId, jobData = null) => {
         const quota = await quotaService.canPerformAction(userProfile.value, 'QUICK_APPLY');
 
         if (!quota.can) {
-           toastMessage.value = `Quota Reached: ${quota.reason.replace('_', ' ')}. Queued.`;
-           isNeuralToastVisible.value = true;
+            let msg = `Quota Reached: ${quota.reason.replace('_', ' ')}.`;
+            if (quota.nextActivation) {
+                const next = new Date(quota.nextActivation);
+                const isToday = next.toDateString() === new Date().toDateString();
+                const dateStr = isToday ? 'Today' : next.toLocaleDateString([], { month: 'short', day: 'numeric' });
+                const timeStr = next.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                msg = `Limit Reached. Resets at ${timeStr} ${dateStr}. Upgrade for Instant Dispatch.`;
+            }
+            showNeuralToast(msg, 'warning', 5000);
            
            allJobs.value.unshift({
                c: targetJob.c,
@@ -1703,16 +1748,17 @@ const handleNotificationClick = (notif) => {
             <!-- BACKDROP -->
             <div @click="isCVModalOpen = false" class="absolute inset-0 bg-[#0A2647]/90 backdrop-blur-2xl"></div>
             
-            <!-- MODAL CARD (MOBILE-OPTIMIZED) -->
             <div class="relative w-full max-w-[360px] bg-[#051124]/90 backdrop-blur-3xl border border-white/10 rounded-t-[2.5rem] sm:rounded-[2.5rem] overflow-hidden shadow-3xl animate-in slide-in-from-bottom duration-300 flex flex-col max-h-[85vh]">
-                <div class="p-6 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/5 backdrop-blur-md\">
+                <div class="p-6 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/5 backdrop-blur-md">
                    <div class="flex items-center gap-3">
                       <div class="bg-[#2C74B3]/20 p-2 rounded-xl">
                          <FileText class="w-5 h-5 text-[#2C74B3]" />
                       </div>
                       <div class="flex flex-col">
                          <h3 class="text-xs font-black text-white/90 uppercase tracking-widest">{{ viewMode === 'elite' ? 'Elite Neural Specimen' : 'Legacy CV Data' }}</h3>
-                         <p class="text-[9px] font-bold text-[#C1A172] uppercase tracking-[0.2em] mt-0.5 italic">{{ uploadedFileName !== 'No CV Uploaded' ? uploadedFileName : 'Amila_Senior_CV.pdf' }} ({{ viewMode.toUpperCase() }})</p>
+                         <p class="text-[9px] font-bold text-[#C1A172] uppercase tracking-[0.2em] mt-0.5 italic">
+                             {{ uploadedFileName !== 'No CV Uploaded' ? uploadedFileName : (isAuthenticated ? 'New Profile Specimen' : 'Demo_Neural_Specimen.pdf') }}
+                          </p>
                       </div>
                    </div>
                    <div class="flex items-center gap-2">
@@ -1722,9 +1768,11 @@ const handleNotificationClick = (notif) => {
                                @mouseleave="viewMode = 'elite'"
                                @touchstart.prevent="viewMode = 'legacy'"
                                @touchend.prevent="viewMode = 'elite'" @touchcancel.prevent="viewMode = 'elite'"
-                               class="flex items-center gap-2 px-4 py-2 rounded-full border transition-all select-none group/compare active:scale-95 shadow-xl" :class="viewMode === 'legacy' ? 'bg-[#C1A172] border-[#C1A172] text-[#0A2647]' : 'bg-white/5 border-white/10 text-white/60'">
+                                :disabled="uploadedFileName === 'No CV Uploaded'"
+                                class="flex items-center gap-2 px-4 py-2 rounded-full border transition-all select-none group/compare active:scale-95 shadow-xl disabled:opacity-30 disabled:grayscale" 
+                                :class="viewMode === 'legacy' ? 'bg-[#C1A172] border-[#C1A172] text-[#0A2647]' : 'bg-white/5 border-white/10 text-white/60'">
                           <Eye class="w-3.5 h-3.5" :class="viewMode === 'legacy' ? 'animate-pulse' : ''" />
-                          <span class="text-[9px] font-black uppercase tracking-[0.2em]">{{ viewMode === 'legacy' ? 'Viewing' : 'Hold' }}</span>
+                          <span class="text-[9px] font-black uppercase tracking-[0.2em]">{{ uploadedFileName === 'No CV Uploaded' ? 'Single View' : (viewMode === 'legacy' ? 'Viewing' : 'Hold') }}</span>
                        </button>
                        <button @click="isCVModalOpen = false" class="p-2.5 bg-white/5 rounded-full hover:bg-red-500/20 hover:text-red-400 text-white/50 transition-colors">
                           <X class="w-4 h-4" />
@@ -1732,57 +1780,39 @@ const handleNotificationClick = (notif) => {
                     </div>
                 </div>
  
-                <div class="flex-1 overflow-y-auto no-scrollbar relative w-full bg-white flex flex-col items-center">
-                   <!-- REAL NEURAL VIEWPORT ENGINE (THE WINNER) -->
-                   <div v-if="viewMode === 'elite'" 
-                        v-html="viewportHtml" 
-                        class="w-[210mm] shadow-2xl animate-in zoom-in-95 duration-500 transition-all origin-top mt-4 shadow-2xl grayscale-[0.8]"
-                        :class="{ 'filter blur-md select-none pointer-events-none opacity-60': !isAuthenticated }"
-                        style="transform: scale(0.43); min-height: 1200px;">
-                   </div>
+                <div class="flex-1 overflow-y-auto no-scrollbar relative w-full bg-white flex flex-col">
+                    <!-- REAL NEURAL VIEWPORT ENGINE (THE WINNER) -->
+                    <div v-if="viewMode === 'elite'" class="w-full flex flex-col items-center pt-4 origin-top" 
+                         style="transform: scale(0.43); transform-origin: top center; margin-bottom: -640px;">
+                       <div v-html="viewportHtml" 
+                            class="w-[210mm] shadow-2xl animate-in zoom-in-95 duration-500 transition-all grayscale-[0.8]"
+                            :class="{ 'filter blur-md select-none pointer-events-none opacity-60': !isAuthenticated }"
+                            style="min-height: 1200px;">
+                       </div>
+                    </div>
 
                    <!-- LEGACY CORE (THE ORIGINAL PDF SPECIMEN) -->
-                   <div v-else-if="viewMode === 'legacy'" class="w-full h-full flex flex-col items-center">
-                      <!-- REAL PDF PREVIEW (The Game Changer) -->
-                      <template v-if="uploadedFileUrl">
-                         <div class="w-full h-full flex flex-col relative animate-in zoom-in-95 duration-500">
-                            <iframe :src="uploadedFileUrl + '#toolbar=0&navpanes=0&view=FitH'" 
-                                    class="w-full h-full border-none relative z-10 grayscale-[0.3] contrast-[1.1]"
-                                    style="height: calc(100vh - 120px); min-height: 800px;">
-                            </iframe>
-                         </div>
-                      </template>
-                      
-                      <!-- CLASSIC PROFESSIONAL LAYOUT (MANUAL DATA FALLBACK) -->
-                      <div v-else class="w-[210mm] min-h-[1000px] p-16 flex flex-col items-center origin-top bg-white mt-4 shadow-2xl grayscale-[0.8]" style="transform: scale(0.43);">
-                         <!-- HEADER -->
-                         <div class="w-full text-center border-b-[3px] border-[#1A1A1A] pb-8 mb-10">
-                            <h1 class="text-[42px] font-black uppercase tracking-tight leading-none mb-2">{{ masterProfile.basic.fullName || userProfile.name || 'User Name' }}</h1>
-                            <div class="flex items-center justify-center gap-4 text-sm font-bold uppercase tracking-widest text-gray-500">
-                               <span>{{ masterProfile.basic.email }}</span>
-                               <span class="w-1.5 h-1.5 bg-gray-300 rounded-full"></span>
-                               <span>{{ masterProfile.basic.phone }}</span>
-                            </div>
-                         </div>
-                         <!-- CONTENT GRID (Condensed for fallback) -->
-                         <div class="w-full flex flex-col gap-10 text-left">
-                            <div>
-                               <h3 class="text-lg font-black uppercase border-b border-gray-200 pb-1 mb-3 tracking-widest text-gray-400">Professional Profile</h3>
-                               <p class="text-sm leading-relaxed text-gray-700 italic font-medium">{{ masterProfile.basic.summary || 'Seasoned professional with a proven track record.' }}</p>
-                            </div>
-                            <div>
-                               <h3 class="text-lg font-black uppercase border-b border-gray-200 pb-1 mb-4 tracking-widest text-gray-400">Experience</h3>
-                               <div v-for="exp in (masterProfile.experiences?.length ? masterProfile.experiences : [{role: 'Senior Strategist', company: 'Nexus Global', start: '2021'}])" :key="exp.company" class="mb-4">
-                                  <div class="flex justify-between font-black uppercase text-md">
-                                     <span>{{ exp.role }}</span>
-                                     <span class="text-gray-400">{{ exp.start }}</span>
-                                  </div>
-                                  <div class="text-sm text-gray-500">{{ exp.company }}</div>
-                               </div>
-                            </div>
-                         </div>
-                      </div>
-                   </div>
+                    <div v-else-if="viewMode === 'legacy'" class="w-full flex-1 flex flex-col items-center bg-white min-h-[500px]">
+                       <!-- REAL PDF PREVIEW (The Game Changer) -->
+                       <template v-if="uploadedFileUrl">
+                          <div class="w-full h-full flex flex-col relative animate-in fade-in zoom-in-95 duration-500">
+                             <iframe :src="uploadedFileUrl + '#toolbar=0&navpanes=0&view=FitH'" 
+                                     class="w-full h-full border-none relative z-10 grayscale-[0.3] contrast-[1.1]"
+                                     style="min-height: 600px; height: 100%;">
+                             </iframe>
+                          </div>
+                       </template>
+                       
+                       <!-- CLASSIC PROFESSIONAL LAYOUT (MANUAL DATA FALLBACK) -->
+                       <div v-else class="w-full flex-1 flex flex-col items-center justify-center p-12 text-center opacity-40 grayscale animate-in zoom-in-95">
+                           <div class="bg-slate-100 p-6 rounded-full mb-6">
+                              <FileText class="w-12 h-12 text-slate-400" />
+                           </div>
+                           <h4 class="text-xs font-black uppercase tracking-[0.3em] text-slate-500 leading-relaxed">Legacy Data Stream<br/>Inactive</h4>
+                           <p class="text-[9px] font-bold uppercase tracking-widest mt-4 text-slate-400 max-w-[200px] leading-relaxed">Re-upload your original CV to re-enable neural comparison mode.</p>
+                       </div>
+                    </div>
+                 </div>
 
                     <!-- REFERENCE-PERFECT ACTION BAR (GREY GLASS STYLE) -->
                     <div v-if="isAuthenticated && viewportHtml" class="absolute bottom-10 left-0 right-0 z-[1005] px-10 flex justify-center pointer-events-none">
@@ -1810,17 +1840,23 @@ const handleNotificationClick = (notif) => {
                     </div>
 
                    <!-- PROTECTION OVERLAY -->
-                   <div v-if="!isAuthenticated" class="absolute inset-0 z-[1002] flex flex-col items-center justify-center p-8 text-center bg-white/10 backdrop-blur-[2px]">
-                      <div class="bg-[#0A2647] p-6 rounded-[2rem] border border-white/10 shadow-3xl flex flex-col items-center gap-4 max-w-[240px]">
-                         <Lock class="w-8 h-8 text-[#C1A172] animate-pulse" />
-                         <h4 class="text-[12px] font-black text-white uppercase tracking-widest">Privacy Shield Active</h4>
-                         <p class="text-[9px] font-bold text-white/40 uppercase leading-relaxed">Sign in to unlock full neural access.</p>
-                      </div>
-                   </div>
+                    <div v-if="!isAuthenticated" class="absolute inset-0 z-[1002] flex flex-col items-center justify-center p-8 text-center bg-[#051124]/40 backdrop-blur-md">
+                       <div class="bg-[#051124]/90 p-8 rounded-[2.5rem] border border-white/10 shadow-3xl flex flex-col items-center gap-6 max-w-[280px] animate-in zoom-in-95 duration-500">
+                          <div class="bg-[#C1A172]/20 p-4 rounded-2xl">
+                             <Lock class="w-10 h-10 text-[#C1A172] animate-pulse" />
+                          </div>
+                          <div class="space-y-2">
+                             <h4 class="text-[13px] font-black text-white uppercase tracking-[0.2em]">Privacy Shield Active</h4>
+                             <p class="text-[9px] font-bold text-white/40 uppercase tracking-widest leading-relaxed">Sign in to unlock full neural access and sync your identity.</p>
+                          </div>
+                          <button @click="isCVModalOpen = false; openAuth('login')" class="w-full py-4 bg-[#C1A172] rounded-2xl text-[11px] font-black text-[#0A2647] uppercase tracking-[0.1em] shadow-xl hover:scale-105 active:scale-95 transition-all">
+                             Sign In to Continue
+                          </button>
+                       </div>
+                    </div>
                 </div>
             </div>
-         </div>
-      </Transition>
+</Transition>
 
       <!-- LOCKED EXPERT PROFILE SYSTEM (DEDICATED CORE) -->
       <ExpertProfileWizard 
@@ -1839,9 +1875,8 @@ const handleNotificationClick = (notif) => {
             <!-- BACKDROP -->
             <div @click="isLinkedInModalOpen = false" class="absolute inset-0 bg-[#0A2647]/95 backdrop-blur-3xl"></div>
             
-            <!-- MODAL CARD -->
             <div class="relative w-full max-w-[360px] bg-[#051124]/90 backdrop-blur-3xl border border-white/10 rounded-[2.5rem] overflow-hidden shadow-3xl flex flex-col max-h-[85vh]">
-               <div class="p-6 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/5 backdrop-blur-md\">
+               <div class="p-6 border-b border-white/5 flex items-center justify-between shrink-0 bg-white/5 backdrop-blur-md">
                   <div class="flex items-center gap-3">
                      <div class="bg-[#0077b5]/20 p-2 rounded-xl border border-[#0077b5]/30">
                         <svg class="w-5 h-5 text-[#0077b5]" fill="currentColor" viewBox="0 0 24 24"><path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/></svg>
@@ -1873,7 +1908,7 @@ const handleNotificationClick = (notif) => {
                </div>
             </div>
          </div>
-      </Transition>
+</Transition>
 
       <Transition name="fade">
          <div v-if="showCountrySelector" class="fixed inset-0 z-[1000] flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-300">
@@ -1917,7 +1952,7 @@ const handleNotificationClick = (notif) => {
                </div>
             </div>
          </div>
-      </Transition>
+</Transition>
 
       
       <!-- LIVE CV MASTER PREVIEW (PREMIUM LATEX OVERLAY) -->
@@ -2010,7 +2045,7 @@ const handleNotificationClick = (notif) => {
                </div>
             </div>
          </div>
-      </Transition>
+</Transition>
 
        <!-- FOOTER ATTRIBUTION (SURGICAL SPACING SYNC) -->
        <div v-if="!isManualFormOpen && !isLinkedInModalOpen" 
@@ -2048,7 +2083,7 @@ const handleNotificationClick = (notif) => {
           @close="isFounderPassOpen = false"
           @handleAction="handleDashboardAction"
         />
-      </Transition>
+</Transition>
 
       <ActionSheet 
         :isOpen="isActionSheetOpen" 
@@ -2097,7 +2132,7 @@ const handleNotificationClick = (notif) => {
               <span class="text-[10px] font-black text-white uppercase tracking-widest leading-tight">{{ toastMessage }}</span>
            </div>
         </div>
-      </Transition>
+</Transition>
 
     </main>
      <!-- LIGHTBOX PREVIEW MODAL (PHASE 2 FIX) -->
@@ -2156,7 +2191,7 @@ const handleNotificationClick = (notif) => {
                 </div>
              </div>
           </div>
-       </Transition>
+ </Transition>
 
        <!-- INFORMATION HUB MODAL (GOVERNANCE & LEGAL) -->
        <Transition name="fade">
@@ -2402,7 +2437,7 @@ const handleNotificationClick = (notif) => {
                 </div>
              </div>
           </div>
-       </Transition>
+ </Transition>
     </Teleport>
     <!-- ─── SYNTHESIS REVIEW MODAL (V12.0) ─── -->
     <Teleport to="body">
@@ -2462,7 +2497,7 @@ const handleNotificationClick = (notif) => {
                </div>
             </div>
         </div>
-      </Transition>
+</Transition>
     </Teleport>
 
     <!-- ─── NEURAL TRACKING LAB (V12.0) ─── -->
@@ -2522,7 +2557,7 @@ const handleNotificationClick = (notif) => {
                </div>
             </div>
         </div>
-      </Transition>
+</Transition>
     </Teleport>
 
     <!-- HIDDEN NEURAL INPUTS -->

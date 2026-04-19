@@ -49,26 +49,18 @@ const hasCVData = computed(() => {
 
      
       <div class="mt-4 flex-1 overflow-y-auto custom-scrollbar space-y-3 px-4 hub-scroller relative">
-         <!-- PROFESSIONAL ACCESS PROMPT (GUEST MODE) -->
-         <div v-if="!internalAuth" class="absolute inset-x-0 inset-y-0 z-[100] flex flex-col items-center justify-center px-8 text-center bg-[#0A2647]/20 backdrop-blur-lg rounded-[3rem] h-[calc(100%-110px)] top-1 mx-4">
-            <div class="w-full max-w-[280px] bg-[#0A2647]/80 border border-white/5 rounded-[2.5rem] p-8 shadow-3xl flex flex-col items-center gap-6 animate-in zoom-in-95 duration-500">
-               <div class="w-full relative">
-                  <!-- CLOSE ESCAPE PATH -->
-                  <button @click="$emit('returnToDashboard')" class="absolute -top-4 -right-4 p-2 bg-white/5 rounded-full hover:bg-white/10 text-white/40 transition-all active:scale-90">
-                     <X class="w-4 h-4" />
-                  </button>
-
-                  <div class="flex flex-col gap-6 w-full">
-                     <div class="space-y-2">
-                        <h3 class="text-[14px] font-black text-white uppercase tracking-[0.2em]">Professional Identity</h3>
-                        <p class="text-[9px] font-medium text-white/30 uppercase tracking-[0.1em] leading-relaxed px-4">Sign in to sync your AI profile and career telemetry.</p>
-                     </div>
-                     <button @click="$emit('openAuth', 'login')" class="w-full py-4 bg-[#C1A172] rounded-2xl text-[11px] font-black text-[#0A2647] uppercase tracking-[0.1em] shadow-2xl hover:scale-105 active:scale-95 transition-all">
-                        Sign In to Continue
-                     </button>
-                  </div>
+         <!-- NEURAL ACCESS INDICATOR (GUEST MODE) -->
+         <div v-if="!internalAuth" class="mb-4 bg-amber-500/10 border border-amber-500/20 rounded-2xl p-4 flex items-center justify-between group cursor-pointer active:scale-[0.98] transition-all" @click="$emit('openAuth', 'login')">
+            <div class="flex items-center gap-3">
+               <div class="bg-amber-500/20 p-2 rounded-xl">
+                  <Lock class="w-4 h-4 text-amber-500 shadow-[0_0_10px_rgba(245,158,11,0.4)]" />
+               </div>
+               <div class="flex flex-col">
+                  <span class="text-[10px] font-black text-amber-500 uppercase tracking-widest">Neural Bridge Restricted</span>
+                  <span class="text-[8px] font-bold text-amber-500/60 uppercase tracking-widest">Tap to unlock full career telemetry</span>
                </div>
             </div>
+            <ArrowRight class="w-3.5 h-3.5 text-amber-500/40 group-hover:translate-x-1 transition-transform" />
          </div>
 
          <div :class="{ 'filter blur-[10px] select-none pointer-events-none opacity-40': !isAuthenticated }" class="space-y-3">
@@ -148,12 +140,11 @@ const hasCVData = computed(() => {
                     {{ isUploadingCV ? 'Syncing...' : (uploadedFileName !== 'No CV Uploaded' ? 'REPLACE ACTIVE CV' : 'Upload Professional CV') }}
                  </span>
               </button>
-               <button @click="hasCVData ? $emit('openCVModal') : null" 
-                       :class="hasCVData ? 'bg-[#0A2647] hover:scale-[1.02] shadow-xl shadow-[#0A2647]/20 border border-white/10' : 'bg-[#0A2647]/20 cursor-not-allowed opacity-40'"
-                       class="w-[88%] mx-auto py-3.5 rounded-2xl flex items-center justify-center gap-3 transition-all">
-                  <span class="text-[11px] font-black text-white uppercase tracking-widest">{{ hasCVData ? 'SECURE VIEW ENGINE' : 'VIEW ENGINE LOCKED' }}</span>
-                  <Lock v-if="!hasCVData" class="w-3 h-3 text-white/40" />
-               </button>
+                <button @click="$emit('openCVModal')" 
+                        class="w-[88%] mx-auto py-3.5 rounded-2xl flex items-center justify-center gap-3 transition-all bg-[#0A2647] hover:scale-[1.02] shadow-xl shadow-[#0A2647]/20 border border-white/10 active:scale-95">
+                   <span class="text-[11px] font-black text-white uppercase tracking-widest">{{ hasCVData ? 'SECURE VIEW ENGINE' : 'VIEW MOCK SPECIMEN' }}</span>
+                   <Sparkles v-if="!hasCVData" class="w-3 h-3 text-[#C1A172] animate-pulse" />
+                </button>
 
                <!-- NEURAL SYNC SUCCESS MESSAGE -->
                <div v-if="uploadedFileName !== 'No CV Uploaded'" 
