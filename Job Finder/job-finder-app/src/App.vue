@@ -850,13 +850,14 @@ const finalizeManualCV = () => {
     onManualFinalize();
 }
 
-const onManualFinalize = () => {
+const onManualFinalize = async () => {
    isManualFormOpen.value = false;
    activeTab.value = 'profile';
    // Synchronize the master profile name with the global user display name
    if (masterProfile.value.basic.fullName) {
       userProfile.value.name = masterProfile.value.basic.fullName;
    }
+   await saveProfile();
 }
 
 const isSyncingManual = ref(false)
