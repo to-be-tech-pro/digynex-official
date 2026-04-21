@@ -1,0 +1,22 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "chatId": "PLEASE_INPUT_YOUR_CHAT_ID",
+        "text": "=🚀 **DigyNex AI: Approval Required**\n\nHello! Our AI is ready to submit your application for:\n\n📍 **Role:** {{ $node[\"UI Signal Webhook\"].json.body.details.role }}\n🏢 **Company:** {{ $node[\"UI Signal Webhook\"].json.body.details.company }}\n\nPlease review your documents. If everything looks good, reply **YES** to this message to initiate the expert submission.",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "tg-guardrail-node",
+      "name": "Telegram: Guardrail Approval",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [
+        1100,
+        400
+      ]
+    }
+  ],
+  "connections": {}
+}

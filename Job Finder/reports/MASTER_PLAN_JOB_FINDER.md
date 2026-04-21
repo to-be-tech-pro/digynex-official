@@ -60,8 +60,9 @@ To ensure world-class data integrity and local relevance, we avoid the "Scraping
 - **Neural Sync & Persistence**: FULLY OPERATIONAL. Implementation of the `submitApplication` logic in `profileService`, ensuring every manual user click is legally recorded in the Supabase `user_activity` vault for n8n automation triggers.
 - **Masters UI Signature**: Reintegration of the high-trust **Floating Nav Pill** and **Global Discovery Footer** (Master V6.5 Aesthetic).
 
-#### **🛡️ Phase 2.7: Monetization & Guardrail Intelligence**
-- **Status**: ✅ **COMPLETED — Numeric Tier System ACTIVE (V10.0)**
+#### **🛡️ Phase 2.7: Monetization, Guardrails & Policy Vault**
+- **Status**: ✅ **COMPLETED — Numeric Tier System & Policy Vault ACTIVE (V13.2)**
+- **Global Compliance**: EU-Ready Refund & Billing policies natively integrated into the `en.json` locale. Incorporates 14-Day Right of Withdrawal and Strict Digital Content Exceptions (no refunds for consumed AI tokens).
 - **Neural Quota Engine**: Fully implemented. Numeric `plan_type` system (0=Free, 1=Pro, 2=Elite) enforced at service layer via `quotaService.js`.
   - **Tier 0 (Free):** 2 CVs/week, 5 keywords max, 14-day account lockout after joining.
   - **Tier 1 (Pro):** 6 CVs/week, 3 CVs/day, 15 keywords max.
@@ -98,9 +99,10 @@ To ensure world-class data integrity and local relevance, we avoid the "Scraping
 
 ---
 
-## 🎯 **Summary of Implementation (V10.0 Neural Master Sync — 2026-04-15)**
+## 🎯 **Summary of Implementation (V13.2 Ultimate Aesthetic Sync — 2026-04-19)**
 - **Numeric Tier Enforcement**: `plan_type` 0/1/2 enforced at engine layer, not UI layer (Engine First Rule ✅).
-- **Surgical UI Compactness**: V6.5 high-density aesthetic finalized.
+- **Surgical UI Compactness**: V13.2 high-density aesthetic finalized. All neural overlays, popups, and the Legal/Governance modals are strictly locked to a mobile-packed ratio (`max-w-[360px]`) for a globally consistent, phone-sized native feel on web.
+- **Founder's Annual Pass Hook**: Monetization explicitly shifted to a compressed, beautifully padded "Annual Elite Access" ($149/Year) strategy button.
 - **Personalized Identity Hub**: Real-time profile persistence with Supabase sync.
 - **Elite Exports**: Gated by quota service — CV export limited per tier.
 - **Automation**: n8n integration blueprint ready — Step 1 (Signal Dispatcher) is next.

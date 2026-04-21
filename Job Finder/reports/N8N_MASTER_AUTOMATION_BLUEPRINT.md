@@ -18,7 +18,47 @@ The App communicates with n8n via the `user_activity` table in Supabase. Every "
 | `ADMIN_BROADCAST` | **Workflow A: Broadcaster** | Global multi-channel executive notification. | ✅ Pre-wired |
 | `ADMIN_DATA_PURGE` | **Workflow P: Purge** | Secure data cleanup and GDPR compliance. | ✅ Pre-wired |
 | `JOB_APPLY` | **Workflow E: Executor** | Headless browser auto-submission (Post-Approval). | ✅ Pre-wired |
+| `QUICK_APPLY` | **Workflow Q: Quick Start** | Immediate direct dispatch to ATS endpoints from Matcher. | ✅ Pre-wired |
 | `CV_EXPORT` | **Workflow X: Logger** | Log export events, enforce quota, trigger Stripe check. | ✅ Pre-wired |
+
+### 🧠 Signal Routing Layer (Switch Mapping)
+The master switch routes incoming signals based on the `actionId` from the frontend:
+
+- **Output 0: `JOB_APPLY` / `QUICK_APPLY` (Executor)**
+  - Logic: Dispatches content to ATS. **Must decrement `cv_limit` on success.**
+- **Output 1: `CV_EXPORT` / `CL_EXPORT` (Logger)**
+  - Logic: Fetches and decrements quota for document generations.
+- **Output 2: `ADMIN_BROADCAST` (Global Sync)**
+  - Logic: Syncs maintenance/broadcast messages across all profiles.
+- **Output 3: `DOC_APPROVAL_REQUEST` (Guardrail)**
+ ### 🛠️ Step 6: Executor Architecture
+The Executor handles all application dispatches. It is strictly guarded by the Neural Quota Auditor.
+
+**Logical Flow:**
+1.  **Incoming Signal:** (Action 0 or QUICK_APPLY).
+2.  **Audit Pulse:** Verifies `cv_limit`. 
+3.  **Path A (Successful):** Dispatch to ATS -> Log `SUCCESSFUL_APPLY` -> `cv_limit--`.
+4.  **Path B (Depleted):** Log `JOB_QUEUED` (status: pending) -> Stop.
+
+---
+
+### 🛡️ Guardrail Rules
+- **Rule 1:** No application dispatch if `doc_status !== 'Verified'`.
+- **Rule 2:** Quota decrement MUST happen only after success logging.
+- **Rule 3:** All `JOB_QUEUED` entries must contain the original ATS payload in `details`.
+
+## 🕹️ UI Button & Signal Mapping (Cheat Sheet)
+To prevent confusion, here is exactly how the Frontend buttons map to n8n logic:
+
+1. **"Apply Now" (Matches Tab):**
+   * *Signal Sent:* `QUICK_APPLY`
+   * *Action:* Bypasses standard verification for instant auto-applying (usually reserved for high-confidence matches). 
+2. **"Instant AI Apply" (Job Detail Overlay):**
+   * *Signal Sent:* `DOC_APPROVAL_PENDING` (If docStatus is Unverified) OR `JOB_APPLY` (If Verified).
+   * *Action:* The main strategic application route. Triggers the WhatsApp guardrail if the AI needs humans to review the cover letter before shooting it to the company.
+3. **"Manual Assist Toolkit" (Job Detail Overlay):**
+   * *Signal Sent:* `MANUAL_ASSIST_START`
+   * *Action:* Does NOT auto-apply. This shows up when `applyType: 'manual'` (for jobs that require tricky external company portals). It prepares the tailored PDF and Cover letter for the user to download and apply manually.
 
 **Next Step (Owner):** Configure n8n webhook URL → add to `profileService.logActivity()` HTTP call.
 
@@ -106,4 +146,19 @@ The App communicates with n8n via the `user_activity` table in Supabase. Every "
 
 ---
 
-**© 2026 DigyNex Official. Final High-Trust Automation Blueprint. Version 7.0 Stable.**
+## ⏳ 8. Workflow Q: The Neural Queue & Cron Scheduler (Global Strategic Dispatch)
+
+**Objective**: Automated processing of "Queued" applications to maximize success within system constraints and recruiter peak hours.
+
+1.  **Trigger**: CRON Trigger (Daily at `00:01`).
+2.  **Context-Aware Logic (Elite Feature)**: 
+    - Scans `user_activity` for entries with `status: 'queued'`.
+    - **Timezone Alignment**: AI looks at `details.location` to determine the target country's timezone.
+    - **Strategic Delay**: The workflow waits until `08:00 AM` local time for that specific country before dispatching.
+    - **Neural Staggering**: For users with multiple queued items (Unlimited Tier), applications are pulsed every 3-5 minutes to prevent bot-detection/spam filtering.
+3.  **Action**: Automatically executes **Workflow E: The Executor** or **Workflow Q: Quick Start** for that specimen.
+4.  **Alert**: User receives a WhatsApp/Telegram notification: "Elite Pulse: Your application for [Role] has been dispatched during the recruiter's peak morning window."
+
+---
+
+**© 2026 DigyNex Official. Final High-Trust Automation Blueprint. Version 10.0 Stable.**

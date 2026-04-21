@@ -1,0 +1,41 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "update",
+        "table": "system_config",
+        "selectType": "buildManually",
+        "mustMatch": "anySelectCondition",
+        "selectConditions": {
+          "conditions": [
+            {
+              "key": "key",
+              "value": "global_broadcast"
+            }
+          ]
+        },
+        "data": {
+          "value": "={{ $node[\"UI Signal Webhook\"].json.body.details }}"
+        }
+      },
+      "name": "Supabase: Sync Global Broadcast",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [1100, 600]
+    },
+    {
+      "parameters": {
+        "chat_id": "YOUR_ADMIN_CHAT_ID",
+        "text": "=⚡ **DIGYNEX SYSTEM UPDATE** ⚡\n━━━━━━━━━━━━━━━━━━\n🛠 **Status:** `{{ $node[\"UI Signal Webhook\"].json.body.details.active ? 'ACTIVE' : 'INACTIVE' }}`\n📡 **Mode:** `NEURAL SYNC` \n\n📝 **Message:**\n*{{ $node[\"UI Signal Webhook\"].json.body.details.message }}*\n\n(Pulse detected at: {{ $node[\"UI Signal Webhook\"].json.body.details.timestamp }} Sweden Time)\n\n🚀 **Strategic Pulse:** `Neural Master Hub` \n━━━━━━━━━━━━━━━━━━\n_Efficiency is our priority._",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Telegram: Broadcast Log",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1,
+      "position": [1300, 600]
+    }
+  ],
+  "connections": {}
+}

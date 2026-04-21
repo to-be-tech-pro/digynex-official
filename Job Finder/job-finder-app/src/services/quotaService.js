@@ -139,6 +139,9 @@ export const quotaService = {
   async getUsageStats(userEmail) {
     if (!userEmail) return { weeklyCount: 0, dailyCount: 0 };
     
+    // NEURAL ACTION SINK: Unified quota enforcement for all expenditures
+    const ACTION_SINK = ['CV_EXPORT', 'JOB_APPLY', 'QUICK_APPLY', 'CL_EXPORT', 'HEADLESS_BROADCAST_SIGNAL', 'MANUAL_ASSIST_TOOLKIT_SYNC'];
+
     try {
         const now = new Date();
         const oneDayAgo = new Date(now.getTime() - (24 * 60 * 60 * 1000)).toISOString();
@@ -148,15 +151,14 @@ export const quotaService = {
             .from('user_activity')
             .select('created_at')
             .eq('user_id', userEmail)
-            .eq('action', 'CV_EXPORT')
-            .gt('created_at', oneWeekAgo)
-            .order('created_at', { ascending: true });
+            .in('action', ACTION_SINK)
+            .gt('created_at', oneWeekAgo);
 
         const { data: dailyData } = await supabase
             .from('user_activity')
             .select('created_at')
             .eq('user_id', userEmail)
-            .eq('action', 'CV_EXPORT')
+            .in('action', ACTION_SINK)
             .gt('created_at', oneDayAgo)
             .order('created_at', { ascending: true });
 

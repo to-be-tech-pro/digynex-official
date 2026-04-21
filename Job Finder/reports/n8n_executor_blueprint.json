@@ -1,0 +1,80 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://dummy-ats-api.com/apply",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "applicant_email",
+              "value": "={{ $json.body.user_id }}"
+            },
+            {
+              "name": "job_role",
+              "value": "={{ $json.body.details.role }}"
+            },
+            {
+              "name": "company",
+              "value": "={{ $json.body.details.company }}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "e3b8a1c0-executor-1",
+      "name": "Send Application to ATS",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1100,
+        -100
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://YOUR_SUPABASE_URL.supabase.co/rest/v1/user_activity",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "apikey",
+              "value": "YOUR_SUPABASE_ANON_KEY"
+            },
+            {
+              "name": "Authorization",
+              "value": "Bearer YOUR_SUPABASE_ANON_KEY"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"user_id\": \"{{ $json.body.user_id }}\",\n  \"action\": \"SUCCESSFUL_APPLY\",\n  \"details\": {\n    \"status\": \"applied\",\n    \"company\": \"{{ $json.body.details.company }}\"\n  }\n}",
+        "options": {}
+      },
+      "id": "c1a2f4d9-executor-2",
+      "name": "Update Supabase Status",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        1300,
+        -100
+      ]
+    }
+  ],
+  "connections": {
+    "Send Application to ATS": {
+      "main": [
+        [
+          {
+            "node": "Update Supabase Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  }
+}
