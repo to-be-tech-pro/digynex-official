@@ -67,10 +67,10 @@ export const profileService = {
    */
   async __dispatchToN8n(actionId, userId, details) {
     const webhookUrl = import.meta.env.VITE_N8N_SIGNAL_WEBHOOK || import.meta.env.VITE_N8N_PARSER_WEBHOOK;
-    if (!webhookUrl) return; // Silent skip if n8n is not configured
+    if (!webhookUrl) return { ok: false, status: 'EMPTY_URL' };
 
     try {
-      await fetch(webhookUrl, {
+      const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -80,9 +80,17 @@ export const profileService = {
           timestamp: new Date().toISOString()
         })
       });
+      
+      console.log(`[NEURAL_PULSE] Signal: ${actionId} | Status: ${response.status}`);
+      return { ok: response.ok, status: response.status };
     } catch (error) {
-      console.warn("n8n Neural Bridge Signal Failed:", error);
+      console.warn(`[NEURAL_PULSE] Signal Interrupted: ${actionId}`, error);
+      return { ok: false, status: 'NETWORK_ERROR', message: error.message };
     }
+  },
+
+  async testConnection() {
+    return await this.__dispatchToN8n('NEURAL_PULSE', 'system_identity', { status: 'ping' });
   },
 
   /**
@@ -102,6 +110,8 @@ export const profileService = {
     if (!user) return { error: 'Unauthorized apply attempt' };
     
     const details = { 
+        status: 'instant',
+        job: job, // FULL PAYLOAD
         company: job.c, 
         role: job.r, 
         target_company_email: 'info@infodigynex.se', // Test Company Email

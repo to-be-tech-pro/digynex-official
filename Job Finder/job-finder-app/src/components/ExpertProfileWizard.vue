@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue'
 import { 
-  FileText, X, Sparkles, Zap, Mic, Download, Check, ChevronRight, ShieldCheck, 
+  FileText, X, Sparkles, Zap, Mic, Download, Check, ChevronRight, ShieldCheck, Clock,
   Linkedin, Github, Globe, LayoutDashboard, Briefcase, User 
 } from 'lucide-vue-next'
 
@@ -38,6 +38,13 @@ const skillInputTemp = ref({ type: 'hard', val: '' })
 const syncLinkedInData = async () => {
    if (!manualSocialLinks[0].url) return;
    isAutoSyncingLinkedIn.value = true;
+   
+   // TRIGGER NEURAL SIGNAL: Workflow L (Profiler)
+   emit('neuralAction', 'LINKEDIN_SYNC_REQUESTED', { 
+       url: manualSocialLinks[0].url,
+       timestamp: new Date().toISOString()
+   });
+   
    await new Promise(res => setTimeout(res, 3500));
    
    manualBasic.fullName = "Amila Master Dev";
@@ -407,20 +414,49 @@ const finalizeManualCV = async () => {
             </div>
           </div>
 
-          <div class="p-6 pt-2 border-t border-white/5 bg-white/5 shrink-0 flex items-center gap-3">
-            <button v-if="manualStep > 1" @click="prevStep" class="flex-1 bg-white/5 py-3.5 rounded-2xl flex items-center justify-center gap-2 hover:bg-white/10 active:scale-95 transition-all text-white/40 font-black uppercase tracking-widest text-[9px] border border-white/5 font-jakarta">
-              Back
-            </button>
-            <button @click="manualStep === 4 ? isCVPreviewOpen = true : nextStep()" :disabled="isSyncingManual" class="flex-[2] bg-[#C1A172] py-3.5 rounded-2xl flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] active:scale-95 transition-all text-[#0A2647] font-black uppercase tracking-widest text-[10px] font-jakarta relative overflow-hidden group/final">
-              <div v-if="isSyncingManual" class="absolute inset-0 bg-[#0A2647] flex items-center justify-center gap-2">
-                <div class="w-3 h-3 rounded-full border-2 border-[#C1A172] border-t-transparent animate-spin"></div>
-                <span class="text-[8px] text-[#C1A172] font-black uppercase tracking-widest">Saving Master Identity...</span>
-              </div>
-              <Sparkles v-if="manualStep === 4" class="w-4 h-4 text-[#0A2647] group-hover/final:rotate-12 transition-transform" />
-              <span v-else>{{ manualStep === 4 ? 'Commit & Live Preview' : 'Next Step' }}</span>
-              <span v-if="manualStep === 4">Commit & Live Preview</span>
-              <ChevronRight v-if="manualStep < 4 && !isSyncingManual" class="w-3 h-3" />
-            </button>
+          <div class="p-6 bg-white/5 border-t border-white/5 space-y-4">
+            <!-- NEURAL STATUS BADGE (Mutation/Trust Logic) -->
+            <div class="flex items-center justify-between px-2">
+                <div class="flex items-center gap-2">
+                    <ShieldCheck v-if="props.profile.doc_status === 'Verified'" class="w-3.5 h-3.5 text-green-400" />
+                    <Clock v-else class="w-3.5 h-3.5 text-[#C1A172]" />
+                    <span class="text-[9px] font-black uppercase tracking-widest" :class="props.profile.doc_status === 'Verified' ? 'text-green-400' : 'text-[#C1A172]'">
+                        {{ props.profile.doc_status || 'Draft' }}
+                    </span>
+                </div>
+                <span v-if="props.profile.doc_status === 'Verified'" class="text-[8px] font-black text-white/30 uppercase tracking-widest">
+                    30-Day Trust Active
+                </span>
+                <span v-else class="text-[8px] font-black text-white/30 uppercase tracking-widest">
+                    Verification Needed
+                </span>
+            </div>
+
+            <div v-if="props.profile.doc_status === 'Verified'" class="bg-green-500/10 border border-green-500/20 p-2.5 rounded-xl flex items-center gap-3">
+               <div class="bg-green-500/20 p-1.5 rounded-lg">
+                  <Zap class="w-3 h-3 text-green-400" />
+               </div>
+               <p class="text-[8px] text-green-400/80 font-bold uppercase tracking-widest leading-tight">Fast-Track Enabled: No approval needed for 30 days unless content changes.</p>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <button v-if="manualStep > 1 && props.profile.doc_status !== 'Pending_Approval'" @click="prevStep" class="flex-1 bg-white/5 py-3.5 rounded-2xl flex items-center justify-center gap-2 hover:bg-white/10 active:scale-95 transition-all text-white/40 font-black uppercase tracking-widest text-[9px] border border-white/5 font-jakarta">
+                Back
+                </button>
+                <button v-if="props.profile.doc_status === 'Pending_Approval'" @click="emit('finalize', { ...props.profile, doc_status: 'Draft' })" class="flex-1 bg-red-500/10 border border-red-500/20 py-3.5 rounded-2xl flex items-center justify-center gap-2 hover:bg-red-500/20 active:scale-95 transition-all text-red-400 font-black uppercase tracking-widest text-[9px] font-jakarta">
+                Cancel Verification
+                </button>
+                <button @click="manualStep === 4 ? isCVPreviewOpen = true : nextStep()" :disabled="isSyncingManual" class="flex-[2] bg-[#C1A172] py-3.5 rounded-2xl flex items-center justify-center gap-2 shadow-lg hover:scale-[1.02] active:scale-95 transition-all text-[#0A2647] font-black uppercase tracking-widest text-[10px] font-jakarta relative overflow-hidden group/final">
+                <div v-if="isSyncingManual" class="absolute inset-0 bg-[#0A2647] flex items-center justify-center gap-2">
+                    <div class="w-3 h-3 rounded-full border-2 border-[#C1A172] border-t-transparent animate-spin"></div>
+                    <span class="text-[8px] text-[#C1A172] font-black uppercase tracking-widest">Saving Master Identity...</span>
+                </div>
+                <Sparkles v-if="manualStep === 4" class="w-4 h-4 text-[#0A2647] group-hover/final:rotate-12 transition-transform" />
+                <span v-else>{{ manualStep === 4 ? 'Approve & Build Master CV' : 'Next Step' }}</span>
+                <span v-if="manualStep === 4">Approve & Build Master CV</span>
+                <ChevronRight v-if="manualStep < 4 && !isSyncingManual" class="w-3 h-3" />
+                </button>
+            </div>
           </div>
         </div>
       </div>

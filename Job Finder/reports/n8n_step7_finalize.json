@@ -1,0 +1,34 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "update",
+        "table": "user_activity",
+        "id": "={{ $('Signal Re-Conversion').item.json.activity_id }}",
+        "data": {
+          "item": [
+            {
+              "name": "details",
+              "value": "={{ { ...$('Signal Re-Conversion').item.json, status: \"processed\" } }}"
+            }
+          ]
+        }
+      },
+      "id": "finalize-v2-node",
+      "name": "Supabase: Finalize Activity",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1500,
+        150
+      ],
+      "credentials": {
+        "supabaseApi": {
+          "id": "Supabase Backend Admin",
+          "name": "Supabase Backend Admin"
+        }
+      }
+    }
+  ],
+  "connections": {}
+}

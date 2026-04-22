@@ -155,29 +155,63 @@ Synchronizes global alerts across the frontend and notifies the team.
 ---
 
 ## ⚡ Step 6: Executor Pipeline (QUICK_APPLY / JOB_APPLY)
-This is the core workforce of the neural engine. It handles both manual "Normal Applies" and automated "Quick Applies".
+**Strict Rule:** Never use `JSON.stringify` on the payload. Pass the JavaScript object directly to the Supabase node to ensure proper JSONB storage and prevent `[object Object]` data corruption.
 
-**Standardized Processing Chain:**
-1.  **Signal Input:** Receives job context and user identity.
-2.  **Quota Fetch:** Retrieves real-time `cv_limit` and `plan_type` from Supabase.
-3.  **Neural Quota Auditor (V13.8):** 
-    - Analyzes tier limits.
-    - Determines if the apply is **INSTANT** or needs **STRATEGIC QUEUING**.
-4.  **Logical Split (If Node):**
-    - **TRUE Path (Dispatch):** Sends application to ATS + Logs `SUCCESSFUL_APPLY` + **Decrements `cv_limit`**.
-    - **FALSE Path (Queue):** Logs `JOB_QUEUED` with a `pending` status for Step 7 processing.
+### 🛠️ Headless Execution Script (Puppeteer Node)
+*This script performs the actual form-filling on external websites.*
+```javascript
+const { url, userData } = items[0].json;
+const puppeteer = require('puppeteer');
+const browser = await puppeteer.launch({ headless: true });
+const page = await browser.newPage();
+
+try {
+    await page.goto(url, { waitUntil: 'networkidle2' });
+    
+    // Fill common fields using Smart Selectors
+    const mapping = {
+        'input[name*="name"]': userData.fullName,
+        'input[name*="email"]': userData.email,
+        'textarea[name*="cover"]': userData.coverLetter
+    };
+
+    for (const [sel, val] of Object.entries(mapping)) {
+        if (await page.$(sel)) await page.type(sel, val, { delay: 100 });
+    }
+
+    // Handle CV Upload (Verified PDF)
+    const fileInput = await page.$('input[type="file"]');
+    if (fileInput) await fileInput.uploadFile('/tmp/verified_cv.pdf');
+
+    await page.waitForTimeout(1000);
+    const submit = await page.$('button[type="submit"]');
+    if (submit) await submit.click();
+
+    await browser.close();
+    return [{ json: { status: 'success' } }];
+} catch (e) {
+    await browser.close();
+    throw e;
+}
+```
 
 **Logic Engine (Neural Quota Auditor V13.8):**
 ```javascript
 const profile = $json; 
 const now = new Date();
-const planType = profile.plan_type || 'free';
-const role = profile.role || 'staff';
+const planType = (profile.plan_type || 'free').toLowerCase();
+const role = (profile.role || 'user').toLowerCase();
+
 let plan = (planType === 'pro' || planType === 'growth') ? 1 : 0;
 if (planType === 'elite' || role === 'super_admin') plan = 2;
+
 const balance = profile.cv_limit || 0;
 
-if (plan < 2 && balance <= 0) {
+// ELITE/ADMIN: Instant Dispatch (Step 2)
+if (plan >= 2) return { status: 'DISPATCH_INSTANT', ui_type: 'success', next_available: 'Available Now' };
+
+// FREE/PRO: Check Balance
+if (balance <= 0) {
     let nextDate = new Date();
     if (plan === 0) { // Free: Next Monday Reset
         const day = now.getDay();
@@ -190,29 +224,57 @@ if (plan < 2 && balance <= 0) {
     }
     return { status: 'QUEUE_STRATEGIC', ui_type: 'info', next_available: nextDate.toLocaleString('en-GB') };
 }
+
 return { status: 'DISPATCH_INSTANT', ui_type: 'success', next_available: 'Available Now' };
 ```
 
 ---
 
-## 🕒 Step 7: DigyNex Neural Cron: Global Strategic Dispatcher (V1.0)
+## 🕒 Step 7: DigyNex Neural Cron: Global Strategic Dispatcher (V13.5 - Bulletproof)
 The "Invisible Force" that handles queued applications during optimal recruiter peak hours.
 
 **Operational Sequence:**
 1.  **Cron Trigger (00:01 AM):** Daily wake-up call to scan for pending tasks.
-2.  **Fetch Pending Buffer:** `SELECT * FROM user_activity WHERE action = 'JOB_QUEUED' AND details->>'status' = 'pending'`.
-3.  **Neural Delay Engine:** 
-    - Calculated wait time to ensure dispatch occurs between **06:00 AM and 08:30 AM**.
-    - Randomized "Jitter" (5-10 mins) between applications to bypass bot detection.
-4.  **Identity Hydration:** Fetches latest profile data to ensure `doc_status` is still "Verified".
-5.  **Kinetic Dispatch:** Calls the ATS endpoint with saved payload from the `details` field.
-6.  **Cycle Completion:** 
+2.  **High-Performance Buffer Fetch:** Uses `pending_strategic_queue` View.
+3.  **Neural Prioritization (Top Matches First):** 
+    - Sorts the queue by **`match_score` DESC**.
+    - This ensures the jobs that fit the user best are applied for first within their daily limit.
+4.  **Manual-to-Queue Intercept:** 
+    - If a user manually clicked apply but was over-limit, the frontend sent it here with `status: 'pending'`. 
+    - These are processed alongside automated matches.
+5.  **Strategic Delay:** 
+    - AI determines the target country's timezone.
+    - Waits until **08:00 AM** local time before starting the submission.
+6.  **Action:** Sequentially triggers **Step 6 (Headless Executor)**.
+7.  **Finalization:** 
     - Updates `user_activity` status to `processed`.
-    - Decrements user `cv_limit` via Supabase Update.
-
-**Guardrail:** If a user manually applies and hits zero before the Cron runs, the Cron skips that user to prevent negative quota.
+    - Decrements `cv_limit` in the `profiles` table.
+    - Sends WhatsApp: "Elite Pulse: Your top matches have been dispatched! 🚀"
 
 ---
 
-## 🔱 Summary of Data Mapping
-All nodes MUST use `{{ $node["UI Signal Webhook"].json.body }}` as the root to ensure stability even if intermediate nodes change.
+## ⚡ Step 8: Global Verification Handshake (Workflow D: GUARDRAIL)
+This is the "Neural Gateway" that prevents unauthorized job applications.
+
+### **The Mobile Protocol (WhatsApp Handshake)**
+1.  **Incoming Pulse**: Detects `DOC_APPROVAL_PENDING`.
+2.  **Payload Security**: Must extract `user_phone`, `role`, and `company` from the `details` object.
+3.  **The Message Window**:
+    -   If 24h window is open: Send **Free Text** message.
+    -   If 24h window is closed: Call **WhatsApp Template** (`cv_approval_request`).
+4.  **The Intercept**:
+    -   n8n waits for **User Reply (Wait Node)**.
+    -   If reply contains **"YES"** (Case Insensitive): 
+        -   **DB UPDATE**: `profiles.doc_status = 'Verified'`.
+        -   **UI SYNC**: Sends a confirmation message: "Identity Verified 🛡️. Global Submission Unlocked."
+    -   If reply contains **"NO"**: 
+        -   **DB UPDATE**: `profiles.doc_status = 'Draft'`.
+
+---
+
+## 🔱 Summary of Global Integration
+- **Root Webhook**: Must always use `{{ $node["UI Signal Webhook"].json.body }}`.
+- **Signal Integrity**: All signal data flows into Section 7 (The Dispatcher) for final queuing.
+- **Production URL**: `https://n8n.digynex.se/webhook/neural-bridge`
+
+---

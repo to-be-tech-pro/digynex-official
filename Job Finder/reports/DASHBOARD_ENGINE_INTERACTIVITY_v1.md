@@ -1,55 +1,55 @@
-# DASHBOARD_ENGINE_INTERACTIVITY (V1.0 - Production)
+# 🎮 DigyNex Dashboard Engine: Interactivity Map (V1)
+**Doc Ref:** DASHBOARD_ENGINE_INTERACTIVITY_v1.md
 
-This document defines the step-by-step neural signal propagation when a user interacts with the DigyNex Dashboard UI.
-
----
-
-## ⚡ Core Interactivity Mapping
-
-### 1. QUICK APPLY / NORMAL APPLY ⚡
-- **User Action:** Clicks the Flash icon (⚡) or Standard Apply button.
-- **Frontend Phase:** 
-  1. Calls `quotaService.canPerformAction(profile, 'QUICK_APPLY')`. 
-- **Neural Phase (n8n):**
-  1. **Auditor Pulse:** Checks for available `cv_limit`.
-  2. **Success (Instant):** Dispatches to ATS immediately.
-  3. **Depleted (Strategic):** Logs to `JOB_QUEUED` table. User sees "Application Queued for Optimal Time" toast.
-  4. **Cleanup:** Decrements `cv_limit` ONLY on instant success.
-
-### 2. TAILOR CV & COVER LETTER (Neural Synthesis) 🪄
-- **User Action:** Clicks "Tailor Context" (🪄) in the job detail view.
-- **Frontend Phase:**
-  1. Checks `tier.ai_magic` authorization.
-  2. If Pass: Opens `SynthesisReview` overlay.
-  3. Clicking "Approve & Dispatch" calls `quotaService.canPerformAction(profile, 'CL_EXPORT')`.
-- **Neural Phase (n8n):**
-  1. Receiver: `Neural Signal Switch` (Output 1).
-  2. Action: Logs Synthesis event and decrements `cv_limit`.
-
-### 3. FOUNDER PASS UPGRADE (Revenue Gateway) 💎
-- **User Action:** Clicks "Upgrade" or any "Quota Reached" nudge.
-- **Frontend Phase:**
-  1. Triggers `handleDashboardAction('upgrade')`.
-  2. Opens the `FounderPassOverlay` (Persistent center-screen modal).
-- **Neural Phase:** (Passive) Analytics tracking of upgrade intent in `user_activity`.
-
-### 4. STRATEGIC COUNTRY SELECTOR (Targeting) 🌍
-- **User Action:** Adds a country in the Matches lab.
-- **Frontend Phase:**
-  1. Checks `quotaService.getCountryLimit(plan_type)`.
-  2. Blocks addition if limit (1 for Free, 3 for Pro) is reached.
-  3. UI Toast: "Quota Reached: Upgrade for global expansion."
+This document maps all interactive cards and buttons in the CareerNexus Dashboard to their respective **Neural Bridge** signals and n8n Workflows.
 
 ---
 
-## 🛠️ Internal Status Reference
+## 🏗️ 1. Expert Identity Wizard
+The gateway to building the Master CV.
 
-| Status | UX Feedback | Neural Action |
-| :--- | :--- | :--- |
-| `DISPATCH_INSTANT` | Success Toast (Green) | Immediate ATS Submission |
-| `QUEUE_STRATEGIC` | Info Toast (Blue) | Store in `user_activity` for Step 7 Cron |
-| `LIMIT_REACHED` | Warning Toast (Amber) | Forced Upgrade Nudge |
-| `VERIFICATION_REQ` | Guardrail Toast (Purple) | Trigger WhatsApp/Telegram Handshake |
+| Element | Interaction | Neural Signal | n8n Outcome |
+| :--- | :--- | :--- | :--- |
+| **"Sync LinkedIn"** | Click | `LINKEDIN_SYNC_REQUESTED` | Triggers **Workflow L**. Scrapes profile data and updates Supabase. |
+| **"Commit & Preview"** | Click (Final Step) | `DOC_APPROVAL_PENDING` | Triggers **Workflow D (Guardrail)**. Sends WhatsApp verification. |
+| **"Back" Button** | Click | None (Local Navigation) | Navigates wizard steps. |
 
 ---
-**Custodian:** DigyNex Neural Core (2026)
+
+## ⚡ 2. Live Sync Cards (Main Dashboard)
+Real-time status indicators and action hubs.
+
+| Element | Interaction | Neural Signal | n8n Outcome |
+| :--- | :--- | :--- | :--- |
+| **"→" Arrow Button** | Click | None (UI Local) | Opens the Expert Profile Wizard. |
+| **"Refresh Status"** | Click | None (DB Polling) | Re-fetches `doc_status` from Supabase to check if WhatsApp was clicked. |
+
+---
+
+## 🛠️ 3. Expert Manual Toolkit
+Advanced actions for premium users.
+
+| Element | Interaction | Neural Signal | n8n Outcome |
+| :--- | :--- | :--- | :--- |
+| **"Export CV"** | Click | `DOC_EXPORT_REQUEST` | Triggers **Workflow E**. Generates PDF and decrements `cv_limit`. |
+| **"Export CL"** | Click | `DOC_EXPORT_REQUEST` | Triggers **Workflow E**. Generates Cover Letter PDF. |
+| **"Neural Purge"** | Click | `ADMIN_DATA_PURGE` | Triggers **Workflow P**. Securely wipes temporary data. |
+
+---
+
+## 📢 4. Admin Hub (Broadcast)
+Global governance for Super Admins.
+
+| Element | Interaction | Neural Signal | n8n Outcome |
+| :--- | :--- | :--- | :--- |
+| **"Broadcast Info"** | Toggle On | `ADMIN_BROADCAST` | Triggers **Workflow A**. Updates global notice bar across all users. |
+| **"Suspend User"** | Toggle | `ADMIN_USER_LOCK` | Directly updates Supabase RLS policies. |
+
+---
+
+## 🧠 Neural Pulse Logic
+- **Success Tone**: Green Toast + Console `Status: 200`.
+- **Failure Tone**: Red Toast + Console Retry logic enabled.
+- **Diagnostic Level**: All pulses are logged with the `[NEURAL_PULSE]` prefix in the developer console.
+
+---

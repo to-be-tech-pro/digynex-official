@@ -24,16 +24,12 @@ Please refer to [ULTIMATE_UNIFIED_BLUEPRINT.md](file:///d:/Amila/With%20Antigrav
 
 ### 🔴 HIGH — Requires Production Keys/Config
 1. **Stripe Production Sync** — Wire `FounderPassOverlay.vue` checkout to real Stripe one-time payment link. Requires Stripe keys from owner.
-2. **n8n Step 1: Signal Dispatcher** — Connect `handleDashboardAction()` in App.vue to central n8n router webhook. Owner configures n8n endpoint.
+2. **n8n Strategic Executor (Frontend)** — 'Apply Now' signals and metadata payloads wired in `App.vue`. Ready for n8n 8 AM dispatch logic. ✅ COMPLETE.
 
 ### 🟡 MEDIUM — Next Sprint
-3. **n8n Steps 2–7** — All 7 core backend automation workflows:
-   - Step 2: Neural Recalibration (skill profile optimizer)
-   - Step 3: Document Ingestion (PDF→JSON parser)  
-   - Step 4: GDPR Auto-Purge (14-day asset deletion)
-   - Step 5: Stripe Webhook Sync → updates `plan_type` in Supabase
+3. **n8n Workflow E & Q (Backend)** — Finalize the Headless Browser nodes and the 08:00 AM Strategic Queue logic in n8n.
    - Step 6: Headless Broadcast (Puppeteer auto-apply bot)
-   - Step 7: System Recalibration (maintenance + token monitoring)
+   - Step 8: Strategic Queue Cron (Daily at 00:01)
 
 ### 🟢 LOW — Future Sprint
 4. **Document Verification** — Workflow to verify professional identity via uploaded documents (pending n8n integration).

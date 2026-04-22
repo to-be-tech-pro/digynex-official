@@ -4,7 +4,8 @@ import {
   Sparkles, FileText, LayoutDashboard, Briefcase, Zap, 
   Linkedin, User, Search, SlidersHorizontal, UserPlus, 
   Check, Maximize2, Lock, Bell, RefreshCw, ShieldCheck,
-  Cloud, Star, Stars, Mic, DownloadCloud, BarChart3, Bookmark, Share2, EyeOff, AlertTriangle, Mail
+  Cloud, Star, Stars, Mic, DownloadCloud, BarChart3, Bookmark, Share2, EyeOff, AlertTriangle, Mail,
+  Eye, Crown, ChevronRight
 } from 'lucide-vue-next'
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -853,11 +854,39 @@ const finalizeManualCV = () => {
 const onManualFinalize = async () => {
    isManualFormOpen.value = false;
    activeTab.value = 'profile';
-   // Synchronize the master profile name with the global user display name
+   
+   // --- MUTATION DETECTOR ---
+   // If content changed, we must reset the trust window
+   const hasMutation = JSON.stringify(masterProfile.value.basic) !== JSON.stringify(userProfile.value.resume_data?.basic);
+   
+   if (hasMutation || userProfile.value.doc_status !== 'Verified') {
+      userProfile.value.doc_status = 'Pending_Approval';
+      console.log('[DIGYNEX MUTATION] Change detected. Security Guardrail re-engaged.');
+   }
+
+   // Synchronize the master profile name
    if (masterProfile.value.basic.fullName) {
       userProfile.value.name = masterProfile.value.basic.fullName;
    }
-   await saveProfile();
+   
+   // --- NEURAL BRIDGE PRIORITY ---
+   // Trigger the Audit Signal BEFORE saving to DB
+   handleDashboardAction('submit_for_audit');
+   
+   try {
+       await saveProfile();
+       showNeuralToast('Neural Identity Committed & Synced', 'success');
+   } catch (err) {
+       console.warn('[DIGYNEX DB] Save delayed, but signal was sent to n8n.');
+       showNeuralToast('Identity Synced to n8n (DB Sync Pending)', 'warning');
+   }
+}
+
+const handleNeuralAction = async (actionId, details) => {
+    await profileService.logActivity(userProfile.value.email, actionId, details);
+    if (actionId === 'LINKEDIN_SYNC_REQUESTED') {
+        showNeuralToast('Pulse: LinkedIn Ingestion Initiated', 'info');
+    }
 }
 
 const isSyncingManual = ref(false)
@@ -901,6 +930,8 @@ const handleApply = async (job) => {
         
         // Signal N8N Trigger: Workflow D (Include Job Metadata)
         await profileService.logActivity(userProfile.value.email, 'DOC_APPROVAL_PENDING', { 
+            status: 'pending',
+            job: job, // FULL PAYLOAD
             company: job.c, 
             role: job.r,
             user_phone: '+46769703311', // Personal Testing Number
@@ -1240,6 +1271,13 @@ const handleDashboardAction = async (actionId, jobData = null) => {
         const targetJob = jobData || selectedJob.value;
         if (!targetJob) return;
 
+        // --- NEURAL GUARDRAIL: Master Identity Verification (Workflow D) ---
+        if (userProfile.value.doc_status !== 'Verified' && !userProfile.value.isSuperUser) {
+            showNeuralToast('Verification Required: Complete Expert Profile & WhatsApp Handshake first 🛡️', 'warning', 5000);
+            isManualFormOpen.value = true; // Guide user to the wizard
+            return;
+        }
+
         // --- UNIFIED QUOTA ENGINE (V11.5) ---
         const quota = await quotaService.canPerformAction(userProfile.value, 'QUICK_APPLY');
 
@@ -1266,7 +1304,16 @@ const handleDashboardAction = async (actionId, jobData = null) => {
                step: 'queued'
            });
 
-           await profileService.logActivity(userProfile.value.email, 'JOB_QUEUED', { job: targetJob.c, reason: quota.reason });
+           // STRICT RULE: Include full job metadata and 'pending' status for Step 7 Strategic Queue
+           await profileService.logActivity(userProfile.value.email, 'JOB_QUEUED', { 
+               status: 'pending',
+               job: targetJob, // FULL PAYLOAD for ATS injection
+               company: targetJob.c,
+               role: targetJob.r,
+               reason: quota.reason,
+               timestamp: new Date().toISOString()
+           });
+
            setTimeout(() => { isNeuralToastVisible.value = false }, 3000);
            return;
         }
@@ -1289,11 +1336,13 @@ const handleDashboardAction = async (actionId, jobData = null) => {
         });
 
         await profileService.logActivity(userProfile.value.email, 'QUICK_APPLY', { 
-            job: targetJob.c,
+            status: 'instant',
+            job: targetJob,
             company: targetJob.c,
             role: targetJob.r,
             user_phone: '+46769703311',
-            target_company_email: 'info@infodigynex.se'
+            target_company_email: 'info@infodigynex.se',
+            timestamp: new Date().toISOString()
         });
         setTimeout(() => { isNeuralToastVisible.value = false }, 2500);
         return;
@@ -1310,16 +1359,36 @@ const handleDashboardAction = async (actionId, jobData = null) => {
 
     if (actionId === 'manual_toolkit') {
         const targetJob = jobData || selectedJob.value;
-        toastMessage.value = `Manual Assist: Preparing assets for ${targetJob.c}...`;
-        isNeuralToastVisible.value = true;
+        if (!targetJob) return;
+        selectedJob.value = targetJob;
+        isManualToolkitOpen.value = true;
         
-        // n8n Signal: Log manual application intent
-        await profileService.logActivity(userProfile.value.email, 'MANUAL_ASSIST_START', { job: targetJob.c });
-        
-        setTimeout(() => {
-            toastMessage.value = 'Tailored CV & Cover Letter Ready for Download';
-            isCVPreviewOpen.value = true; // Show the preview overlay so they can export
-        }, 2000);
+        // SIGNAL: Trigger n8n Workflow E (Manual Assist Sequence)
+        await profileService.logActivity(userProfile.value.email, 'MANUAL_ASSIST_START', {
+            company: targetJob.c,
+            role: targetJob.r,
+            timestamp: new Date().toISOString()
+        });
+        return;
+    }
+
+    if (actionId === 'MANUAL_ASSIST_DISPATCH') {
+        await profileService.logActivity(userProfile.value.email, 'MANUAL_ASSIST_DISPATCH', {
+            company: jobData.c,
+            role: jobData.r,
+            timestamp: new Date().toISOString()
+        });
+        showNeuralToast('Neural Dispatch: Portal Link Active', 'success');
+        return;
+    }
+
+    if (actionId === 'CV_EXPORT' || actionId === 'CL_EXPORT') {
+        await profileService.logActivity(userProfile.value.email, actionId, {
+            company: jobData?.c || 'Global',
+            role: jobData?.r || 'Specimen',
+            timestamp: new Date().toISOString()
+        });
+        showNeuralToast(`${actionId.split('_')[0]} Export Logged to Quota`, 'info');
         return;
     }
 
@@ -1336,11 +1405,17 @@ const handleDashboardAction = async (actionId, jobData = null) => {
                 userProfile.value.doc_status = 'Pending_Approval';
             }
             
-            await profileService.logActivity(userProfile.value.email, 'STRATEGY_AUDIT_REQUESTED', {
+            // SIGNAL: Trigger Workflow D (Verification Guardrail)
+            await profileService.logActivity(userProfile.value.email, 'DOC_APPROVAL_PENDING', {
+                role: masterProfile.value.basic.role || 'Expert Identity Audit',
+                company: 'DigyNex Neural Engine',
+                user_phone: userProfile.value.phone || masterProfile.value.basic.phone || '+46790522874',
+                identity: masterProfile.value.basic,
+                status: 'pending_verification',
                 timestamp: new Date().toISOString()
             });
             
-            toastMessage.value = 'Audit Active: Professional Strategy Dispatched';
+            toastMessage.value = 'Audit Active: Guardrail Verification Dispatched';
         } catch (err) {
             toastMessage.value = 'Audit Sync Error. Retrying...';
         }
@@ -1397,7 +1472,16 @@ const handleDashboardAction = async (actionId, jobData = null) => {
                 d: new Date().toLocaleDateString(), l: targetJob.l,
                 icon: Briefcase, color: '#0A2647', step: 'queued'
             });
-            await profileService.logActivity(userProfile.value.email, 'JOB_QUEUED', { job: targetJob.c, reason: quota.reason });
+
+            // STRICT RULE: Strategic Queue Metadata Sync
+            await profileService.logActivity(userProfile.value.email, 'JOB_QUEUED', { 
+                status: 'pending',
+                job: targetJob,
+                company: targetJob.c,
+                role: targetJob.r,
+                reason: quota.reason,
+                timestamp: new Date().toISOString()
+            });
             return;
         }
         
@@ -1447,46 +1531,6 @@ const handleDashboardAction = async (actionId, jobData = null) => {
         await profileService.logActivity(userProfile.value.email, 'ADMIN_DATA_PURGE');
         
         setTimeout(() => { isNeuralToastVisible.value = false }, 4000);
-        return;
-    }
-    if (actionId === 'manual_toolkit') {
-        const job = data;
-        if (!job) return;
-
-        // 1. Quota Check
-        const quota = await quotaService.canPerformAction(userProfile.value, 'CV_EXPORT');
-        if (!quota.can) {
-            toastMessage.value = `Quota Reached: ${quota.reason.replace('_', ' ')}`;
-            isNeuralToastVisible.value = true;
-            setTimeout(() => { isNeuralToastVisible.value = false }, 3000);
-            return;
-        }
-
-        // 2. Synthesis (Neural Tailoring)
-        toastMessage.value = 'Neural Hub: Synthesizing Toolkit Specimens...';
-        isNeuralToastVisible.value = true;
-        
-        const tailoredLetter = profileService.generateCoverLetter({
-           name: userProfile.value.name,
-           resume_data: masterProfile.value,
-           secret_keywords: masterProfile.value.secretKeywords,
-           job: job
-        });
-
-        synthesisData.value = {
-            job: job,
-            letter: tailoredLetter,
-            summary: `Expert results-driven candidate with deep expertise in ${job.r} and strategic alignment with ${job.c}.`
-        };
-
-        // 3. Log Signal (Engine Phase)
-        await profileService.submitManualAssistSignal(userProfile.value, job);
-        
-        await new Promise(r => setTimeout(r, 2000));
-        
-        // 4. Open UI (Face Phase)
-        isManualToolkitOpen.value = true;
-        isNeuralToastVisible.value = false;
         return;
     }
 
@@ -1868,6 +1912,7 @@ const handleNotificationClick = (notif) => {
         @close="isManualFormOpen = false" 
         @finalize="onManualFinalize" 
         @requestAuth="isAuthOpen = true"
+        @neuralAction="handleNeuralAction"
       />
 
       <!-- LINKEDIN CONNECT OVERLAY -->

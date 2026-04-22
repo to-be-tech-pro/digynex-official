@@ -12,7 +12,7 @@ const props = defineProps({
   userProfile: Object
 })
 
-const emit = defineEmits(['close', 'download-pdf'])
+const emit = defineEmits(['close', 'download-pdf', 'onAction'])
 
 const copiedField = ref(null)
 
@@ -30,6 +30,16 @@ const handlePortalOpen = () => {
     const query = encodeURIComponent(`${props.job.r} at ${props.job.c} careers`)
     window.open(`https://www.google.com/search?q=${query}`, '_blank')
   }
+}
+
+const handleExport = (type) => {
+    if (type === 'CV') {
+        emit('download-pdf', props.job);
+        emit('onAction', 'CV_EXPORT', props.job);
+    } else if (type === 'CL') {
+        copyToClipboard(props.synthesis.letter, 'letter');
+        emit('onAction', 'CL_EXPORT', props.job);
+    }
 }
 </script>
 
@@ -88,14 +98,14 @@ const handlePortalOpen = () => {
                  Download Tailored Specimens
               </h4>
               <div class="grid grid-cols-2 gap-3">
-                 <button @click="emit('download-pdf', job)" class="flex flex-col items-center justify-center p-4 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 transition-all group active:scale-95">
+                 <button @click="handleExport('CV')" class="flex flex-col items-center justify-center p-4 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 transition-all group active:scale-95">
                     <div class="w-10 h-10 rounded-xl bg-red-500/10 flex items-center justify-center mb-2 group-hover:bg-red-500/20 transition-colors">
                        <FileText class="w-5 h-5 text-red-400" />
                     </div>
                     <span class="text-[10px] font-black text-white uppercase tracking-widest">Tailored CV</span>
                     <span class="text-[8px] font-bold text-white/30 uppercase mt-1">PDF Specimen</span>
                  </button>
-                 <button @click="copyToClipboard(synthesis.letter, 'letter')" class="flex flex-col items-center justify-center p-4 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 transition-all group active:scale-95">
+                 <button @click="handleExport('CL')" class="flex flex-col items-center justify-center p-4 bg-white/5 border border-white/5 rounded-2xl hover:bg-white/10 transition-all group active:scale-95">
                     <div class="w-10 h-10 rounded-xl bg-indigo-500/10 flex items-center justify-center mb-2 group-hover:bg-indigo-500/20 transition-colors">
                        <Sparkles class="w-5 h-5 text-indigo-400" />
                     </div>
@@ -134,7 +144,7 @@ const handlePortalOpen = () => {
         <!-- Footer: Portal Execution -->
         <div class="p-6 bg-white/5 border-t border-white/5">
            <p class="text-[9px] font-bold text-white/30 uppercase text-center mb-4 tracking-widest">Ready for portal submission?</p>
-           <button @click="handlePortalOpen" class="w-full bg-gradient-to-r from-[#C1A172] to-[#FFD700] p-4 rounded-2xl flex items-center justify-center gap-3 group hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-[#C1A172]/20">
+           <button @click="() => { handlePortalOpen(); emit('onAction', 'MANUAL_ASSIST_DISPATCH', job); }" class="w-full bg-gradient-to-r from-[#C1A172] to-[#FFD700] p-4 rounded-2xl flex items-center justify-center gap-3 group hover:scale-[1.02] active:scale-95 transition-all shadow-xl shadow-[#C1A172]/20">
               <span class="text-[11px] font-black text-[#0A2647] uppercase tracking-widest">Secure Portal Dispatch</span>
               <ExternalLink class="w-4 h-4 text-[#0A2647] group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
            </button>

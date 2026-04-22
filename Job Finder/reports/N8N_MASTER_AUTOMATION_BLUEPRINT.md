@@ -1,10 +1,10 @@
-# 🧠 DigyNex Neural Engine: Master N8N Automation Blueprint (2026)
+# 🧠 DigyNex Neural Engine: Master N8N Automation Blueprint (2026) [✅ SYSTEM ACTIVE]
 
 This document is the **Single Source of Truth** for the DigyNex Job Finder automation ecosystem. It bridges the Vue.js frontend with the n8n backend to create an elite, high-trust career acceleration engine.
 
 ---
 
-## 🏗️ 1. The Neural Bridge Architecture (Trigger Signals)
+## 🏗️ 1. The Neural Bridge Architecture (Trigger Signals) [✅ COMPLETED]
 
 The App communicates with n8n via the `user_activity` table in Supabase. Every "Neural Signal" emitted by the UI must be handled by a corresponding n8n Workflow.
 
@@ -12,33 +12,43 @@ The App communicates with n8n via the `user_activity` table in Supabase. Every "
 
 | Signal (Action ID) | n8n Workflow Name | Strategic Goal | Frontend Status |
 | :--- | :--- | :--- | :--- |
-| `DOC_APPROVAL_PENDING` | **Workflow D: Guardrail** | Mandatory mobile approval (WA/TG) before submission. | ✅ Pre-wired |
-| `LINKEDIN_SYNC_REQUESTED` | **Workflow L: Profiler** | Scrape LinkedIn data and inject into Supabase. | ✅ Pre-wired |
-| `NEURAL_RECALIBRATE` | **Workflow R: Analyst** | AI market trend sync and skill gap suggestions. | ✅ Pre-wired |
-| `ADMIN_BROADCAST` | **Workflow A: Broadcaster** | Global multi-channel executive notification. | ✅ Pre-wired |
-| `ADMIN_DATA_PURGE` | **Workflow P: Purge** | Secure data cleanup and GDPR compliance. | ✅ Pre-wired |
-| `JOB_APPLY` | **Workflow E: Executor** | Headless browser auto-submission (Post-Approval). | ✅ Pre-wired |
-| `QUICK_APPLY` | **Workflow Q: Quick Start** | Immediate direct dispatch to ATS endpoints from Matcher. | ✅ Pre-wired |
-| `CV_EXPORT` | **Workflow X: Logger** | Log export events, enforce quota, trigger Stripe check. | ✅ Pre-wired |
+| `DOC_APPROVAL_PENDING` | **Workflow D: Guardrail** | Mandatory mobile approval (WA) before any apply. | ✅ **COMPLETE** |
+| `LINKEDIN_SYNC_REQUESTED` | **Workflow L: Profiler** | Scrape LinkedIn data and update Supabase. | ✅ **COMPLETE** |
+| `JOB_SCRAPE_REQUEST` | **Workflow G: Scraper** | Global multi-site discovery (LinkedIn/Indeed/etc). | ✅ **COMPLETE** |
+| `DOC_EXPORT_REQUEST` | **Workflow E: Executor** | Job Application / CV PDF Export. | ✅ **COMPLETE** |
+| `ADMIN_BROADCAST` | **Workflow A: Broadcaster** | Global multi-channel notifications. | ✅ **COMPLETE** |
+
+### **The "Trust Window" Logic**
+- **Verified Status**: Unlocks Workflow E for **30 Days**.
+- **Mutation Reset**: Any change to `resume_data` forces status back to `Pending_Approval`.
+- **Handshake**: Requires mobile response ("YES") to flip status to `Verified`.
+| `ADMIN_DATA_PURGE` | **Workflow P: Purge** | Secure data cleanup and GDPR compliance. | ✅ **COMPLETE** |
+| `QUICK_APPLY` | **Workflow E: Executor** | Automated job matching & application. | ✅ **COMPLETE** |
+| `CV_EXPORT` | **Workflow X: Logger** | Log export events, enforce quota, trigger Stripe check. | ✅ **COMPLETE** |
 
 ### 🧠 Signal Routing Layer (Switch Mapping)
 The master switch routes incoming signals based on the `actionId` from the frontend:
 
-- **Output 0: `JOB_APPLY` / `QUICK_APPLY` (Executor)**
-  - Logic: Dispatches content to ATS. **Must decrement `cv_limit` on success.**
+- **Output 0: `JOB_APPLY` (Master Executor)**
+  - Logic: Standard application dispatch. **Must decrement `cv_limit` on success.**
 - **Output 1: `CV_EXPORT` / `CL_EXPORT` (Logger)**
-  - Logic: Fetches and decrements quota for document generations.
+  - Logic: Document generation tracking and immediate quota deduction.
 - **Output 2: `ADMIN_BROADCAST` (Global Sync)**
-  - Logic: Syncs maintenance/broadcast messages across all profiles.
-- **Output 3: `DOC_APPROVAL_REQUEST` (Guardrail)**
- ### 🛠️ Step 6: Executor Architecture
+  - Logic: Real-time synchronization of system-wide alerts.
+- **Output 3: `DOC_APPROVAL_PENDING` (Verification Handshake)**
+  - Logic: Initiates the WhatsApp/Telegram handshake (Workflow D).
+- **Output 4: `QUICK_APPLY` (Rapid Executor)**
+  - Logic: High-speed matcher dispatch bypassing standard approval.
+ ### 🛠️ Step 6: Executor Architecture (Neural Dispatcher)
 The Executor handles all application dispatches. It is strictly guarded by the Neural Quota Auditor.
 
 **Logical Flow:**
-1.  **Incoming Signal:** (Action 0 or QUICK_APPLY).
-2.  **Audit Pulse:** Verifies `cv_limit`. 
-3.  **Path A (Successful):** Dispatch to ATS -> Log `SUCCESSFUL_APPLY` -> `cv_limit--`.
-4.  **Path B (Depleted):** Log `JOB_QUEUED` (status: pending) -> Stop.
+1.  **Incoming Signal:** (Action `JOB_APPLY` or `QUICK_APPLY`).
+2.  **Audit Pulse:** Verifies `cv_limit` and `plan_type`. 
+3.  **Path A (Successful):** Dispatch to ATS -> Log `JOB_APPLY` (status: processed) -> `cv_limit--`.
+4.  **Path B (Depleted/Strategic):** Log `JOB_QUEUED` (status: pending) -> Strategic Wait for Step 7.
+
+**Strict Rule (Data Purity):** Every activity log MUST pass a pure JSONB object. Never stringify payload blobs, or the system will suffer "String Leakage" corruption ([object Object]).
 
 ---
 
@@ -50,36 +60,35 @@ The Executor handles all application dispatches. It is strictly guarded by the N
 ## 🕹️ UI Button & Signal Mapping (Cheat Sheet)
 To prevent confusion, here is exactly how the Frontend buttons map to n8n logic:
 
-1. **"Apply Now" (Matches Tab):**
-   * *Signal Sent:* `QUICK_APPLY`
-   * *Action:* Bypasses standard verification for instant auto-applying (usually reserved for high-confidence matches). 
-2. **"Instant AI Apply" (Job Detail Overlay):**
-   * *Signal Sent:* `DOC_APPROVAL_PENDING` (If docStatus is Unverified) OR `JOB_APPLY` (If Verified).
-   * *Action:* The main strategic application route. Triggers the WhatsApp guardrail if the AI needs humans to review the cover letter before shooting it to the company.
-3. **"Manual Assist Toolkit" (Job Detail Overlay):**
+1. **"Apply Now" (Matches Tab):** ✅
+   * *Signal Sent:* `QUICK_APPLY` (Blocked if `doc_status !== 'Verified'`)
+   * *Action:* Bypasses standard verification for instant auto-applying.
+2. **"Approve & Build Master CV" (Wizard Final Step):** ✅
+   * *Signal Sent:* `DOC_APPROVAL_PENDING`.
+   * *Action:* The primary entry point for the Neural Bridge. Commits the master identity and triggers the mobile verification handshake.
+3. **"Cancel Verification" (Wizard Final Step / Red Button):** ✅
+   * *Signal Sent:* None (Local DB Update).
+   * *Action:* Resets `doc_status` to `Draft`. Allows the user to exit the pending state and return to editing.
+4. **"Manual Assist Toolkit" (Job Detail Overlay):** ✅
    * *Signal Sent:* `MANUAL_ASSIST_START`
-   * *Action:* Does NOT auto-apply. This shows up when `applyType: 'manual'` (for jobs that require tricky external company portals). It prepares the tailored PDF and Cover letter for the user to download and apply manually.
+   * *Action:* Prepares tailored CV/CL for manual submission on external company portals.
 
-**Next Step (Owner):** Configure n8n webhook URL → add to `profileService.logActivity()` HTTP call.
-
----
-
-## 🛡️ 2. Workflow D: The Verification Guardrail (WhatsApp/Telegram)
-
-**Objective**: Absolute user sovereignty over their specimens. No application is sent without manual mobile verification.
-
-1.  **Trigger**: Supabase Node watches `user_activity` for `DOC_APPROVAL_PENDING`.
-2.  **Logic**: 
-    - Fetch the user's latest LaTeX CV (from Supabase Storage).
-    - Dispatch a rich-media message to **WhatsApp (Twilio)** and **Telegram**.
-    - Message includes: "Elite Specimen Generated. Ready for [Job Role] at [Company]. Approve?"
-3.  **Buttons**: User receives `[ ✅ Approve ]` and `[ ✏️ Edit ]`.
-4.  **Verification**: Upon clicking "Approve", n8n updates `profiles.doc_status` to `Verified`.
-5.  **Chain Reaction**: Immediately triggers **Workflow E: The Executor**.
+**STATUS:** Neural Bridge Hub is **ACTIVE (Production)**. All signals reaching n8n.
 
 ---
 
-## 🤖 3. Workflow E: The Headless Auto-Apply Engine
+## ✅ Workflow D: The Verification Guardrail (WhatsApp) [LIVE]
+
+**Objective**: Absolute user sovereignty. No application is sent without manual mobile verification.
+
+1.  **Trigger**: `DOC_APPROVAL_PENDING` signal.
+2.  **Handshake**: Sends WhatsApp message with role/company metadata.
+3.  **Verification**: User replies **YES** to flip status to `Verified`.
+4.  **Chain Reaction**: Unlocks **Workflow E: The Executor** for a 30-day trust window.
+
+---
+
+## 🤖 3. Workflow E: The Headless Auto-Apply Engine [🎯 ACTIVE GOAL]
 
 **Objective**: Automating the "Soul-Draining" form-filling process.
 
@@ -146,19 +155,37 @@ To prevent confusion, here is exactly how the Frontend buttons map to n8n logic:
 
 ---
 
-## ⏳ 8. Workflow Q: The Neural Queue & Cron Scheduler (Global Strategic Dispatch)
+## ⏳ 8. Workflow Q: The Neural Queue & Cron Scheduler (Global Strategic Dispatch V13.5)
 
 **Objective**: Automated processing of "Queued" applications to maximize success within system constraints and recruiter peak hours.
 
 1.  **Trigger**: CRON Trigger (Daily at `00:01`).
-2.  **Context-Aware Logic (Elite Feature)**: 
-    - Scans `user_activity` for entries with `status: 'queued'`.
-    - **Timezone Alignment**: AI looks at `details.location` to determine the target country's timezone.
-    - **Strategic Delay**: The workflow waits until `08:00 AM` local time for that specific country before dispatching.
-    - **Neural Staggering**: For users with multiple queued items (Unlimited Tier), applications are pulsed every 3-5 minutes to prevent bot-detection/spam filtering.
-3.  **Action**: Automatically executes **Workflow E: The Executor** or **Workflow Q: Quick Start** for that specimen.
-4.  **Alert**: User receives a WhatsApp/Telegram notification: "Elite Pulse: Your application for [Role] has been dispatched during the recruiter's peak morning window."
+2.  **Logic**: Scans `user_activity` for `status: 'pending'` (Queued) applications.
+3.  **Prioritization**: Sorts by `match_score` (Top Matches first).
+4.  **Strategic Delay**: Waits until **08:00 AM** local time for the target country (determined by metadata).
+5.  **Execution**: Sequentially triggers **Workflow E** for each entry until daily/user quota is met.
+6.  **Alert**: User receives a mobile notification once the queue starts processing.
 
 ---
 
-**© 2026 DigyNex Official. Final High-Trust Automation Blueprint. Version 10.0 Stable.**
+## 🌎 9. Global Strategic Scraper (Workflow G: DISCOVERY)
+**Objective**: Continuous job discovery across multi-site platforms (LinkedIn, Indeed, localized boards) tailored to user geographic preferences.
+
+### **The Multi-Site Pulse**
+1.  **Trigger**: CRON Trigger (Every 4-12 hours based on Tier).
+2.  **Country Slot Enforcement**:
+    -   **Free (T1)**: Scrapes only the primary country slot.
+    -   **Pro (T2)**: Parallel scraping for up to 3 countries.
+    -   **Elite (T3)**: Full parity across 10+ countries.
+3.  **Discovery Protocol**:
+    -   Uses Premium Scraping APIs to bypass anti-bot shields.
+    -   Filters for "Newest" or "Urgent" keywords.
+    -   Extracts Role, Company, Location, and Application URL.
+4.  **Neural Matching**:
+    -   New discoveries are cross-referenced with user `secretKeywords`.
+    -   If match score > 85%, n8n pushes a `TOP_MATCH_DISCOVERED` signal.
+5.  **UI Injection**: Jobs appear in the "Matches" hub with a `NEW` badge.
+
+---
+
+**© 2026 DigyNex Official. Final High-Trust Automation Blueprint. Version 10.1 Stable.**

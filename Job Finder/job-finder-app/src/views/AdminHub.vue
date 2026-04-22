@@ -30,7 +30,26 @@ const selectedRange = ref('All')
 const customDays = ref('')
 const users = ref([])
 const activeTierSelector = ref(null)
+const neuralConnectionStatus = ref('Standby') // Standby, Testing, Active, Offline
+const lastHeartbeat = ref(null)
 
+const neuralError = ref(null)
+
+const checkNeuralBridge = async () => {
+    neuralConnectionStatus.value = 'Testing'
+    neuralError.value = null
+    const result = await profileService.testConnection()
+    
+    if (result.ok) {
+        neuralConnectionStatus.value = 'Active'
+        lastHeartbeat.value = new Date().toLocaleTimeString()
+        emit('sendNotification', 'NEURAL BRIDGE: LINK ESTABLISHED')
+    } else {
+        neuralConnectionStatus.value = 'Offline'
+        neuralError.value = result.status
+        emit('sendNotification', `BRIDGE ERROR: ${result.status}`)
+    }
+}
 // --- SYSTEM CONFIG ENGINE (NEW V12.0) ---
 const configData = ref({
     free: { cv_per_week: 2, day_cap: 3, price: 0, ai_magic: false },
@@ -520,6 +539,38 @@ const chartOptions = {
               </div>
            </div>
         </div>
+
+         <!-- NEURAL BRIDGE MONITOR (NEW V13.5) -->
+         <div v-if="isSuperAdmin" class="bg-gradient-to-br from-[#0A2647] to-[#051124] border border-[#C1A172]/20 rounded-[2rem] p-5 shadow-2xl relative overflow-hidden group">
+            <div class="absolute inset-0 bg-[#C1A172]/5 opacity-0 group-hover:opacity-100 transition-opacity duration-1000"></div>
+            
+            <div class="flex items-center justify-between relative z-10">
+               <div class="flex items-center gap-3">
+                  <div :class="neuralConnectionStatus === 'Active' ? 'bg-green-500/20 text-green-400' : (neuralConnectionStatus === 'Offline' ? 'bg-red-500/20 text-red-400' : 'bg-white/10 text-white/40')" 
+                       class="p-2 rounded-xl border border-current/20 transition-colors">
+                     <Zap class="w-4 h-4" />
+                  </div>
+                  <div>
+                     <h3 class="text-[12px] font-black text-white uppercase tracking-[0.2em] leading-none">Neural Bridge Hub</h3>
+                     <p class="text-[8px] font-bold text-white/30 uppercase mt-1">
+                        Status: <span :class="neuralConnectionStatus === 'Active' ? 'text-green-400' : (neuralConnectionStatus === 'Offline' ? 'text-red-400' : 'text-white/40')">{{ neuralConnectionStatus }}</span>
+                        <span v-if="neuralError" class="ml-2 px-1.5 py-0.5 bg-red-500/10 text-red-500 rounded text-[6px] border border-red-500/20">Code: {{ neuralError }}</span>
+                     </p>
+                  </div>
+               </div>
+               
+               <button @click="checkNeuralBridge" 
+                       class="px-4 py-2 bg-white/5 hover:bg-white/10 text-white rounded-xl text-[9px] font-black uppercase tracking-widest border border-white/10 flex items-center gap-2 active:scale-95 transition-all">
+                  <RefreshCw :class="neuralConnectionStatus === 'Testing' ? 'animate-spin' : ''" class="w-3 h-3" />
+                  {{ neuralConnectionStatus === 'Testing' ? 'Tapping Nerve...' : 'Test Link' }}
+               </button>
+            </div>
+
+            <div v-if="lastHeartbeat" class="mt-4 pt-4 border-t border-white/5 flex items-center justify-between relative z-10">
+               <span class="text-[7px] font-black text-white/20 uppercase tracking-widest">Last Success</span>
+               <span class="text-[8px] font-black text-[#C1A172] tracking-wider">{{ lastHeartbeat }}</span>
+            </div>
+         </div>
 
          <!-- VISUAL ANALYTICS: User Growth -->
          <div class="w-full bg-white/5 border border-white/5 rounded-[2.5rem] p-6 flex flex-col">
