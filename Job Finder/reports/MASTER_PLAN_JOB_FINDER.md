@@ -20,10 +20,15 @@
 
 To ensure world-class data integrity and local relevance, we avoid the "Scraping Mess":
 
-- **Unified Discovery (serpApi)**: One API (`serpapi.com`) to access Google Jobs globally. No matter the country, we get the same high-standard data.
-- **Country Selector UI**: Users select their target region (e.g., Sweden, Germany, Sri Lanka), and the system automatically pivots to that region's **Verified Job Hubs** (e.g., Platsbanken, TopJobs, Indeed).
-- **AI Reality Filter**: Every job post is passed through **Gemini AI** to detect "fake" or "non-matching" posts before it reaches the user. We ensure 100% transparency by showing the source logo (LinkedIn, LinkedIn, etc.).
-- **Active Discovery Slots (The "Focus Hub")**: Instead of a scattered search, the system locks users into **Active Focus Slots** (Tiered Paid Access: e.g., 3 slots for Starter, 10+ for Elite). This forces high-intent discovery and optimizes API consumption for verified results.
+- **Unified Discovery (Adzuna/Careerjet)**: Strategic API integration targeting global regions (Sweden, UK, etc.).
+- **Surgical Caching Logic (The 24h Trap)**:
+    - **Logic:** Before hitting external APIs, the system queries the internal `job_scrapes` vault.
+    - **Shared Intelligence:** Discovery results are indexed by `{keywords}_{country}`. If another user has searched for the same criteria within 24 hours, the system serves the **Shared Result**.
+    - **Impact:** Reduces external API costs by up to 90% in high-traffic niches.
+- **4-by-4 Lazy Loading**: UI renders job cards in chunks of 4-to-10, matching exactly the API pagination to minimize memory footprint and data waste.
+- **Country Selector UI**: Users select their target region, and the system automatically pivots the n8n discovery parameters.
+- **AI Reality Filter**: Every job post is passed through **Gemini AI** to detect "fake" or "non-matching" posts before it reaches the user.
+- **Active Discovery Slots (The "Focus Hub")**: Instead of a scattered search, the system locks users into **Active Focus Slots** (Tiered Paid Access).
 
 ---
 

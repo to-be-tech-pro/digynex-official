@@ -63,8 +63,11 @@ This document consolidates every strategic discussed component, from UI guardrai
 
 ---
 
-## 🔗 3. The 7-Step n8n Neural Ecosystem (Backend Gaps)
 - [x] **Step 1: Signal Dispatcher:** Link `App.vue` actions to central n8n router. ✅ (Frontend Pre-wired & Verified)
+- [x] **Step 7: Neural Job Scraper (Workflow G):** ✅ **COMPLETE (V15.0)**
+    - [x] **Surgical Caching:** 24h Global Cache Hit logic established.
+    - [x] **Lazy Hydration:** Frontend mapping for "4-by-4" results stream.
+    - [x] **Real-time Discovery:** Enter-key search trigger wired to n8n.
 - [ ] **Step 2: Neural Recalibration:** Automated skill profile optimization.
 - [ ] **Step 3: Document Ingestion:** The Raw-to-JSON PDF parsing engine.
 - [ ] **Step 4: GDPR Auto-Purge:** Logic to delete all user assets/PDFs every 14 days.

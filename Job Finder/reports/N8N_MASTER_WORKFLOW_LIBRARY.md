@@ -275,33 +275,35 @@ This is the "Neural Gateway" that prevents unauthorized job applications.
 ## 🕵️ Step 9: Workflow G (Neural Job Scraper V15.0 - Final Sequential)
 **Strategic Goal:** Professional Global Discovery with zero-drift cache-first persistence.
 
+**Operational Parameters (Adzuna/Careerjet):**
+- **Results Per Page:** 10 (Surgical focus to minimize payload weight).
+- **Pagination Sync:** Matches the Frontend "4-by-4" or "10-by-10" lazy loading requirement.
+- **Cache TTL:** 24 Hours (Global pooling).
+
 **Sequence of Actions (Strict Serial Order):**
-1.  **Signal Webhook (Inbound):** Receives `keyword`, `country`, and `email`.
-2.  **Supabase: Check Cache:** Queries `job_scrapes` table for valid search keys.
-3.  **If: In Cache?:**
-    -   **TRUE (Cache Hit):** Bypasses API calls. Injects existing jobs into the stream.
-    -   **FALSE (Cache Miss):** Dispatches HTTP request to Adzuna/Careerjet API.
-4.  **Supabase: Save Cache (Miss Path Only):** Persists fresh API results into `job_scrapes`.
-5.  **Headless: Neural Queue Injection (Central Logic):** 
-    -   Filters matches for `match_score >= 95`.
-    -   Prepares `JOB_APPLY` signals for top-tier opportunities.
-    -   Fallback: Injects `SEARCH_LOG` if no high-risk matches are found to prevent execution stalls.
-6.  **Supabase: Action Log:** Records the activity signal directly into `user_activity` for Dashboard sync.
-7.  **Respond to Webhook (Final Outbound):** Sends the `jobs_to_return` array to the frontend.
+1.  **Incoming Request:** Receives `keywords`, `country`, and `email`.
+2.  **Step 1: Check Supabase (The Cache Trap):** 
+    - Queries the `job_scrapes` table for a match on `search_key` (Keywords + Country).
+    - **Logic:** If data exists and is < 24h old, skip Step 3. *(Result: $0 API Cost)*.
+3.  **Step 2: If Exists (Cache Hit):** Forward cached jobs instantly to Vue Frontend.
+4.  **Step 3: If Not Exists (The External Fetch):**
+    - Dispatch HTTP Request to Adzuna API.
+    - **Endpoint:** `https://api.adzuna.com/v1/api/jobs/{{$json["country"]}}/search/1`
+    - **Query Params:**
+        - `results_per_page`: 10
+        - `what`: `{{$json["keywords"]}}`
+        - `content-type`: `application/json`
+5.  **Step 4: Save & Format:** 
+    - Save the fresh array directly to Supabase `job_scrapes` (JSONB format).
+    - Ensure data is a pure array of objects to prevent "String Leakage".
+6.  **Step 5: Action Log:** Record the `SEARCH_LOG` in `user_activity` table.
+7.  **Final Response:** Return the formatted JSON to the client.
 
-**Logic Engine (Injection Node):**
-```javascript
-const userEmail = $node['Webhook: Job Request'].json.query.email || 'guest@digynex.se';
-const jobs = $input.item.json.jobs || [];
-const highMatchJobs = jobs.filter(j => j.match_score >= 95).slice(0, 3);
+---
 
-if (highMatchJobs.length > 0) {
-  return highMatchJobs.map(job => ({
-    json: { action: 'JOB_APPLY', user_id: userEmail, details: { status: 'queued', job_id: job.id, role: job.title, company: job.company } }
-  }));
-}
-return { json: { action: 'SEARCH_LOG', user_id: userEmail, details: { status: 'completed' } } };
-```
+## 🔱 Global Discovery Strategy (Data Pooling)
+- **Shared Intelligence:** If multiple users search the same role in the same region, the system serves the **Shared Cache**. This mathematically reduces API consumption as the user base grows.
+- **Neural Matching:** High-intent jobs (Score >= 95%) are flagged for Step 6 (Headless Executor) status: `queued`.
 
 ---
 

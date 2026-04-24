@@ -1,4 +1,4 @@
-# 🧠 DigyNex Neural Engine: Master N8N Automation Blueprint (2026) [✅ SYSTEM ACTIVE]
+# ‼️ [CANCELED - USE ULTIMATE UNIFIED BLUEPRINT INSTEAD]
 
 This document is the **Single Source of Truth** for the DigyNex Job Finder automation ecosystem. It bridges the Vue.js frontend with the n8n backend to create an elite, high-trust career acceleration engine.
 
