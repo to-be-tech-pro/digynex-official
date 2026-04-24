@@ -31,21 +31,28 @@ export const jobService = {
 
   /**
    * Fetches real-time job matches (Discovery Stream) from the latest neural cache.
+   * @param {string} country - Optional country name to filter cache (e.g., 'Sweden')
    */
-  async getDiscoveryJobs() {
+  async getDiscoveryJobs(country = null) {
     // We grab the most recent scrape result to populate the dashboard on load
-    const { data, error } = await supabase
+    let query = supabase
       .from('job_scrapes')
-      .select('jobs')
-      .order('created_at', { ascending: false })
-      .limit(1)
-      .single();
+      .select('jobs, search_key')
+      .order('created_at', { ascending: false });
+
+    if (country) {
+      query = query.ilike('search_key', `%_${country.toLowerCase()}%`);
+    }
+
+    const { data, error } = await query.limit(1).maybeSingle();
 
     if (error) {
       console.error('Job Engine Discovery Error:', error.message);
       return [];
     }
     
+    if (!data) return [];
+
     // Map JSONB structure to UI format
     return (data.jobs || []).map(j => ({
        id: j.id,

@@ -199,6 +199,7 @@ const handleGlobalSearch = async () => {
                 l: j.location,
                 m: j.match_score,
                 t: 'Just now',
+                u: j.url, // CRITICAL: Target URL for Headless Executor
                 color: '#0A2647',
                 icon: Zap,
                 desc: j.description
@@ -301,6 +302,9 @@ const filteredJobs = computed(() => {
             const activeSteps = filterMap[applicationsFilter.value] || [];
             result = result.filter(j => activeSteps.includes(j.step));
         }
+        // NEURAL RANKING: Sort by highest match score (Strategic Hierarchy)
+        result = [...result].sort((a, b) => (b.m || 0) - (a.m || 0));
+
         // PAGINATION ENGINE: Slice results to current visible limit
         return result.slice(0, visibleAppsCount.value);
     } else {
@@ -327,11 +331,21 @@ const filteredMatches = computed(() => {
             'Germany': 'DE',
             'Norway': 'NO',
             'Finland': 'FI',
-            'Denmark': 'DK'
+            'Denmark': 'DK',
+            'United Kingdom': 'GB',
+            'United States': 'US',
+            'Canada': 'CA',
+            'Australia': 'AU',
+            'France': 'FR',
+            'Netherlands': 'NL'
         };
         const code = countryCodeMap[activeCountry.value];
         if (code) {
-            result = result.filter(m => m.l.includes(code));
+            // Robust check: includes ISO code or the country name itself
+            result = result.filter(m => 
+                (m.l && m.l.includes(code)) || 
+                (m.l && m.l.toLowerCase().includes(activeCountry.value.toLowerCase()))
+            );
         }
     }
     
@@ -351,7 +365,7 @@ const getStepCount = (step) => {
 
 const showCountrySelector = ref(false)
 const countrySearch = ref('')
-const selectedCountriesArr = ref(['Sweden', 'Germany', 'Norway', 'Finland', 'Denmark'])
+const selectedCountriesArr = ref(['Sweden', 'Germany', 'Norway']) // Synced with Free Tier Limit (3)
 const activeCountry = ref('Sweden')
 
 const displayName = computed(() => {
@@ -383,7 +397,42 @@ const fieldsOfInterest = ref(['Data Science', 'AI Research', 'DevOps', 'FinTech'
 const newField = ref('')
 const isUploadingCV = ref(false)
 const isSavingProfile = ref(false)
-const activeFocusSlots = ref({ used: 3, total: 10 })
+const activeFocusSlots = computed(() => {
+    const total = quotaService.getCountryLimit(userProfile.value.plan_type);
+    return {
+        used: selectedCountriesArr.value.length,
+        total: total
+    };
+})
+
+const toggleCountryFocus = (country) => {
+    if (selectedCountriesArr.value.includes(country)) {
+        activeCountry.value = country;
+        showCountrySelector.value = false;
+        return;
+    }
+
+    const limit = quotaService.getCountryLimit(userProfile.value.plan_type);
+    if (selectedCountriesArr.value.length >= limit && !userProfile.value.isSuperUser) {
+        showNeuralToast(`Slot Limit Reached: ${limit}/${limit} Focus Slots used.`, 'warning');
+        return;
+    }
+
+    selectedCountriesArr.value.push(country);
+    activeCountry.value = country;
+    showCountrySelector.value = false;
+    showNeuralToast(`Focusing Neural Engine on ${country}`, 'success');
+}
+
+const removeCountryFocus = (country) => {
+    const idx = selectedCountriesArr.value.indexOf(country);
+    if (idx > -1) {
+        selectedCountriesArr.value.splice(idx, 1);
+        if (activeCountry.value === country) {
+            activeCountry.value = selectedCountriesArr.value[0] || '';
+        }
+    }
+}
 
 const removeField = (index) => {
   fieldsOfInterest.value.splice(index, 1)
@@ -416,6 +465,31 @@ watch(locale, (newLocale) => {
         setTimeout(() => isNeuralToastVisible.value = false, 2000)
     }
 })
+
+// RE-HYDRATION ENGINE: Fetch jobs when country or search query changes
+watch([activeCountry, searchQuery], async ([newCountry, newQuery]) => {
+    if (activeTab.value !== 'matches') return;
+    
+    console.log(`[DIGYNEX] Hydrating Discovery Stream for ${newCountry}...`);
+    const discoveredJobs = await jobService.getDiscoveryJobs(newCountry);
+    
+    if (discoveredJobs && discoveredJobs.length > 0) {
+        matches.value = discoveredJobs.map(j => ({
+            id: j.id,
+            c: j.company,
+            r: j.role,
+            l: j.location,
+            m: j.match_score,
+            t: j.posted_at,
+            color: j.hex_color || '#0A2647',
+            icon: Zap,
+            desc: j.description
+        }));
+    } else {
+        // If no cache, we don't clear existing matches immediately to prevent flicker,
+        // but we could show a "No cache found" toast if we wanted.
+    }
+}, { immediate: true })
 
 const saveProfile = async () => {
   if (isSavingProfile.value) return;
@@ -664,15 +738,24 @@ const viewMode = ref('elite')
 
 const fetchSystemConfig = async () => {
     try {
-        const { data, error } = await supabase.from('system_config').select('*').single();
-        if (!error && data) {
-            isMaintenanceMode.value = data.maintenance_mode;
-            maintenanceMessage.value = data.maintenance_message;
-            if (data.pro_price) proPrice.value = data.pro_price;
-            if (data.elite_price) elitePrice.value = data.elite_price;
+        const { data: configs, error } = await supabase.from('system_config').select('*');
+        if (!error && configs) {
+            const m = configs.find(c => c.key === 'maintenance_mode')?.value;
+            if (m) { isMaintenanceMode.value = m.enabled; maintenanceMessage.value = m.message; }
+            
+            const b = configs.find(c => c.key === 'global_broadcast')?.value;
+            if (b) globalBroadcast.value = b;
+
+            const q = configs.find(c => c.key === 'tiered_quotas')?.value;
+            if (q) {
+                quotaService.updateTiersFromBackend(q);
+                freePrice.value = quotaService.TIERS[0].price;
+                proPrice.value = quotaService.TIERS[1].price;
+                elitePrice.value = quotaService.TIERS[2].price;
+            }
         }
     } catch (err) {
-        console.error('[CAREERNEXUS ENGINE] System Config Pulse Failure:', err);
+        console.error('[DIGYNEX ENGINE] System Config Pulse Failure:', err);
     }
 };
 
@@ -736,53 +819,65 @@ watch(activeTab, (newTab) => {
 
 
 onMounted(async () => {
-  // Non-blocking Parallel Ingestion (V15.1)
-  fetchSystemConfig();
-  fetchTemplates();
-  
-  // Real-time Neural Sync (V12.0)
-  supabase
-    .channel('system_changes')
-    .on('postgres_changes', { event: '*', schema: 'public', table: 'system_config' }, (payload) => {
-        console.log('[DIGYNEX] Neural Sync Ripple Detected');
-        fetchSystemConfig();
-    })
-    .subscribe();
+    // Phase 1: Engine & Asset Ingestion
+    fetchSystemConfig();
+    fetchTemplates();
+    await quotaService.init();
 
-  // 2. Initialize user session and profile with Real-time Sync
-  authService.onAuthStateChange((event, session) => {
-    console.log(`[DIGYNEX AUTH] Event: ${event}`);
-    if (session) {
-      isAuthenticated.value = true;
-      fetchUserProfile();
-    } else {
-      isAuthenticated.value = false;
-      // Reset sensitive states on logout if needed
+    // Phase 2: Live Governance Sync
+    const syncPrices = () => {
+        freePrice.value = quotaService.TIERS[0].price;
+        proPrice.value = quotaService.TIERS[1].price;
+        elitePrice.value = quotaService.TIERS[2].price;
+    };
+    syncPrices();
+    window.addEventListener('quota-prices-updated', syncPrices);
+
+    // Phase 3: Neural Channels
+    supabase.channel('global_config_sync')
+        .on('postgres_changes', { event: '*', schema: 'public', table: 'system_config' }, (payload) => {
+            console.log('[NEURAL SYNC] Global Config Ripple:', payload.new.key);
+            const key = payload.new.key;
+            const val = payload.new.value;
+
+            if (key === 'maintenance_mode') {
+                isMaintenanceMode.value = val.enabled;
+                if (val.message) maintenanceMessage.value = val.message;
+            } else if (key === 'tiered_quotas') {
+                quotaService.updateTiersFromBackend(val);
+                syncPrices();
+            } else if (key === 'global_broadcast') {
+                globalBroadcast.value = val;
+            }
+        })
+        .subscribe();
+
+    // Phase 4: Identity & Auth Lifecycle
+    authService.onAuthStateChange((event, session) => {
+        if (session) {
+            isAuthenticated.value = true;
+            fetchUserProfile();
+        } else {
+            isAuthenticated.value = false;
+        }
+    });
+
+    const user = await authService.getUser();
+    if (user) {
+        await fetchUserProfile();
     }
-  });
 
-  const session = await authService.getSession();
-  if (session) {
-    await fetchUserProfile();
-  }
+    // Phase 5: Initial Match Discovery
+    const discoveredJobs = await jobService.getDiscoveryJobs(activeCountry.value);
+    if (discoveredJobs && discoveredJobs.length > 0) {
+        matches.value = discoveredJobs.map(j => ({
+            id: j.id, c: j.company, r: j.role, l: j.location,
+            m: j.match_score, t: j.posted_at, color: j.hex_color || '#0A2647',
+            icon: Zap, desc: j.description
+        }));
+    }
 
-  // 3. Neural Ingestion: Fetch real-time matches from Engine
-  const discoveredJobs = await jobService.getDiscoveryJobs();
-  if (discoveredJobs && discoveredJobs.length > 0) {
-     matches.value = discoveredJobs.map(j => ({
-        id: j.id,
-        c: j.company,
-        r: j.role,
-        l: j.location,
-        m: j.match_score,
-        t: j.posted_at,
-        color: j.hex_color || '#0A2647',
-        icon: Zap,
-        desc: j.description
-     }));
-  }
-  
-  document.addEventListener('click', handleClickOutside)
+    document.addEventListener('click', handleClickOutside);
 })
 
 const selectTemplate = async (template) => {
@@ -1080,57 +1175,7 @@ const fetchUserProfile = async () => {
     await refreshViewport();
 };
 
-onMounted(async () => {
-    // Phase 1 Backend Quota Sync (Centralized Engine)
-    await quotaService.init();
-    
-    // UI Pricing Sync
-    const syncPrices = () => {
-        freePrice.value = quotaService.TIERS[0].price;
-        proPrice.value = quotaService.TIERS[1].price;
-        elitePrice.value = quotaService.TIERS[2].price;
-    };
-    
-    syncPrices();
-    
-    // Listen for live config pushes from AdminHub via QuotaEngine
-    window.addEventListener('quota-prices-updated', syncPrices);
-    
-    // Global System State Monitoring
-    const { data: configs } = await supabase.from('system_config').select('*');
-    if (configs) {
-        const m = configs.find(c => c.key === 'maintenance_mode')?.value;
-        if (m) { isMaintenanceMode.value = m.enabled; maintenanceMessage.value = m.message; }
-        
-        const b = configs.find(c => c.key === 'global_broadcast')?.value;
-        if (b) globalBroadcast.value = b;
-    }
-    
-    // 3. UNIVERSAL STRATEGIC SYNC (Real-time Governance)
-    supabase.channel('global_config_sync')
-        .on('postgres_changes', { event: '*', schema: 'public', table: 'system_config' }, (payload) => {
-            console.log('[NEURAL SYNC] Global Config Pulsed:', payload.new.key);
-            const key = payload.new.key;
-            const val = payload.new.value;
-
-            if (key === 'maintenance_mode') {
-                isMaintenanceMode.value = val.enabled;
-                if (val.message) maintenanceMessage.value = val.message;
-            } else if (key === 'tiered_quotas') {
-                quotaService.updateTiersFromBackend(val);
-                syncPrices();
-            } else if (key === 'global_broadcast') {
-                globalBroadcast.value = val;
-            }
-        })
-        .subscribe();
-    
-    // Check for existing session natively
-    const user = await authService.getUser();
-    if (user) {
-        await fetchUserProfile();
-    }
-});
+// Redundant onMounted removed - logic consolidated at the top level of script setup.
 
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
@@ -1372,6 +1417,7 @@ const handleDashboardAction = async (actionId, jobData = null) => {
             job: targetJob,
             company: targetJob.c,
             role: targetJob.r,
+            job_url: targetJob.u, // Strategic URL for Puppeteer
             user_phone: '+46769703311',
             target_company_email: 'info@infodigynex.se',
             timestamp: new Date().toISOString()
@@ -1421,6 +1467,11 @@ const handleDashboardAction = async (actionId, jobData = null) => {
             timestamp: new Date().toISOString()
         });
         showNeuralToast(`${actionId.split('_')[0]} Export Logged to Quota`, 'info');
+        return;
+    }
+
+    if (actionId === 'open_tracking') {
+        activeTab.value = 'applications';
         return;
     }
 
@@ -1730,6 +1781,7 @@ const handleNotificationClick = (notif) => {
           @handleAction="handleDashboardAction"
           @openCountrySelector="handleDashboardAction('openCountrySelector')"
           @triggerSearch="handleGlobalSearch"
+          @removeCountry="removeCountryFocus"
        />
 
        <ProfileHub 
@@ -1999,7 +2051,7 @@ const handleNotificationClick = (notif) => {
                <div class="p-6 pb-2 border-b border-white/5 flex items-center justify-between">
                   <div>
                      <h3 class="text-xl font-black text-white/90 uppercase tracking-tight">GLOBAL DISCOVERY HUB</h3>
-                     <p class="text-[9px] font-bold text-white/30 uppercase tracking-[0.2em] mt-1 italic font-jakarta">Active Focus Slots: 5/10 Available</p>
+                     <p class="text-[9px] font-bold text-white/30 uppercase tracking-[0.2em] mt-1 italic font-jakarta">Active Focus Slots: {{ activeFocusSlots.used }}/{{ activeFocusSlots.total }}</p>
                   </div>
                   <button @click="showCountrySelector = false" class="p-2.5 bg-white/5 rounded-full hover:bg-white/10 transition-colors">
                      <X class="w-5 h-5 text-white/50" />
@@ -2014,11 +2066,14 @@ const handleNotificationClick = (notif) => {
                   </div>
 
                   <div class="grid grid-cols-2 gap-2 h-64 overflow-y-auto no-scrollbar pt-2 pr-1">
-                     <div v-for="c in ['Sweden', 'Germany', 'Norway', 'Finland', 'Denmark', 'United States', 'United Kingdom', 'Canada', 'Australia', 'Japan', 'France', 'Netherlands', 'Singapore', 'Switzerland', 'Ireland', 'Italy', 'Spain'].filter(name => name.toLowerCase().includes(countrySearch.toLowerCase()))" 
+                     <div v-for="c in ['Sweden', 'Germany', 'Norway', 'Finland', 'Denmark', 'United Kingdom', 'United States', 'United Kingdom', 'Canada', 'Australia', 'Japan', 'France', 'Netherlands', 'Singapore', 'Switzerland', 'Ireland', 'Italy', 'Spain'].filter(name => name.toLowerCase().includes(countrySearch.toLowerCase()))" 
                           :key="c"
-                          @click="(selectedCountriesArr.includes(c) ? null : selectedCountriesArr.push(c)), showCountrySelector = false"
+                          @click="toggleCountryFocus(c)"
                           class="bg-white/5 border border-white/5 p-3 rounded-2xl flex items-center justify-between hover:bg-white/10 hover:border-white/20 cursor-pointer active:scale-95 transition-all group">
-                        <span class="text-[10px] font-bold text-white/70 group-hover:text-white transition-colors">{{ c }}</span>
+                        <div class="flex items-center gap-2">
+                           <div v-if="selectedCountriesArr.includes(c)" class="w-1.5 h-1.5 rounded-full bg-[#C1A172]"></div>
+                           <span class="text-[10px] font-bold text-white/70 group-hover:text-white transition-colors">{{ c }}</span>
+                        </div>
                         <ArrowRight class="w-3.5 h-3.5 text-white/20 group-hover:text-[#C1A172] group-hover:translate-x-1 transition-all" />
                      </div>
                   </div>

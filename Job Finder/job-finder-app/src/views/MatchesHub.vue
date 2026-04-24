@@ -56,8 +56,8 @@ const handleDashboardAction = (action, jobData) => emit('handleAction', action, 
                  :class="activeCountry === country ? 'bg-white text-[#0A2647] font-black shadow-lg scale-105' : 'bg-white/5 text-white/40 font-bold border border-white/5 hover:bg-white/10'"
                  class="px-4 h-[36px] rounded-full text-[9px] uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all active:scale-95 flex items-center gap-3 shrink-0">
              <span>{{ country }}</span>
-             <X v-if="selectedCountriesArr.length !== 1" 
-                @click.stop="selectedCountriesArr.splice(idx, 1); if(activeCountry === country) $emit('update:activeCountry', selectedCountriesArr[0])" 
+             <X v-if="selectedCountriesArr.length > 1" 
+                @click.stop="$emit('removeCountry', country)" 
                 class="w-3 h-3 opacity-85 group-hover:opacity-100 text-red-500 hover:scale-125 transition-all" />
            </div>
            <!-- PROMINENT FIXED + BUTTON AT THE END -->
