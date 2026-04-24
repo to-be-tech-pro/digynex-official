@@ -14,7 +14,7 @@ const props = defineProps({
 })
 
 const emit = defineEmits([
-  'openJobDetail', 'handleAction', 'update:searchQuery', 'update:activeCountry', 'openCountrySelector'
+  'openJobDetail', 'handleAction', 'update:searchQuery', 'update:activeCountry', 'openCountrySelector', 'triggerSearch'
 ])
 
 const countriesContainer = ref(null)
@@ -69,9 +69,12 @@ const handleDashboardAction = (action, jobData) => emit('handleAction', action, 
 
         <!-- SEARCH INPUT (MOVED BELOW COUNTRIES) -->
         <div class="relative group mt-1 mx-2">
-           <input type="text" :value="searchQuery" @input="$emit('update:searchQuery', $event.target.value)" :placeholder="t('apps.searchPlaceholder')" 
+           <input type="text" :value="searchQuery" 
+                  @input="$emit('update:searchQuery', $event.target.value)" 
+                  @keyup.enter="$emit('triggerSearch')"
+                  :placeholder="t('apps.searchPlaceholder')" 
                   class="w-full bg-white/5 border border-white/10 rounded-2xl px-12 py-2 text-[10px] text-white placeholder:text-white/20 focus:outline-none focus:ring-1 focus:ring-[#C1A172]/50 transition-all font-jakarta shadow-inner" />
-           <Search class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-[#C1A172] transition-colors" />
+           <Search @click="$emit('triggerSearch')" class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-white/30 group-focus-within:text-[#C1A172] cursor-pointer hover:text-white transition-colors" />
         </div>
      </div>
 

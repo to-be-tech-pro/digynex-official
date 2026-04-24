@@ -176,14 +176,45 @@ const matches = ref([
   { id: 'm7', c: 'Equinor', r: 'Energy Analyst', l: 'Oslo, NO', m: 85, icon: Briefcase, color: '#FF1243', t: '3 d', applyType: 'manual' }
 ])
 
-// --- SYNTHESIS & TRACKING (V12.0 ENGINE) ---
-const isSynthesisReviewOpen = ref(false)
-const isManualToolkitOpen = ref(false);
-const isTemplatePreviewOpen = ref(false);
-const previewingTemplate = ref(null);
-const isTrackingLabOpen = ref(false)
-const isDispatching = ref(false)
-const synthesisData = ref({ job: null, letter: '', summary: '' })
+const handleGlobalSearch = async () => {
+    if (!searchQuery.value || searchQuery.value.length < 3) return;
+    
+    isRecalibrating.value = true;
+    toastMessage.value = `Neural Engine: Dispatched Discovery for "${searchQuery.value}"...`;
+    isNeuralToastVisible.value = true;
+
+    try {
+        const results = await jobService.searchJobs(
+            searchQuery.value, 
+            activeCountry.value || 'gb', 
+            userProfile.value.email || 'guest@digynex.se'
+        );
+
+        if (results && results.length > 0) {
+            // HYDRATE DISCOVERY STREAM: Replace mock matches with real discoveries
+            matches.value = results.map(j => ({
+                id: j.id,
+                c: j.company,
+                r: j.title,
+                l: j.location,
+                m: j.match_score,
+                t: 'Just now',
+                color: '#0A2647',
+                icon: Zap,
+                desc: j.description
+            }));
+            toastMessage.value = `Discovered ${results.length} Neural Matches`;
+        } else {
+            toastMessage.value = 'No matches found in this region';
+        }
+    } catch (err) {
+        console.error('Search Dispatch Failure:', err);
+        toastMessage.value = 'Neural Link Unstable: Search Failed';
+    } finally {
+        isRecalibrating.value = false;
+        setTimeout(() => isNeuralToastVisible.value = false, 3000);
+    }
+}
 
 const handleDownloadPdf = async () => {
     try {
@@ -746,7 +777,8 @@ onMounted(async () => {
         m: j.match_score,
         t: j.posted_at,
         color: j.hex_color || '#0A2647',
-        icon: Zap // Defaulting to Zap for high-intent matches
+        icon: Zap,
+        desc: j.description
      }));
   }
   
@@ -1697,6 +1729,7 @@ const handleNotificationClick = (notif) => {
           @openJobDetail="openJobDetail"
           @handleAction="handleDashboardAction"
           @openCountrySelector="handleDashboardAction('openCountrySelector')"
+          @triggerSearch="handleGlobalSearch"
        />
 
        <ProfileHub 
