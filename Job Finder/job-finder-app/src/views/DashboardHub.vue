@@ -30,6 +30,23 @@ const filteredJobs = computed(() => {
     return props.allJobs.filter(j => j.step === props.selectedPipelineStep)
 })
 
+// --- NEURAL ANALYTICS ENGINE (V16.9.8) ---
+const topMatches = computed(() => {
+    if (props.matches && props.matches.length > 0) {
+        return props.matches.slice(0, 3).map(m => ({
+            n: m.r,
+            p: m.m || 0,
+            c: m.c
+        }));
+    }
+    // Fallback Specimen Data for Premium Aesthetics
+    return [
+        {n: 'Senior Data Scientist', p: 94, c: 'TechCorp'}, 
+        {n: 'Product Manager', p: 91, c: 'Innovate'}, 
+        {n: 'Lead ML Engineer', p: 83, c: 'Techwork'}
+    ];
+});
+
 const openJobDetail = (job) => emit('openJobDetail', job)
 const openActionSheet = (title, type) => emit('openActionSheet', title, type)
 const handleDashboardAction = (action) => emit('handleAction', action)
@@ -182,7 +199,7 @@ const handleDashboardAction = (action) => emit('handleAction', action)
                <div class="flex flex-col">
                   <p class="text-[8px] font-black text-black/25 uppercase tracking-widest leading-none font-jakarta">{{ t('analytics.topMatches') }}</p>
                   <div class="space-y-2 pt-1 font-jakarta">
-                     <div v-for="(m, i) in [{n: 'Senior Data Scientist', p: 94, c: 'TechCorp'}, {n: 'Product Manager', p: 91, c: 'Innovate'}, {n: 'Senior Data Scientist', p: 83, c: 'TechCorp'}]" :key="i" class="space-y-1">
+                     <div v-for="(m, i) in topMatches" :key="i" class="space-y-1">
                         <div class="flex flex-col">
                            <span class="text-[9px] font-black text-[#0A2647] tracking-tight leading-none font-jakarta">{{m.n}}</span>
                            <div class="flex justify-between items-center mt-0.5">

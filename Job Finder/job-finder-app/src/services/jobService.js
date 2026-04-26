@@ -20,7 +20,7 @@ export const jobService = {
     }
 
     try {
-      const response = await fetch(`${webhookUrl}?keyword=${encodeURIComponent(keyword)}&country=${encodeURIComponent(country)}&email=${encodeURIComponent(email)}&city=${encodeURIComponent(city)}`);
+      const response = await fetch(`${webhookUrl}?q=${encodeURIComponent(keyword)}&country=${encodeURIComponent(country)}&email=${encodeURIComponent(email)}&city=${encodeURIComponent(city)}`);
       if (!response.ok) throw new Error('Neural Scraper Connection Failure');
       return await response.json();
     } catch (err) {
@@ -30,10 +30,63 @@ export const jobService = {
   },
 
   /**
+   * Fetches real-time role suggestions using a Hybrid Neural Engine.
+   * Primary: ESCO Global Occupation Taxonomy (Truly Global)
+   * Secondary: Supabase Neural Cache (Platform Discovery)
+   * @param {string} term - Partial role name
+   */
+  async getRoleSuggestions(term) {
+    if (!term || term.length < 2) return [];
+
+    try {
+      // 1. Fetch from ESCO (Truly Global Discovery)
+      const escoUrl = `https://ec.europa.eu/esco/api/search?language=en&type=occupation&text=${encodeURIComponent(term)}&limit=10`;
+      
+      const [escoRes, cacheRes] = await Promise.allSettled([
+        fetch(escoUrl).then(r => r.json()),
+        supabase.rpc('discover_roles', { search_term: term })
+      ]);
+
+      let suggestions = [];
+
+      // Extract ESCO results
+      if (escoRes.status === 'fulfilled' && escoRes.value?._embedded?.results) {
+        suggestions = escoRes.value._embedded.results.map(r => r.title);
+      }
+
+      // Extract Cache results as fallback/boost
+      if (cacheRes.status === 'fulfilled' && !cacheRes.value.error) {
+        const cacheTitles = cacheRes.value.data.map(row => row.role);
+        suggestions = [...new Set([...suggestions, ...cacheTitles])];
+      }
+
+      return suggestions.slice(0, 5);
+    } catch (err) {
+      console.error('Hybrid Discovery Error:', err);
+      return [];
+    }
+  },
+
+  /**
    * Fetches real-time job matches (Discovery Stream) from the latest neural cache.
    * @param {string} country - Optional country name to filter cache (e.g., 'Sweden')
    */
   async getDiscoveryJobs(country = null) {
+    const countryCodeMap = {
+      'sweden': 'se',
+      'germany': 'de',
+      'united kingdom': 'gb',
+      'norway': 'no',
+      'finland': 'fi',
+      'denmark': 'dk',
+      'sri lanka': 'lk',
+      'united states': 'us',
+      'canada': 'ca',
+      'australia': 'au',
+      'france': 'fr',
+      'netherlands': 'nl'
+    };
+    
     // We grab the most recent scrape result to populate the dashboard on load
     let query = supabase
       .from('job_scrapes')
@@ -41,7 +94,8 @@ export const jobService = {
       .order('created_at', { ascending: false });
 
     if (country) {
-      query = query.ilike('search_key', `%_${country.toLowerCase()}%`);
+      const code = countryCodeMap[country.toLowerCase()] || country.toLowerCase();
+      query = query.ilike('search_key', `%_${code}%`);
     }
 
     const { data, error } = await query.limit(1).maybeSingle();

@@ -1,5 +1,7 @@
 <script setup>
 import { ref, computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { jobService } from '../services/jobService'
 import { 
   Search, Globe, LayoutDashboard, History, X, 
   ArrowRight, Sparkles, Zap, Check, FileText, Eye, 
@@ -7,14 +9,16 @@ import {
   DollarSign, Clock, TrendingUp
 } from 'lucide-vue-next'
 
+const { t } = useI18n()
+
 const props = defineProps({
-  t: Function,
   activeCountry: String,
   activeCity: String, // NEW: Hyper-Local Focus (V16.9)
   searchQuery: String,
   filteredMatches: Array,
   selectedCountriesArr: Array,
-  activeFocusSlots: Object
+  activeFocusSlots: Object,
+  isRecalibrating: Boolean
 })
 
 const emit = defineEmits([
@@ -28,30 +32,76 @@ const emit = defineEmits([
   'openJobDetail'
 ])
 
+const countriesContainer = ref(null)
+const sliderProgress = ref(0)
+const isDragging = ref(false)
+const startX = ref(0)
+const scrollLeft = ref(0)
+
+const handleScroll = () => {
+  if (!countriesContainer.value) return
+  const { scrollLeft: sLeft, scrollWidth, clientWidth } = countriesContainer.value
+  sliderProgress.value = (sLeft / (scrollWidth - clientWidth)) * 100
+}
+
+const startDragging = (e) => {
+  isDragging.value = true
+  startX.value = e.pageX - countriesContainer.value.offsetLeft
+  scrollLeft.value = countriesContainer.value.scrollLeft
+}
+
+const stopDragging = () => {
+  isDragging.value = false
+}
+
+const moveDragging = (e) => {
+  if (!isDragging.value) return
+  e.preventDefault()
+  const x = e.pageX - countriesContainer.value.offsetLeft
+  const walk = (x - startX.value) * 2 // Scroll speed multiplier
+  countriesContainer.value.scrollLeft = scrollLeft.value - walk
+}
+
 const openJobDetail = (match) => emit('openJobDetail', match)
 
-// --- AI AUTO-SUGGESTIONS CORE (V16.9) ---
+// --- NEURAL ROLE DISCOVERY ENGINE (V16.9.5) ---
 const showSuggestions = ref(false)
 const suggestionIndex = ref(-1)
-const commonRoles = [
-  'Software Engineer', 'Data Scientist', 'Project Manager', 'Nurse', 'Nursing', 'Doctor',
-  'Marketing Manager', 'Product Manager', 'DevOps Engineer', 'Frontend Developer', 
-  'Backend Developer', 'Full Stack Developer', 'UX Designer', 'Sales Representative', 
-  'Accountant', 'HR Manager', 'Business Analyst', 'Cybersecurity Analyst', 
-  'Cloud Architect', 'AI Engineer', 'Machine Learning Engineer', 'Civil Engineer',
-  'Mechanical Engineer', 'Electrician', 'Technician', 'Customer Support', 'Sales Executive'
-]
+const fetchedSuggestions = ref([])
+const isSearchingRoles = ref(false)
+let roleDebounceTimeout = null
 
-const filteredSuggestions = computed(() => {
-  if (!props.searchQuery || props.searchQuery.length < 2) return [];
-  const q = props.searchQuery.toLowerCase();
-  return commonRoles.filter(role => role.toLowerCase().includes(q)).slice(0, 5);
-})
+const filteredSuggestions = computed(() => fetchedSuggestions.value)
+
+const fetchRoleSuggestions = async (term) => {
+  if (!term || term.length < 2) {
+    fetchedSuggestions.value = []
+    return
+  }
+  
+  isSearchingRoles.value = true
+  clearTimeout(roleDebounceTimeout)
+  
+  roleDebounceTimeout = setTimeout(async () => {
+    try {
+      const results = await jobService.getRoleSuggestions(term)
+      fetchedSuggestions.value = results.slice(0, 5)
+    } finally {
+      isSearchingRoles.value = false
+    }
+  }, 300)
+}
 
 const selectSuggestion = (role) => {
   emit('update:searchQuery', role);
   showSuggestions.value = false;
-  emit('triggerSearch');
+  emit('triggerSearch', role); // 🛡️ SURGICAL: Pass value explicitly to avoid race condition
+}
+
+const handleSearch = () => {
+  if (!props.searchQuery) return;
+  showSuggestions.value = false;
+  emit('triggerSearch', props.searchQuery);
 }
 
 const handleKeyDown = (e) => {
@@ -77,10 +127,29 @@ const citySuggestions = ref([])
 const isSearchingCities = ref(false)
 let cityDebounceTimeout = null
 
-// Helper to map activeCountry string to ISO code
 const getActiveCountryCode = () => {
-  const map = { 'Sweden': 'SE', 'Germany': 'DE', 'Norway': 'NO', 'United Kingdom': 'GB', 'Sri Lanka': 'LK' };
-  return map[props.activeCountry] || '';
+  const country = (props.activeCountry || '').trim();
+  const map = { 
+    'Sweden': 'SE', 'Sweden 🇸🇪': 'SE',
+    'Germany': 'DE', 'Germany 🇩🇪': 'DE',
+    'Norway': 'NO', 'Norway 🇳🇴': 'NO',
+    'Finland': 'FI', 'Finland 🇫🇮': 'FI',
+    'Denmark': 'DK', 'Denmark 🇩🇰': 'DK',
+    'United Kingdom': 'GB', 'UK': 'GB', 'UK 🇬🇧': 'GB',
+    'United States': 'US', 'USA': 'US',
+    'Canada': 'CA',
+    'Australia': 'AU',
+    'France': 'FR',
+    'Netherlands': 'NL',
+    'Singapore': 'SG',
+    'Sri Lanka': 'LK', 'Sri Lanka 🇱🇰': 'LK',
+    'Nigeria': 'NG',
+    'Libya': 'LY',
+    'Japan': 'JP',
+    'Switzerland': 'CH'
+  };
+  // Also try case-insensitive match if direct match fails
+  return map[country] || map[Object.keys(map).find(k => k.toLowerCase() === country.toLowerCase())] || 'GB';
 }
 
 const searchGlobalCities = async () => {
@@ -95,8 +164,8 @@ const searchGlobalCities = async () => {
   cityDebounceTimeout = setTimeout(async () => {
     try {
       const countryCode = getActiveCountryCode();
-      // Added &count=10 and filtering results by countryCode if available
-      const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(localCity.value)}&count=10&language=en&format=json`);
+      // Increased count to 20 for better fuzzy matching of misspellings
+      const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(localCity.value)}&count=20&language=en&format=json`);
       const data = await res.json();
       
       if (data.results) {
@@ -188,17 +257,35 @@ const handleCitySubmit = async () => {
            </div>
         </div>
 
-        <!-- COUNTRIES SELECTOR -->
-        <div class="flex items-center gap-2 overflow-x-auto pb-2 custom-scrollbar scroll-smooth w-full px-0.5">
-           <div v-for="country in selectedCountriesArr" :key="country"
-                 @click="$emit('update:activeCountry', country)"
-                 :class="activeCountry === country ? 'bg-white text-[#0A2647] font-black shadow-lg scale-105' : 'bg-white/5 text-white/40 font-bold border border-white/5'"
-                 class="px-4 h-[36px] rounded-full text-[9px] uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all active:scale-95 flex items-center gap-3 shrink-0 group">
-              <span>{{ country }}</span>
-              <X v-if="selectedCountriesArr.length > 1" @click.stop="$emit('removeCountry', country)" class="w-3 h-3 text-red-500/60 hover:text-red-400 transition-all opacity-0 group-hover:opacity-100" />
+        <!-- COUNTRIES SELECTOR (SLIDER) -->
+        <div class="relative group">
+           <div ref="countriesContainer" 
+                @scroll="handleScroll"
+                @mousedown="startDragging"
+                @mouseleave="stopDragging"
+                @mouseup="stopDragging"
+                @mousemove="moveDragging"
+                :class="{ 'cursor-grabbing scale-[0.99]': isDragging, 'cursor-grab': !isDragging }"
+                class="flex items-center gap-2 overflow-x-auto pb-4 no-scrollbar scroll-smooth w-full px-0.5 select-none transition-transform duration-300">
+              <div v-for="country in selectedCountriesArr" :key="country"
+                    @click="!isDragging && $emit('update:activeCountry', country)"
+                    :class="activeCountry === country ? 'bg-white text-[#0A2647] font-black shadow-lg scale-105' : 'bg-white/5 text-white/40 font-bold border border-white/5'"
+                    class="px-4 h-[36px] rounded-full text-[9px] uppercase tracking-widest whitespace-nowrap cursor-pointer transition-all active:scale-95 flex items-center gap-3 shrink-0 group/item">
+                 <span>{{ country }}</span>
+                 <X v-if="selectedCountriesArr.length > 1" @click.stop="$emit('removeCountry', country)" class="w-3 h-3 text-red-500/60 hover:text-red-400 transition-all opacity-0 group-hover/item:opacity-100" />
+              </div>
+              
+              <!-- ADD DISCOVERY SLOT BUTTON -->
+              <div @click="$emit('openCountrySelector')" 
+                   class="flex items-center justify-center min-w-[44px] h-[36px] bg-gradient-to-br from-[#C1A172] to-[#FFD700] rounded-full cursor-pointer hover:scale-110 shadow-lg shrink-0 transition-all group/add">
+                 <span class="text-[18px] font-black text-[#0A2647] group-hover:rotate-90 transition-transform">+</span>
+              </div>
            </div>
-           <div @click="$emit('openCountrySelector')" class="flex items-center justify-center min-w-[44px] h-[36px] bg-gradient-to-br from-[#C1A172] to-[#FFD700] rounded-full cursor-pointer hover:scale-110 shadow-lg shrink-0 transition-all">
-              <span class="text-[18px] font-black text-[#0A2647]">+</span>
+           
+           <!-- NEURAL SLIDER PROGRESS BAR -->
+           <div class="absolute bottom-1 left-4 right-4 h-[1.5px] bg-white/5 rounded-full overflow-hidden pointer-events-none">
+              <div class="h-full bg-gradient-to-r from-[#C1A172] to-[#FFD700] transition-all duration-300"
+                   :style="{ width: `${sliderProgress}%` }"></div>
            </div>
         </div>
 
@@ -267,8 +354,8 @@ const handleCitySubmit = async () => {
         <!-- SEARCH INPUT -->
         <div class="relative group mt-1 mx-2">
            <input type="text" :value="searchQuery" 
-                  @input="$emit('update:searchQuery', $event.target.value); showSuggestions = true; suggestionIndex = -1" 
-                  @keyup.enter="$emit('triggerSearch'); showSuggestions = false"
+                  @input="$emit('update:searchQuery', $event.target.value); fetchRoleSuggestions($event.target.value); showSuggestions = true; suggestionIndex = -1" 
+                  @keyup.enter="handleSearch"
                   @keydown="handleKeyDown"
                   @focus="showSuggestions = true"
                   :placeholder="t('apps.searchPlaceholder')" 
@@ -343,8 +430,22 @@ const handleCitySubmit = async () => {
            </div>
         </div>
 
-        <!-- EMPTY STATE -->
-        <div v-else class="h-full flex flex-col items-center justify-center p-12 text-center space-y-6 pb-24">
+        <!-- LOADING STATE (V16.9) -->
+        <div v-if="isRecalibrating" class="h-full flex flex-col items-center justify-center p-12 text-center space-y-6 pb-24 animate-in fade-in duration-500">
+           <div class="relative">
+              <div class="absolute inset-0 bg-[#C1A172]/20 blur-3xl rounded-full animate-pulse"></div>
+              <div class="bg-white/5 p-8 rounded-[2.5rem] border border-white/10 relative z-10 backdrop-blur-xl">
+                 <RefreshCw class="w-12 h-12 text-[#C1A172] animate-spin" />
+              </div>
+           </div>
+           <div class="space-y-2">
+              <h3 class="text-xs font-black text-white uppercase tracking-[0.3em]">Neural Calibration</h3>
+              <p class="text-[10px] font-bold text-white/30 uppercase tracking-widest leading-relaxed">Scanning the Global Pipe for "{{ searchQuery || 'Strategic Roles' }}"...</p>
+           </div>
+        </div>
+
+        <!-- EMPTY STATE / NO RESULTS -->
+        <div v-else-if="filteredMatches.length === 0" class="h-full flex flex-col items-center justify-center p-12 text-center space-y-6 pb-24">
            <div class="relative">
               <div class="absolute inset-0 bg-[#C1A172]/20 blur-3xl rounded-full animate-pulse"></div>
               <div class="bg-white/5 p-8 rounded-[2.5rem] border border-white/10 relative z-10 backdrop-blur-xl">
@@ -352,10 +453,16 @@ const handleCitySubmit = async () => {
               </div>
            </div>
            <div class="space-y-2">
-              <h3 class="text-xs font-black text-white uppercase tracking-[0.3em]">Stream Inactive</h3>
-              <p class="text-[10px] font-bold text-white/30 uppercase tracking-widest leading-relaxed">Connect to the Global Pipe by searching in {{ activeCountry }}.</p>
+              <template v-if="searchQuery">
+                <h3 class="text-xs font-black text-white uppercase tracking-[0.3em]">No Exact Matches</h3>
+                <p class="text-[10px] font-bold text-white/30 uppercase tracking-widest leading-relaxed">We couldn't find any "{{ searchQuery }}" in {{ activeCountry }}. Try a broader role or city signal.</p>
+              </template>
+              <template v-else>
+                <h3 class="text-xs font-black text-white uppercase tracking-[0.3em]">Stream Inactive</h3>
+                <p class="text-[10px] font-bold text-white/30 uppercase tracking-widest leading-relaxed">Connect to the Global Pipe by searching in {{ activeCountry }}.</p>
+              </template>
            </div>
-           <button @click="$emit('triggerSearch')" class="px-8 py-3 bg-[#C1A172] rounded-full text-[9px] font-black text-[#0A2647] uppercase tracking-[0.2em] shadow-xl">
+           <button v-if="!searchQuery" @click="$emit('triggerSearch')" class="px-8 py-3 bg-[#C1A172] rounded-full text-[9px] font-black text-[#0A2647] uppercase tracking-[0.2em] shadow-xl">
               Initialize Discovery
            </button>
         </div>

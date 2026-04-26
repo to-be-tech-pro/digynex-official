@@ -159,60 +159,72 @@ const loadMoreApplications = async () => {
 
 const allJobs = ref([
   {c: 'TechCorp', r: 'Senior Scientist', s: 'applied', m: 80, d: '14/03/24', l: 'Stockholm, SE', icon: Briefcase, color: '#0A2647', desc: 'Lead our AI discovery division at high-scale.', step: 'applied', applyType: 'auto'}, 
-  {c: 'Innovate', r: 'Product Manager', s: 'review', m: 50, d: '23/03/24', l: 'Berlin, DE', icon: LayoutDashboard, color: '#73BBA3', desc: 'Directing the next-gen SaaS product roadmap.', step: 'review', applyType: 'manual'}, 
-  {c: 'Techwork', r: 'Lead ML Engineer', s: 'interview', m: 60, d: '22/03/24', l: 'Oslo, NO', icon: Zap, color: '#6366F1', desc: 'Neural engineering and cloud-native optimization.', step: 'interview', applyType: 'auto'},
-  {c: 'Spotify', r: 'Full Stack Dev', s: 'offer', m: 92, d: '25/03/24', l: 'Stockholm, SE', icon: Star, color: '#1DB954', desc: 'Scaling global audio intelligence.', step: 'offer', applyType: 'auto'},
-  {c: 'Google', r: 'AI Architect', s: 'applied', m: 88, d: '10/03/24', l: 'Zurich, CH', icon: Zap, color: '#4285F4', desc: 'Next-gen LLM optimization.', step: 'applied', applyType: 'manual'},
-  {c: 'Tesla', r: 'Autopilot Eng', s: 'interview', m: 75, d: '18/03/24', l: 'Oslo, NO', icon: Zap, color: '#E81C23', desc: 'Real-time vision systems.', step: 'interview', applyType: 'auto'},
-  {c: 'Amazon', r: 'Cloud Lead', s: 'review', m: 82, d: '20/03/24', l: 'Madrid, ES', icon: Cloud, color: '#FF9900', desc: 'Scaling AWS core infrastructure.', step: 'applied', applyType: 'manual'}
+  {c: 'Innovate', r: 'Product Manager', s: 'review', m: 50, d: '23/03/24', l: 'Berlin, DE', icon: LayoutDashboard, color: '#73BBA3', desc: 'Directing the next-gen SaaS product roadmap.', step: 'applied', applyType: 'manual'}, 
+  {c: 'Techwork', r: 'Lead ML Engineer', s: 'interview', m: 60, d: '22/03/24', l: 'Oslo, NO', icon: Zap, color: '#6366F1', desc: 'Neural engineering and cloud-native optimization.', step: 'applied', applyType: 'auto'},
+  {c: 'Spotify', r: 'Full Stack Dev', s: 'offer', m: 92, d: '25/03/24', l: 'Stockholm, SE', icon: Star, color: '#1DB954', desc: 'Scaling global audio intelligence.', step: 'offer', applyType: 'auto'}
 ])
 
 const matches = ref([
   { id: 'm1', c: 'NVIDIA', r: 'AI Research Scientist', l: 'Stockholm, SE', m: 99, icon: Zap, color: '#76B900', t: '2 hr', desc: 'Accelerating AI computing and hardware integration.', applyType: 'auto' },
-  { id: 'm2', c: 'Google', r: 'Senior AI Engineer', l: 'Zurich, CH', m: 98, icon: Zap, color: '#4285F4', t: '5 hr', desc: 'Developing next-gen cloud AI models and LLM scaling.', applyType: 'auto' },
-  { id: 'm3', c: 'Meta', r: 'Product Manager', l: 'Berlin, DE', m: 95, icon: LayoutDashboard, color: '#0668E1', t: '8 hr', desc: 'Directing the roadmap for social AI interaction.', applyType: 'manual' },
-  { id: 'm4', c: 'Netflix', r: 'Distributed Systems Eng', l: 'Amsterdam, NL', m: 92, icon: Briefcase, color: '#E50914', t: '1 d', desc: 'Architecting ultra-scale low latency content delivery.', applyType: 'auto' },
-  { id: 'm5', c: 'Spotify', r: 'Data Scientist', l: 'Stockholm, SE', m: 94, icon: Zap, color: '#1DB954', t: '4 hr', applyType: 'auto' },
-  { id: 'm6', c: 'Zalando', r: 'Backend Eng', l: 'Berlin, DE', m: 88, icon: LayoutDashboard, color: '#FF6900', t: '2 d', applyType: 'manual' },
-  { id: 'm7', c: 'Equinor', r: 'Energy Analyst', l: 'Oslo, NO', m: 85, icon: Briefcase, color: '#FF1243', t: '3 d', applyType: 'manual' }
+  { id: 'm2', c: 'Google', r: 'Senior AI Engineer', l: 'Zurich, CH', m: 98, icon: Zap, color: '#4285F4', t: '5 hr', desc: 'Developing next-gen cloud AI models and LLM scaling.', applyType: 'auto' }
 ])
 
-const handleGlobalSearch = async () => {
-    if (!searchQuery.value || searchQuery.value.length < 3) return;
+const handleGlobalSearch = async (queryOverride) => {
+    // 🛡️ Neural Guard: Support both Keyword + City or City-only searches
+    const finalQuery = (typeof queryOverride === 'string' ? queryOverride : searchQuery.value || '').trim();
+    const city = (activeCity.value || '').trim();
+    
+    if (finalQuery.length < 3 && !city) {
+        console.warn('[DIGYNEX] Search requirements not met (Min 3 chars OR City Focus required)');
+        return;
+    }
+    
+    console.log(`[DIGYNEX] Initiating Neural Search: [${finalQuery}] in [${city || activeCountry.value}]`);
     
     isRecalibrating.value = true;
-    toastMessage.value = `Neural Engine: Dispatched Discovery for "${searchQuery.value}"...`;
+    matches.value = []; // Clear-on-Search: Ensures fresh stream
+    
+    toastMessage.value = `Neural Engine: Dispatched Discovery for "${finalQuery || city}"...`;
     isNeuralToastVisible.value = true;
 
     try {
         const response = await jobService.searchJobs(
-            searchQuery.value, 
+            finalQuery || 'Jobs', // Fallback keyword if only city provided
             activeCountry.value || 'gb', 
             userProfile.value.email || 'guest@digynex.se',
-            activeCity.value // Passing the City Satellite Focus
+            city
         );
 
-        // ROBUST HYDRATION: Support both direct Array and { jobs: [] } Object structures
-        const results = Array.isArray(response) ? response : (response?.jobs || []);
+        // ROBUST HYDRATION: Support direct Array, { jobs: [] }, { data: [] } and { results: [] }
+        let results = [];
+        if (Array.isArray(response)) {
+            results = response;
+        } else if (response?.jobs) {
+            results = response.jobs;
+        } else if (response?.data) {
+            results = response.data;
+        } else if (response?.results) {
+            results = response.results;
+        }
 
         if (results && results.length > 0) {
             // HYDRATE DISCOVERY STREAM: Replace mock matches with real discoveries
             matches.value = results.map(j => ({
-                id: j.id,
-                c: j.company,
-                r: j.title,
-                l: j.location,
-                m: j.match_score,
-                t: 'Just now',
-                u: j.url, // CRITICAL: Target URL for Headless Executor
-                color: '#0A2647',
+                id: j.id || Math.random().toString(36).substr(2, 9),
+                c: j.company || 'Global Entity',
+                r: j.title || j.role || 'Expert Role',
+                l: j.location || 'Remote',
+                m: j.match_score || 0,
+                t: j.posted_at || 'Just Now',
+                color: j.hex_color || '#0A2647',
                 icon: Zap,
-                desc: j.description
+                isNeuralMatch: true, // 🛡️ LOCK: Prevent local filtering
+                desc: j.description || ''
             }));
-            toastMessage.value = `Discovered ${results.length} Neural Matches`;
+            showNeuralToast(`Neural Engine: ${results.length} Strategic Matches Found`, 'success');
         } else {
-            matches.value = []; // Clear previous matches to show empty state
-            showNeuralToast(`Neural Link: No active matches for "${searchQuery.value}" in this region. Try a different role or broaden your location focus.`, 'warning', 5000);
+            showNeuralToast('Neural Search Complete: No exact matches in this region.', 'warning');
+            matches.value = []; // Keep it clean
         }
     } catch (err) {
         console.error('Search Dispatch Failure:', err);
@@ -330,51 +342,53 @@ const filteredJobs = computed(() => {
 const filteredMatches = computed(() => {
     let result = matches.value;
     
-    // 1. Country Filter Logic
+    // 1. Country Filter Logic (Resilient Mode)
     if (activeCountry.value) {
         const countryCodeMap = {
-            'Sweden': 'SE',
-            'Germany': 'DE',
-            'Norway': 'NO',
-            'Finland': 'FI',
-            'Denmark': 'DK',
-            'United Kingdom': 'GB',
-            'United States': 'US',
-            'Canada': 'CA',
-            'Australia': 'AU',
-            'France': 'FR',
-            'Netherlands': 'NL',
-            'Singapore': 'SG',
-            'Sri Lanka': 'LK',
-            'Nigeria': 'NG',
-            'Libya': 'LY',
-            'Japan': 'JP',
-            'Switzerland': 'CH'
+            'sweden': 'SE', 'germany': 'DE', 'norway': 'NO', 'finland': 'FI', 'denmark': 'DK',
+            'united kingdom': 'GB', 'united states': 'US', 'canada': 'CA', 'australia': 'AU',
+            'france': 'FR', 'netherlands': 'NL', 'singapore': 'SG', 'sri lanka': 'LK',
+            'nigeria': 'NG', 'libya': 'LY', 'japan': 'JP', 'switzerland': 'CH'
         };
-        const code = countryCodeMap[activeCountry.value];
+        const code = countryCodeMap[activeCountry.value.toLowerCase()];
+        const countryName = activeCountry.value.toLowerCase();
+        
         if (code) {
-            // Robust check: includes ISO code, the country name, or handle cases where location is missing it but was recently discovered
-            result = result.filter(m => 
-                !m.l || 
-                m.l.includes(code) || 
-                m.l.toLowerCase().includes(activeCountry.value.toLowerCase()) ||
-                m.t === 'Just now' // Strategy: Trust recently discovered neural matches
-            );
+            result = result.filter(m => {
+                // Strategic Bypass: Trust search results and Remote jobs
+                if (m.isNeuralMatch || m.t?.toLowerCase() === 'just now') return true;
+                
+                const loc = (m.l || '').toLowerCase();
+                return (
+                    loc === '' || 
+                    loc === 'remote' || 
+                    loc.includes(code.toLowerCase()) || 
+                    loc.includes(countryName)
+                );
+            });
         }
     }
     
-    // 2. Search Query Logic (Bypass for newly discovered neural matches)
+    // 2. Search Query Logic (Neural-Enabled Filter)
     if (searchQuery.value) {
         const q = searchQuery.value.toLowerCase();
         result = result.filter(m => 
-            m.t === 'Just now' || 
             m.c.toLowerCase().includes(q) || 
-            m.r.toLowerCase().includes(q)
+            m.r.toLowerCase().includes(q) ||
+            m.isNeuralMatch // 🛡️ Neural Trust: Show all results from the search API (0% to 100%)
         );
     }
     
-    // NEURAL RANKING: Sort by highest match percentage (Premium Discovery)
-    return [...result].sort((a, b) => (b.m || 0) - (a.m || 0));
+    // NEURAL RANKING: Strategic Priority (Match % + Recency)
+    return [...result].sort((a, b) => {
+        const aIsNew = a.t?.toLowerCase() === 'just now' || a.isNeuralMatch;
+        const bIsNew = b.t?.toLowerCase() === 'just now' || b.isNeuralMatch;
+        
+        if (aIsNew && !bIsNew) return -1;
+        if (!aIsNew && bIsNew) return 1;
+        
+        return (b.m || 0) - (a.m || 0);
+    });
 })
 
 const getStepCount = (step) => {
@@ -441,18 +455,20 @@ const toggleCountryFocus = (country) => {
 
     selectedCountriesArr.value.push(normalized);
     activeCountry.value = normalized;
+    activeCity.value = ''; // 🛡️ Neural Reset: Clear city focus when country changes
     showCountrySelector.value = false;
     showNeuralToast(`Neural Engine: Calibrating Focus for ${normalized}... Global Pipe Active 🌍`, 'success');
     
-    // SMART LOCALIZATION: Suggest language based on country
+    // SMART LOCALIZATION: Dynamic Engine Response
     const autoLangs = {
         'Sweden': 'SW', 'Germany': 'DE', 'Norway': 'NO', 'Finland': 'FI', 'Denmark': 'DA',
         'France': 'FR', 'Spain': 'ES', 'Italy': 'IT', 'Netherlands': 'NL'
     };
     if (autoLangs[normalized]) {
-        setLang(autoLangs[normalized]);
-    } else {
-        setLang('EN'); // Default to International English for other countries
+        // Only set if user hasn't explicitly locked a preference
+        if (!userProfile.value.languagePreference || userProfile.value.languagePreference === 'EN') {
+            setLang(autoLangs[normalized]);
+        }
     }
 }
 
@@ -479,47 +495,56 @@ const addField = () => {
 
 const isCVModalOpen = ref(false)
 
-// --- NEURAL BRIDGE: Language-Country Synergy ---
-watch(locale, (newLocale) => {
-    const localeToCountryMap = {
-        'SW': 'Sweden',
-        'DE': 'Germany',
-        'NO': 'Norway',
-        'FI': 'Finland',
-        'DA': 'Denmark'
-    }
-    const suggestedCountry = localeToCountryMap[newLocale]
-    if (suggestedCountry && activeCountry.value !== suggestedCountry) {
-        // Automatically suggest/switch country slot based on language choice
-        activeCountry.value = suggestedCountry
-        toastMessage.value = `Focusing on ${suggestedCountry} matches`
-        isNeuralToastVisible.value = true
-        setTimeout(() => isNeuralToastVisible.value = false, 2000)
+// MISSION-CRITICAL WATCHER: Handles search input reactivity and discovery hydration
+watch(searchQuery, (newQuery) => {
+    // 🛡️ USER UX GUARDRAIL: If user starts typing, clear the discovery matches 
+    // to prevent confusion with previous discovery/mock results.
+    if (newQuery && newQuery.trim().length > 0) {
+        if (matches.value.length > 0 && !isRecalibrating.value) {
+            console.log('[DIGYNEX] User typing... Clearing discovery stream for fresh search.');
+            matches.value = []; 
+        }
     }
 })
 
 // RE-HYDRATION ENGINE: Fetch jobs when country or search query changes
-watch([activeCountry, searchQuery], async ([newCountry, newQuery]) => {
+watch([activeCountry, searchQuery], async ([newCountry, newQuery], [oldCountry, oldQuery]) => {
     if (activeTab.value !== 'matches') return;
     
+    // 🛡️ Neural Trigger: If country changed and we have a query, re-dispatch search automatically
+    if (newCountry !== oldCountry && newQuery && newQuery.trim().length >= 3) {
+        console.log(`[DIGYNEX] Country Focus Shifted to ${newCountry}. Re-dispatching search for: ${newQuery}`);
+        handleGlobalSearch();
+        return;
+    }
+
+    // 🛡️ CRITICAL LOCK: If there's an active search query, NEVER overwrite with discovery data
+    if (newQuery && newQuery.trim().length > 0) {
+        console.log('[DIGYNEX] Search Lock Active. Preserving results for:', newQuery);
+        return;
+    }
+    
+    if (isRecalibrating.value) return;
+
     console.log(`[DIGYNEX] Hydrating Discovery Stream for ${newCountry}...`);
     const discoveredJobs = await jobService.getDiscoveryJobs(newCountry);
     
     if (discoveredJobs && discoveredJobs.length > 0) {
-        matches.value = discoveredJobs.map(j => ({
-            id: j.id,
-            c: j.company,
-            r: j.role,
-            l: j.location,
-            m: j.match_score,
-            t: j.posted_at,
-            color: j.hex_color || '#0A2647',
-            icon: Zap,
-            desc: j.description
-        }));
-    } else {
-        // If no cache, we don't clear existing matches immediately to prevent flicker,
-        // but we could show a "No cache found" toast if we wanted.
+        // Double check lock before commit (network latency guard)
+        if (!searchQuery.value || searchQuery.value.trim().length === 0) {
+            matches.value = discoveredJobs.map(j => ({
+                id: j.id,
+                c: j.company,
+                r: j.role,
+                l: j.location,
+                m: j.match_score,
+                t: j.posted_at,
+                color: j.hex_color || '#0A2647',
+                icon: Zap,
+                isNeuralMatch: false,
+                desc: j.description
+            }));
+        }
     }
 }, { immediate: true })
 
@@ -1189,6 +1214,9 @@ const fetchUserProfile = async () => {
             if (profile.language_preference) {
                 currentLang.value = profile.language_preference;
                 locale.value = profile.language_preference;
+            } else {
+                currentLang.value = 'EN';
+                locale.value = 'EN';
             }
         } else {
             userProfile.value = {
@@ -1273,9 +1301,6 @@ const openActionSheet = (title, type) => {
     else activeActions.value = searchFilters;
     isActionSheetOpen.value = true;
 }
-
-const countriesContainer = ref(null)
-const sliderProgress = ref(0)
 
 // Real Engine Action Handlers
 const isNeuralToastVisible = ref(false)
@@ -1771,6 +1796,7 @@ const handleNotificationClick = (notif) => {
           :userProfile="userProfile"
           :masterProfile="masterProfile"
           :allJobs="allJobs"
+          :matches="matches"
           :selectedPipelineStep="selectedPipelineStep"
           :uploadedFileName="uploadedFileName"
           :isRecalibrating="isRecalibrating"
@@ -1804,6 +1830,7 @@ const handleNotificationClick = (notif) => {
           :filteredMatches="filteredMatches"
           :selectedCountriesArr="selectedCountriesArr"
           :activeFocusSlots="activeFocusSlots"
+          :isRecalibrating="isRecalibrating"
           @openJobDetail="openJobDetail"
           @handleAction="handleDashboardAction"
           @openCountrySelector="handleDashboardAction('openCountrySelector')"
