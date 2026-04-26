@@ -41,7 +41,8 @@ const scrollLeft = ref(0)
 const handleScroll = () => {
   if (!countriesContainer.value) return
   const { scrollLeft: sLeft, scrollWidth, clientWidth } = countriesContainer.value
-  sliderProgress.value = (sLeft / (scrollWidth - clientWidth)) * 100
+  const maxScroll = scrollWidth - clientWidth
+  sliderProgress.value = maxScroll > 0 ? (sLeft / maxScroll) * 100 : 0
 }
 
 const startDragging = (e) => {
@@ -61,6 +62,23 @@ const moveDragging = (e) => {
   const walk = (x - startX.value) * 2 // Scroll speed multiplier
   countriesContainer.value.scrollLeft = scrollLeft.value - walk
 }
+
+const isScrollable = ref(false)
+const checkScrollable = () => {
+  if (!countriesContainer.value) return
+  isScrollable.value = countriesContainer.value.scrollWidth > countriesContainer.value.clientWidth
+  handleScroll() // Also update progress
+}
+
+import { watch, onMounted } from 'vue'
+watch(() => props.selectedCountriesArr, () => {
+  setTimeout(checkScrollable, 100) // Small delay for DOM update
+}, { deep: true })
+
+onMounted(() => {
+  checkScrollable()
+  window.addEventListener('resize', checkScrollable)
+})
 
 const openJobDetail = (match) => emit('openJobDetail', match)
 
@@ -282,9 +300,10 @@ const handleCitySubmit = async () => {
               </div>
            </div>
            
-           <!-- NEURAL SLIDER PROGRESS BAR -->
-           <div class="absolute bottom-1 left-4 right-4 h-[1.5px] bg-white/5 rounded-full overflow-hidden pointer-events-none">
-              <div class="h-full bg-gradient-to-r from-[#C1A172] to-[#FFD700] transition-all duration-300"
+           <!-- NEURAL SLIDER PROGRESS BAR (V16.9.8) -->
+           <div v-if="isScrollable" 
+                class="absolute bottom-1 left-4 right-4 h-[3px] bg-white/10 rounded-full overflow-hidden pointer-events-none shadow-[inset_0_1px_2px_rgba(0,0,0,0.2)]">
+              <div class="h-full bg-gradient-to-r from-[#C1A172] via-[#FFD700] to-[#C1A172] transition-all duration-300 shadow-[0_0_10px_#C1A172]"
                    :style="{ width: `${sliderProgress}%` }"></div>
            </div>
         </div>
