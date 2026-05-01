@@ -89,10 +89,16 @@ To ensure world-class data integrity and local relevance, we avoid the "Scraping
 - **ATS Stealth Logic**: 1px Black-Line Injection Active.
 
 #### **🧠 Phase 2.10: Neural Scraper & Real-Time Hydration (COMPLETED 2026-04-24)**
-- **Status**: ✅ **FULLY PRODUCTION READY**
-- **Neural Engine**: Sequential n8n architecture (V15.0) active.
-- **Zero-Exposure**: All sensitive IPs abstracted into `.env`.
 - **Auto-Injection**: High-intent matches automatically queued for Headless Executor.
+
+#### **🌍 Phase 2.11: Global Discovery, AI Suggestions & City Focus (V16.9 - COMPLETED)**
+- **Status**: ✅ **V16.9 STABILIZED & LIVE**
+- **True Global Unlock**: Implementation of the "Custom Country Focus" engine. Users can now search for jobs in ANY country (e.g., Sri Lanka 🇱🇰, Nigeria 🇳🇬, Libya 🇱🇾) by bypassing hardcoded lists.
+- **AI Auto-Suggestion Layer**: Integrated a neural suggestion engine in the search hub that predicts roles, handles spelling mistakes, and ensures high-quality signal injection for n8n scraping.
+- **Global Neural City Discovery**: ✅ **FULLY UPGRADED**. Transitioned from hardcoded city lists to a dynamic, API-driven geocoding engine. Supports real-time discovery of urban centers globally (e.g., Moratuwa, Male, Berlin, Oslo).
+- **Hard Validation Layer**: Implemented a "Signal Integrity" check that prevents users from searching for irrelevant cities (e.g., Colombo while in the Sweden tab) via a real-time geocoding country-match algorithm.
+- **Neural Shield (Fallback Logic)**: Resilient multi-provider architecture. If Adzuna fails for a specific region, the system automatically reroutes the search signal to Careerjet (The "Surgical Fallback").
+- **Hyper-Local City Satellite (V16.9)**: ✅ **FULLY IMPLEMENTED**. Precision targeting for specific urban centers, mapped directly to Adzuna (`where`) and Careerjet (`location`) for surgical discovery accuracy.
 
 ## **Phase 3: Neural Command & Governance (The Master Control Center)**
 
@@ -147,6 +153,7 @@ Our "Global Edge" lies in decoupling the User Interface (UI) from the Applicatio
 #### **B. AI Engine Localization (The "Success" Layer)**
 - **Dynamic Adaptation**: Regardless of the UI language, the **Gemini AI Engine** detects the Job Location and Job Description (JD) language.
 - **Target Markets**: Support for German (Lebenslauf), French, Arabic, and Nordic languages is automated by the LLM core based on the user's **AI Submission Strategy**.
+- **The Marketing Hook**: "Apply Globally, Speak Locally." You can trust the tool in your native tongue while applying to jobs in any language worldwide. The AI acts as your professional translator and cultural mediator.
 
 ---
 

@@ -1,4 +1,4 @@
-# 🏗️ DigyNex n8n: Master Workflow Library (V13.3 - Bulletproof)
+# 🏗️ DigyNex n8n: Master Workflow Library (V16.9 - Bulletproof)
 **Doc Ref:** N8N_MASTER_WORKFLOW_LIBRARY.md
 **Logic:** Explicit Node Referencing (Ensures data is always fetched from the root Webhook)
 
@@ -154,46 +154,37 @@ Synchronizes global alerts across the frontend and notifies the team.
 
 ---
 
-## ⚡ Step 6: Executor Pipeline (QUICK_APPLY / JOB_APPLY)
-**Strict Rule:** Never use `JSON.stringify` on the payload. Pass the JavaScript object directly to the Supabase node to ensure proper JSONB storage and prevent `[object Object]` data corruption.
+## ⚡ Step 6: Executor Pipeline (Workflow E: APY-AUTO-APPLY V16.9)
+**Strategic Goal:** Stealth form-filling via Apify Actors to bypass bot detection.
 
-### 🛠️ Headless Execution Script (Puppeteer Node)
-*This script performs the actual form-filling on external websites.*
-```javascript
-const { url, userData } = items[0].json;
-const puppeteer = require('puppeteer');
-const browser = await puppeteer.launch({ headless: true });
-const page = await browser.newPage();
+**Operational Parameters:**
+- **Trigger:** `QUICK_APPLY` / `JOB_APPLY` signals from Vue.js.
+- **Identity Source:** Supabase `profiles` (Verified PDF + Resume JSON).
+- **Execution Engine:** Apify `contact-form-submitter` or Custom Puppeteer Actor.
 
-try {
-    await page.goto(url, { waitUntil: 'networkidle2' });
-    
-    // Fill common fields using Smart Selectors
-    const mapping = {
-        'input[name*="name"]': userData.fullName,
-        'input[name*="email"]': userData.email,
-        'textarea[name*="cover"]': userData.coverLetter
-    };
-
-    for (const [sel, val] of Object.entries(mapping)) {
-        if (await page.$(sel)) await page.type(sel, val, { delay: 100 });
-    }
-
-    // Handle CV Upload (Verified PDF)
-    const fileInput = await page.$('input[type="file"]');
-    if (fileInput) await fileInput.uploadFile('/tmp/verified_cv.pdf');
-
-    await page.waitForTimeout(1000);
-    const submit = await page.$('button[type="submit"]');
-    if (submit) await submit.click();
-
-    await browser.close();
-    return [{ json: { status: 'success' } }];
-} catch (e) {
-    await browser.close();
-    throw e;
-}
-```
+### 🛠️ Execution Logic (The Neural Handshake)
+1.  **Identity Enrichment (Supabase):** 
+    - Fetch the user's **Verified PDF URL** from `storage.objects`.
+    - Fetch the **Cover Letter** and **Basic Info** from the `profiles` table.
+2.  **Apify Handshake (HTTP Request):**
+    - Dispatch a POST request to Apify API.
+    - **Payload:**
+      ```json
+      {
+        "url": "{{$json.job_url}}",
+        "proxy": { "useApifyProxy": true },
+        "formFields": {
+          "name": "{{$json.fullName}}",
+          "email": "{{$json.email}}",
+          "cv_url": "{{$json.pdf_url}}",
+          "message": "{{$json.cover_letter}}"
+        }
+      }
+      ```
+3.  **Atomic Quota Audit (Post-Success):**
+    - **SQL Query:** `UPDATE profiles SET cv_limit = cv_limit - 1 WHERE email = '{{$json.email}}'`
+    - Ensures no quota leakage even with multi-session activity.
+4.  **Mobile Confirmation:** Send WhatsApp: "Elite Dispatch: Your application for {Role} at {Company} is COMPLETE. 🚀"
 
 **Logic Engine (Neural Quota Auditor V13.8):**
 ```javascript
@@ -281,23 +272,26 @@ This is the "Neural Gateway" that prevents unauthorized job applications.
 - **Cache TTL:** 24 Hours (Global pooling).
 
 **Sequence of Actions (Strict Serial Order):**
-1.  **Incoming Request:** Receives `keywords`, `country`, and `email`.
-2.  **Step 1: Check Supabase (The Cache Trap):** 
-    - Queries the `job_scrapes` table for a match on `search_key` (Keywords + Country).
-    - **Logic:** If data exists and is < 24h old, skip Step 3. *(Result: $0 API Cost)*.
-3.  **Step 2: If Exists (Cache Hit):** Forward cached jobs instantly to Vue Frontend.
-4.  **Step 3: If Not Exists (The External Fetch):**
-    - Dispatch HTTP Request to Adzuna API.
-    - **Endpoint:** `https://api.adzuna.com/v1/api/jobs/{{$json["country"]}}/search/1`
-    - **Query Params:**
-        - `results_per_page`: 10
-        - `what`: `{{$json["keywords"]}}`
-        - `content-type`: `application/json`
+1.  **Incoming Request:** Receives `q` (keyword), `country`, `email`, and `city`.
+2.  **Step 1: Code: Map Country (The Neural Mapper):**
+    - **Logic:** 
+      ```javascript
+      const inputKeyword = $node["Webhook: Job Request"].json.query.q || '';
+      const inputCountry = $node["Webhook: Job Request"].json.query.country || 'sweden';
+      const inputCity = $node["Webhook: Job Request"].json.query.city || '';
+      // Construction: Ensure 100% cache accuracy
+      const searchKey = `${inputKeyword}_${countryCode}_${inputCity}`.replace(/__+/g, '_');
+      ```
+3.  **Step 2: Check Supabase (The Cache Trap):** 
+    - Queries `job_scrapes` table where `search_key = {{ $json["search_key"] }}`.
+    - **Logic:** If data exists and is < 24h old, serves the **Shared Intelligence** cache instantly.
+4.  **Step 3: HTTP Fetch (Adzuna/Careerjet):**
+    - Dispatches HTTP Request to the selected provider.
+    - **Query Params:** `what: {{$json["keyword"]}}`, `where: {{$json["city"]}}`.
 5.  **Step 4: Save & Format:** 
-    - Save the fresh array directly to Supabase `job_scrapes` (JSONB format).
-    - Ensure data is a pure array of objects to prevent "String Leakage".
-6.  **Step 5: Action Log:** Record the `SEARCH_LOG` in `user_activity` table.
-7.  **Final Response:** Return the formatted JSON to the client.
+    - Save the fresh array directly to Supabase `job_scrapes` with the new `search_key`.
+    - **Data Purity:** Ensure results are stored as a pure JSONB array.
+6.  **Step 5: Final Response:** Return the formatted JSON to the Vue.js client.
 
 ---
 

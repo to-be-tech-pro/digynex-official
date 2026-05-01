@@ -1,0 +1,76 @@
+{
+  "name": "Neural Auto-Apply Engine V16.9 (Apify Edition)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "neural-bridge/auto-apply",
+        "options": {}
+      },
+      "name": "Webhook: Quick Apply",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        250,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "getMany",
+        "table": "profiles",
+        "filters": {
+          "conditions": [
+            {
+              "key": "email",
+              "value": "={{ $node[\"Webhook: Quick Apply\"].json.query.email }}"
+            }
+          ]
+        }
+      },
+      "name": "Supabase: Fetch Identity",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        450,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.apify.com/v2/acts/apify~contact-form-submitter/runs",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "token",
+              "value": "YOUR_APIFY_TOKEN"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Apify: Dispatch Form Submitter",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [
+        650,
+        240
+      ]
+    },
+    {
+      "parameters": {
+        "operation": "execute",
+        "query": "=UPDATE profiles SET cv_limit = cv_limit - 1 WHERE email = '{{ $node[\"Webhook: Quick Apply\"].json.query.email }}' AND cv_limit > 0;"
+      },
+      "name": "Supabase: Atomic Quota Decrement",
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        850,
+        240
+      ]
+    }
+  ]
+}

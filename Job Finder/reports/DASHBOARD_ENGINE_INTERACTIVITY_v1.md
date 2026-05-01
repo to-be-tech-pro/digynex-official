@@ -45,5 +45,6 @@
 ## 🧬 5. Dashboard Internal Governance
 - **Lazy Loading (4-by-4):** Matches the user's scroll speed. Only renders 4 cards initially to conserve memory and API data.
 - **Global Data Pooling:** Searches across the entire system's cache before hitting external APIs (Maximizes performance, Zero cost).
+- **Multilingual Orchestration:** Decoupled UI (18 languages) from AI Output (Global support). AI automatically detects JD language and translates/localizes CV/CL content regardless of user's UI setting.
 - **Quota Feedback:** If `cv_limit` < 1, the export buttons auto-disable and trigger a "Quota Exceeded" Neural Toast.
 - **System Sync:** High-trust indicators ensure 100% data parity between the Dashboard UI and Supabase Realtime vault.

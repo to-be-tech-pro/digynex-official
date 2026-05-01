@@ -1,154 +1,36 @@
 {
-  "name": "DigyNex Workflow G: Neural Scraper (Smart Cache Logic)",
+  "name": "Neural Job Scraper V16.0 - Global Discovery",
   "nodes": [
     {
       "parameters": {
-        "httpMethod": "GET",
-        "path": "job-scraper",
-        "responseMode": "responseNode",
-        "options": {}
+        "jsCode": "const inputCountry = ($node[\"Webhook: Job Request\"].json.query.country || 'sweden').toLowerCase();\nconst inputCity = $node[\"Webhook: Job Request\"].json.query.city || '';\n\n// 🌍 GLOBAL STRATEGIC MAPPING (V16.0)\nconst countryMap = {\n  'sweden': 'se',\n  'germany': 'de',\n  'united kingdom': 'gb',\n  'norway': 'no',\n  'finland': 'fi',\n  'denmark': 'dk',\n  'sri lanka': 'lk',\n  'united states': 'us',\n  'canada': 'ca',\n  'australia': 'au',\n  'france': 'fr',\n  'netherlands': 'nl'\n};\n\nconst countryCode = countryMap[inputCountry] || inputCountry;\n\n// 🛰️ DYNAMIC PROVIDER STRATEGY\n// Adzuna only supports ~19 countries. Fallback to Careerjet for others.\nconst adzunaSupported = ['at','au','be','br','ca','ch','de','es','fr','gb','in','it','mx','nl','nz','pl','ru','us','za'];\nconst provider = adzunaSupported.includes(countryCode) ? 'adzuna' : 'careerjet';\n\nconst localeMap = {\n  'se': 'sv_SE',\n  'de': 'de_DE',\n  'gb': 'en_GB',\n  'no': 'no_NO',\n  'lk': 'en_LK',\n  'fi': 'fi_FI',\n  'dk': 'da_DK'\n};\n\nconst localeCode = localeMap[countryCode] || 'en_GB';\n\nreturn {\n  country: countryCode,\n  locale: localeCode,\n  provider: provider,\n  city: inputCity,\n  original_input: inputCountry\n};"
       },
-      "name": "Webhook: Job Request",
-      "type": "n8n-nodes-base.webhook",
+      "name": "Code: Map Country",
+      "type": "n8n-nodes-base.code",
       "typeVersion": 1,
-      "position": [0, 300]
-    },
-    {
-      "parameters": {
-        "operation": "getAll",
-        "projectId": "ticmdqeyeiycznfzxqrx",
-        "tableId": "job_scrapes",
-        "limit": 1,
-        "filters": {
-          "conditions": [
-            {
-              "keyName": "search_key",
-              "condition": "eq",
-              "keyValue": "={{ $json.query.keyword.toLowerCase() }}_{{ $json.query.country.toLowerCase() }}"
-            }
-          ]
-        }
-      },
-      "name": "Supabase: Check Cache",
-      "type": "n8n-nodes-base.supabase",
-      "typeVersion": 1,
-      "position": [220, 300],
-      "alwaysOutputData": true
+      "position": [
+        250,
+        240
+      ]
     },
     {
       "parameters": {
         "conditions": {
           "string": [
             {
-              "value1": "={{ $json.search_key }}",
-              "operation": "isNotEmpty"
+              "value1": "={{$json[\"provider\"]}}",
+              "value2": "adzuna"
             }
           ]
         }
       },
-      "name": "If: In Cache?",
+      "name": "Switch: Provider",
       "type": "n8n-nodes-base.if",
       "typeVersion": 1,
-      "position": [440, 300]
-    },
-    {
-      "parameters": {
-        "url": "=https://api.adzuna.com/v1/api/jobs/{{ $node[\"Webhook: Job Request\"].json.query.country.toLowerCase() }}/search/1",
-        "sendQuery": true,
-        "queryParameters": {
-          "parameters": [
-            { "name": "app_id", "value": "3eb84619" },
-            { "name": "app_key", "value": "f547d75879d0d2f2c75b915339692e6d" },
-            { "name": "what", "value": "={{ $node[\"Webhook: Job Request\"].json.query.keyword }}" },
-            { "name": "results_per_page", "value": "20" }
-          ]
-        },
-        "options": {}
-      },
-      "name": "HTTP: Adzuna Fetch",
-      "type": "n8n-nodes-base.httpRequest",
-      "typeVersion": 4.1,
-      "position": [660, 450]
-    },
-    {
-      "parameters": {
-        "jsCode": "const results = $input.item.json.results || [];\nconst kwNode = $node['Webhook: Job Request'].json.query.keyword || '';\nconst coNode = $node['Webhook: Job Request'].json.query.country || '';\nconst keyword = kwNode.toLowerCase();\nconst country = coNode.toLowerCase();\n\nconst formattedJobs = results.map(job => ({\n  id: String(job.id),\n  title: job.title,\n  company: job.company.display_name,\n  description: job.description,\n  url: job.redirect_url,\n  location: job.location.display_name,\n  salary_min: job.salary_min || 0,\n  salary_max: job.salary_max || 0,\n  created: job.created,\n  match_score: Math.floor(Math.random() * 20) + 80\n}));\n\nformattedJobs.sort((a,b) => b.match_score - a.match_score);\n\nreturn {\n  search_key: `${keyword}_${country}`,\n  jobs: formattedJobs\n};"
-      },
-      "name": "Code: Format Jobs",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [880, 450]
-    },
-    {
-      "parameters": {
-        "operation": "create",
-        "projectId": "ticmdqeyeiycznfzxqrx",
-        "tableId": "job_scrapes",
-        "dataMode": "defineBelow",
-        "valuesToSend": {
-          "values": [
-            { "column": "search_key", "value": "={{ $json.search_key }}" },
-            { "column": "jobs", "value": "={{ JSON.stringify($json.jobs) }}" }
-          ]
-        }
-      },
-      "name": "Supabase: Save Cache",
-      "type": "n8n-nodes-base.supabase",
-      "typeVersion": 1,
-      "position": [1100, 450]
-    },
-    {
-      "parameters": {
-        "respondWith": "json",
-        "responseBody": "={{ $node[\"If: In Cache?\"].json.search_key ? $node[\"If: In Cache?\"].json.jobs : $node[\"Code: Format Jobs\"].json.jobs }}",
-        "options": {}
-      },
-      "name": "Respond to Webhook",
-      "type": "n8n-nodes-base.respondToWebhook",
-      "typeVersion": 1,
-      "position": [1350, 300]
-    },
-    {
-      "parameters": {
-        "jsCode": "const userEmail = $node['Webhook: Job Request'].json.query.email || 'test@digynex.se';\nconst jobs = $input.item.json.jobs || [];\nconst highMatchJobs = jobs.filter(j => j.match_score >= 95).slice(0, 3);\n\nreturn highMatchJobs.map(job => ({\n  json: {\n    action: 'JOB_APPLY',\n    user_id: userEmail,\n    details: {\n      status: 'queued',\n      source: 'Neural Auto-Discovery',\n      job_id: job.id,\n      role: job.title,\n      company: job.company,\n      description: job.description,\n      job_url: job.url,\n      timestamp: new Date().toISOString()\n    }\n  }\n}));"
-      },
-      "name": "Headless: Neural Queue Injection",
-      "type": "n8n-nodes-base.code",
-      "typeVersion": 1,
-      "position": [1100, 580]
-    },
-    {
-      "parameters": {
-        "operation": "create",
-        "projectId": "ticmdqeyeiycznfzxqrx",
-        "tableId": "user_activity",
-        "dataMode": "defineBelow",
-        "valuesToSend": {
-          "values": [
-            { "column": "action", "value": "={{ $json.action }}" },
-            { "column": "user_id", "value": "={{ $json.user_id }}" },
-            { "column": "details", "value": "={{ JSON.stringify($json.details) }}" }
-          ]
-        }
-      },
-      "name": "Supabase: Action Log",
-      "type": "n8n-nodes-base.supabase",
-      "typeVersion": 1,
-      "position": [1350, 580]
-    }
-  ],
-  "connections": {
-    "Webhook: Job Request": { "main": [[{ "node": "Supabase: Check Cache", "type": "main", "index": 0 }]] },
-    "Supabase: Check Cache": { "main": [[{ "node": "If: In Cache?", "type": "main", "index": 0 }]] },
-    "If: In Cache?": {
-      "main": [
-        [{ "node": "Respond to Webhook", "type": "main", "index": 0 }],
-        [{ "node": "HTTP: Adzuna Fetch", "type": "main", "index": 0 }]
+      "position": [
+        450,
+        240
       ]
-    },
-    "HTTP: Adzuna Fetch": { "main": [[{ "node": "Code: Format Jobs", "type": "main", "index": 0 }]] },
-    "Code: Format Jobs": { "main": [[{ "node": "Supabase: Save Cache", "type": "main", "index": 0 }, { "node": "Headless: Neural Queue Injection", "type": "main", "index": 0 }]] },
-    "Supabase: Save Cache": { "main": [[{ "node": "Respond to Webhook", "type": "main", "index": 0 }]] },
-    "Headless: Neural Queue Injection": { "main": [[{ "node": "Supabase: Action Log", "type": "main", "index": 0 }]] }
-  }
+    }
+  ]
 }

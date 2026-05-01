@@ -56,11 +56,13 @@
 
 ## 🛠️ 4. Technical Robustness & Trust (Global Readiness)
 
-### **A. Full 18-Language i18n Architecture**
-
-- **What was done:** Transitioned from a basic toggle to a professional, scalable **vue-i18n** architecture supporting **18 international languages** (including German, Swedish, French, Tamil, Hindi, Japanese, and Arabic).
-- **Rationale:** Global market dominance. The system is no longer local-centric but ready for multi-region deployment.
 - **Marketing Impact:** Instant "Elite Enterprise" perception. Users/Investors see a platform that can scale to 100+ languages by simply adding JSON mapping. High-trust localization.
+
+### **C. Multilingual AI Orchestration (The "Any Language" Edge)**
+
+- **What was done:** Documented the "Decoupled Language Architecture" where UI localization (Trust Layer) and AI Engine output (Success Layer) are separate.
+- **Rationale:** Users can interact with the app in their native language (e.g., Sinhala or Swedish) while the AI creates CVs and Cover Letters in the language of the job post (e.g., German or French).
+- **Marketing Impact:** A major USP. It positions CareerNexus as a "Universal Translator for Careers." Users don't need to know the local language perfectly to apply; the AI handles the translation and localization professionally.
 
 ### **B. EU-Compliant Legal Governance Engine**
 

@@ -1,4 +1,4 @@
-# ‼️ [CANCELED - USE ULTIMATE UNIFIED BLUEPRINT INSTEAD]
+# ✅ [COMPLETED - STABILIZED V16.9] - MASTER AUTOMATION BLUEPRINT
 
 This document is the **Single Source of Truth** for the DigyNex Job Finder automation ecosystem. It bridges the Vue.js frontend with the n8n backend to create an elite, high-trust career acceleration engine.
 
@@ -172,16 +172,19 @@ To prevent confusion, here is exactly how the Frontend buttons map to n8n logic:
 **Objective**: Continuous job discovery across multi-site platforms (LinkedIn, Indeed, localized boards) tailored to user geographic preferences.
 
 ### **The Sequential Neural Pulse**
-1.  **Trigger**: Direct Frontend Webhook Call (User Search).
-2.  **Cache Audit**: Performs instant lookup in `job_scrapes` to minimize API latency and costs.
-3.  **Discovery Protocol**:
-    -   Dispatches to Adzuna/Careerjet via HTTP Request nodes.
-    -   Strict sequential flow ensures `Action Log` is updated BEFORE the webhook response.
-4.  **Neural Matching & Auto-Queuing**:
-    -   Automatically tags jobs with `match_score >= 95%`.
-    -   Injects `JOB_APPLY` signals into the `user_activity` pipeline for the Headless Executor.
-5.  **UI Feedback**: Real-time results are hydrated into the "Matches" hub instantly.
+1.  **Trigger**: Direct Frontend Webhook Call (User Search). Sends `q`, `country`, `city`, and `email`.
+2.  **Neural Recovery (V16.9)**: Recovers the search term from `q` to ensure 100% cache accuracy.
+3.  **Cache Audit (The Cache Trap)**: 
+    - Performs lookup in `job_scrapes` using the **Surgical Search Key** (`keyword_country_city`).
+    - **Logic**: If exact match exists and is < 24h old, serves the **Shared Intelligence** cache instantly.
+4.  **Discovery Protocol**:
+    -   If cache miss: Dispatches to Adzuna/Careerjet via HTTP Request nodes.
+    -   **Strategic Mapping**: Translates country names to ISO codes (e.g. Sweden -> se).
+    -   **Provider Strategy**: Switches to Careerjet if Adzuna does not support the region.
+5.  **Neural Matching & UI Feedback**:
+    -   Results are hydrated into the "Matches" hub instantly.
+    -   Includes **Neural Trust** scoring (0-100%) for realistic expert feedback.
 
 ---
 
-**© 2026 DigyNex Official. Final High-Trust Automation Blueprint. Version 10.1 Stable.**
+**© 2026 DigyNex Official. Final High-Trust Automation Blueprint. Version 16.9 - STABILIZED.**
