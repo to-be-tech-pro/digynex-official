@@ -125,7 +125,7 @@ To ensure world-class data integrity and local relevance, we avoid the "Scraping
 
 #### **🔥 Phase 3: "Beast Mode" & App-Store Launch**
 
-- **Full Auto**: Headless browser (Puppeteer) auto-submission with Anti-Bot Pacing.
+- **Full Auto & Agentic Execution**: Headless browser (Puppeteer) auto-submission with Anti-Bot Pacing. Currently transitioning to an advanced **AI Agentic Executor** (e.g., Browser Use, AutoGPT) to intelligently navigate complex external ATS portals (Workday, Taleo) and aggregators, eliminating the dependency on simple 1-page forms.
 - **Mobile Synergy**: Capacitor native apps (iOS/Android) + PWA for 24/7 presence.
 - **Monetization**: Subscriptions via **RevenueCat**, Rewarded Ads, and Recruiter Partnerships.
 
