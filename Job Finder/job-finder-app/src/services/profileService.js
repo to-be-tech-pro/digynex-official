@@ -84,6 +84,16 @@ export const profileService = {
       const jobLocation = (details?.location || "").toLowerCase();
       const mappedLocation = countryMap[jobLocation] || details?.location || 'SE';
 
+      // 🛡️ Neural Guard: Ensure URL is never "undefined" string or empty
+      const getSafeUrl = (url) => {
+        if (!url || url === 'undefined' || url === 'null' || url === '#' || url === '') {
+          return "https://www.linkedin.com/jobs/";
+        }
+        return url;
+      };
+
+      const safeUrl = getSafeUrl(details?.job_url);
+
       const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
@@ -91,18 +101,18 @@ export const profileService = {
           // 🏁 Level 1: Flat keys for Master Router & direct n8n access
           action: actionId,
           user_id: userId,
-          job_url: details?.job_url || "https://www.linkedin.com/jobs/",
+          job_url: safeUrl,
           location: mappedLocation,
           
           // 📦 Level 2: Wrapped 'body' object for Cookie Prep node
           body: {
             action: actionId,
             user_id: userId,
-            job_url: details?.job_url || "https://www.linkedin.com/jobs/", // 👈 Ensuring it's here
+            job_url: safeUrl,
             location: mappedLocation,
             details: {
                ...details,
-               job_url: details?.job_url || "https://www.linkedin.com/jobs/" // 👈 AND here for deep nested checks
+               job_url: safeUrl
             },
             cookie: details?.linkedin_session || "",
             jsessionid: details?.linkedin_jsessionid || ""
