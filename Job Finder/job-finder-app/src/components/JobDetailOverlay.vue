@@ -106,26 +106,32 @@ const emit = defineEmits(['close', 'onAction'])
            </div>
         </div>
 
-        <!-- Fixed Footer Actions (V13.1 HYBRID BROADCAST) -->
-        <div class="absolute bottom-0 left-0 right-0 p-6 bg-gradient-to-t from-[#0A2647] via-[#0A2647] to-transparent pt-12 pb-8 flex items-center gap-3 z-20">
+        <!-- Fixed Footer Actions (V13.2 SLIMLINE HUD) -->
+        <div class="absolute bottom-0 left-0 right-0 p-5 bg-gradient-to-t from-[#0A2647] via-[#0A2647] to-transparent pt-12 pb-6 flex items-center gap-2 z-20">
            <!-- Side Action: Tailor -->
-           <button @click="emit('onAction', 'tailor_cv', job)" class="flex-1 bg-white/5 h-14 rounded-[1.25rem] border border-white/10 flex items-center justify-center gap-2 text-white/80 font-black uppercase tracking-widest text-[9px] hover:bg-white/10 transition-all hover:text-white">
-              <Zap class="w-3.5 h-3.5 text-[#C1A172]" />
+           <button @click="emit('onAction', 'tailor_cv', job)" class="flex-1 bg-white/5 h-10 rounded-xl border border-white/10 flex items-center justify-center gap-1.5 text-white/80 font-black uppercase tracking-widest text-[8px] hover:bg-white/10 transition-all hover:text-white">
+              <Zap class="w-3 h-3 text-[#C1A172]" />
               <span>Tailor Only</span>
            </button>
-
-           <!-- Main Action: Auto-Broadcast -->
-           <button v-if="job.applyType !== 'manual'" @click="emit('onAction', 'normal_apply', job)" class="flex-[1.5] bg-[#C1A172] h-14 rounded-[1.25rem] flex items-center justify-center gap-3 shadow-[0_15px_40px_rgba(193,161,114,0.25)] hover:scale-[1.02] active:scale-95 transition-all text-[#0A2647] font-black uppercase tracking-widest text-[11px] group relative overflow-hidden">
-              <div class="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
-              <span>Instant AI Apply</span>
-              <ArrowUpRight class="w-4 h-4 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 transition-transform" />
+ 
+           <!-- Main Action: Auto-Broadcast (Headless) -->
+           <button v-if="job.applyType !== 'manual'" @click="emit('onAction', 'quick_apply', job)" class="flex-1 bg-white/5 h-10 rounded-xl border border-white/10 flex items-center justify-center gap-1.5 text-white/80 font-black uppercase tracking-widest text-[8px] hover:bg-white/10 transition-all hover:text-white">
+              <Globe class="w-3 h-3 text-blue-400" />
+              <span>Server Apply</span>
            </button>
-
+ 
+           <!-- Main Action: Mobile Neural Injection (V25.0 Checkmate) -->
+           <button v-if="job.applyType !== 'manual'" @click="emit('onAction', 'apply_direct', job)" class="flex-[1.8] bg-gradient-to-r from-[#C1A172] to-[#FFD700] h-10 rounded-xl flex items-center justify-center gap-2 shadow-[0_10px_30px_rgba(193,161,114,0.2)] hover:scale-[1.02] active:scale-95 transition-all text-[#0A2647] font-black uppercase tracking-widest text-[9px] group relative overflow-hidden">
+              <div class="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
+              <Sparkles class="w-3.5 h-3.5" />
+              <span>Neural Mobile Apply</span>
+           </button>
+ 
            <!-- Main Action: Manual-Assist Toolkit -->
-           <button v-else @click="emit('onAction', 'manual_toolkit', job)" class="flex-[1.5] bg-[#73BBA3] h-14 rounded-[1.25rem] flex items-center justify-center gap-3 shadow-[0_15px_40px_rgba(115,187,163,0.25)] hover:scale-[1.02] active:scale-95 transition-all text-[#0A2647] font-black uppercase tracking-widest text-[11px] group relative overflow-hidden border border-white/10">
+           <button v-else @click="emit('onAction', 'manual_toolkit', job)" class="flex-[1.8] bg-[#73BBA3] h-10 rounded-xl flex items-center justify-center gap-2 shadow-[0_10px_30px_rgba(115,187,163,0.15)] hover:scale-[1.02] active:scale-95 transition-all text-[#0A2647] font-black uppercase tracking-widest text-[9px] group relative overflow-hidden border border-white/10">
               <div class="absolute inset-0 bg-white/20 -translate-x-full group-hover:translate-x-full transition-transform duration-700"></div>
               <span>Manual Assist Toolkit</span>
-              <FileText class="w-4 h-4 group-hover:scale-110 transition-transform" />
+              <FileText class="w-3.5 h-3.5" />
            </button>
         </div>
 

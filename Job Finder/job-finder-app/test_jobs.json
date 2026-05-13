@@ -1,0 +1,29 @@
+[
+  {
+    "user_id": "amilawijayantha858@gmail.com",
+    "action": "QUICK_APPLY",
+    "details": {
+      "role": "Frontend Developer",
+      "company": "Tech Solutions SE",
+      "job_url": "https://www.google.com/search?q=test+job+1"
+    }
+  },
+  {
+    "user_id": "amilawijayantha858@gmail.com",
+    "action": "QUICK_APPLY",
+    "details": {
+      "role": "React Engineer",
+      "company": "Nordic AI",
+      "job_url": "https://www.google.com/search?q=test+job+2"
+    }
+  },
+  {
+    "user_id": "amilawijayantha858@gmail.com",
+    "action": "QUICK_APPLY",
+    "details": {
+      "role": "Fullstack Dev",
+      "company": "DigyNex Global",
+      "job_url": "https://www.google.com/search?q=test+job+3"
+    }
+  }
+]

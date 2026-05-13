@@ -16,6 +16,8 @@ const props = defineProps({
   activeCity: String, // NEW: Hyper-Local Focus (V16.9)
   searchQuery: String,
   filteredMatches: Array,
+  totalMatchCount: Number, // NEW: V20.0 Counter Telemetry
+  visibleMatchesCount: Number, // NEW: V20.0 Pagination State
   selectedCountriesArr: Array,
   activeFocusSlots: Object,
   isRecalibrating: Boolean
@@ -29,7 +31,8 @@ const emit = defineEmits([
   'openCountrySelector', 
   'removeCountry',
   'handleAction',
-  'openJobDetail'
+  'openJobDetail',
+  'loadMore' // NEW: V20.0 Stream Expansion
 ])
 
 const countriesContainer = ref(null)
@@ -398,7 +401,21 @@ const handleCitySubmit = async () => {
 
      <!-- CONTENT: REFINED DATA-RICH STREAM (LEFT-ALIGNED) -->
      <div class="flex-1 overflow-y-auto no-scrollbar relative">
-        <div v-if="filteredMatches.length > 0" class="pt-6 pb-24 space-y-4 px-4">
+        <!-- NEURAL TELEMETRY HEADER (V20.0) -->
+        <div v-if="totalMatchCount > 0" class="px-5 pt-6 pb-2 flex items-center justify-between animate-in fade-in slide-in-from-top-2 duration-700">
+           <div class="flex items-center gap-3">
+              <div class="bg-[#C1A172] w-1.5 h-6 rounded-full shadow-[0_0_12px_#C1A172]"></div>
+              <div class="flex flex-col">
+                 <h2 class="text-[14px] font-black text-white uppercase tracking-wider leading-none">{{ totalMatchCount }} DISCOVERED MATCHES</h2>
+                 <span class="text-[8px] font-bold text-[#C1A172] uppercase tracking-[0.2em] mt-1 italic">Neural Pipe Active & Syncing...</span>
+              </div>
+           </div>
+           <div class="bg-white/5 border border-white/10 px-3 py-1 rounded-full backdrop-blur-md">
+              <span class="text-[9px] font-black text-white/40 uppercase tracking-widest">{{ filteredMatches.length }} / {{ totalMatchCount }}</span>
+           </div>
+        </div>
+
+        <div v-if="filteredMatches.length > 0" class="pt-2 pb-32 space-y-4 px-4">
            <div v-for="match in filteredMatches" :key="match.id" 
                 @click="openJobDetail(match)"
                 class="bg-gradient-to-br from-[#BDDAFA]/10 via-[#F1F5F9] to-[#EDF2F7] rounded-[2.5rem] px-6 py-5 border border-white shadow-xl relative overflow-hidden group hover:scale-[1.01] active:scale-[0.99] transition-all cursor-pointer">
@@ -445,8 +462,35 @@ const handleCitySubmit = async () => {
                        <span class="text-[9px] font-bold text-[#0A2647]/40 uppercase tracking-widest">{{ match.t }}</span>
                     </div>
                  </div>
+                 
+                 <!-- RIGHT: ACTION STACK -->
+                 <div class="flex flex-col gap-2 shrink-0 self-center">
+                    <button @click.stop="$emit('handleAction', 'quick_apply', match)" 
+                            class="p-3 bg-[#0A2647] rounded-xl text-white hover:bg-[#C1A172] hover:text-[#0A2647] transition-all shadow-md group/apply">
+                       <Zap class="w-4 h-4 group-hover/apply:animate-pulse" />
+                    </button>
+                    <button @click.stop="$emit('handleAction', 'save_match', match)" 
+                            class="p-3 bg-white border border-[#0A2647]/5 rounded-xl text-[#0A2647]/30 hover:text-red-500 hover:border-red-500/20 transition-all shadow-sm group/save">
+                       <Bookmark class="w-4 h-4 group-hover/save:scale-110" />
+                    </button>
+                 </div>
               </div>
            </div>
+        </div>
+
+        <!-- PAGINATION TRIGGER (SHOW MORE) - V20.0 -->
+        <div v-if="totalMatchCount > filteredMatches.length && !isRecalibrating && filteredMatches.length > 0" class="px-4 pb-12 pt-2 flex justify-center animate-in zoom-in duration-500">
+           <button @click="$emit('loadMore')" 
+                   class="w-full bg-white/5 hover:bg-white/10 border border-white/5 hover:border-[#C1A172]/30 py-4 rounded-[2.5rem] flex items-center justify-center gap-3 transition-all active:scale-95 group">
+              <div class="bg-[#C1A172]/20 p-2 rounded-xl group-hover:bg-[#C1A172]/40 transition-colors">
+                 <RefreshCw class="w-4 h-4 text-[#C1A172]" />
+              </div>
+              <div class="flex flex-col items-start leading-none">
+                 <span class="text-[11px] font-black text-white uppercase tracking-widest">Show More Matches</span>
+                 <span class="text-[8px] font-bold text-white/20 uppercase tracking-[0.2em] mt-1 italic">Load Next 4 Strategic Roles</span>
+              </div>
+              <ArrowRight class="w-4 h-4 text-white/20 group-hover:text-[#C1A172] group-hover:translate-x-1 transition-all ml-2" />
+           </button>
         </div>
 
         <!-- LOADING STATE (V16.9) -->

@@ -142,7 +142,8 @@ export const quotaService = {
     if (!userEmail) return { weeklyCount: 0, dailyCount: 0 };
     
     // NEURAL ACTION SINK: Unified quota enforcement for all expenditures
-    const ACTION_SINK = ['CV_EXPORT', 'JOB_APPLY', 'QUICK_APPLY', 'CL_EXPORT', 'HEADLESS_BROADCAST_SIGNAL', 'MANUAL_ASSIST_TOOLKIT_SYNC'];
+    // Transitioned QUICK_APPLY to Post-Charge model (QUICK_APPLY_SUCCESS)
+    const ACTION_SINK = ['CV_EXPORT', 'JOB_APPLY', 'QUICK_APPLY_SUCCESS', 'CL_EXPORT', 'HEADLESS_BROADCAST_SIGNAL', 'MANUAL_ASSIST_TOOLKIT_SYNC'];
 
     try {
         const now = new Date();

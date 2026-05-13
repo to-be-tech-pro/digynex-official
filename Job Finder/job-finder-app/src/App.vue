@@ -5,7 +5,7 @@ import {
   Linkedin, User, Search, SlidersHorizontal, UserPlus, 
   Check, Maximize2, Lock, Bell, RefreshCw, ShieldCheck,
   Cloud, Star, Stars, Mic, DownloadCloud, BarChart3, Bookmark, Share2, EyeOff, AlertTriangle, Mail,
-  Eye, Crown, ChevronRight
+  Eye, Crown, ChevronRight, History
 } from 'lucide-vue-next'
 import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
@@ -235,14 +235,11 @@ const NEURAL_SPECIMENS = [
     { c: 'Klarna', r: 'Senior Frontend', s: '90%', d: 'Specimen', l: 'Stockholm', step: 'applied', icon: Sparkles, color: '#FFB3C7', desc: 'Neural Specimen: Application buffered.' }
 ];
 
-const DISCOVERY_SPECIMENS = [
-    { id: 'm1', c: 'Tesla', r: 'Fullstack Engineer', l: 'Oslo', m: '98%', t: 'Just Now', color: '#E81D23', icon: Zap, desc: 'Neural Discovery: Direct match for your React/Node skills.' },
-    { id: 'm2', c: 'Klarna', r: 'Senior Frontend', l: 'Stockholm', m: '95%', t: '2h ago', color: '#FFB3C7', icon: Sparkles, desc: 'Neural Discovery: High demand for Swedish-speaking developers.' }
-];
+const DISCOVERY_SPECIMENS = [];
 
 const allJobs = ref([...NEURAL_SPECIMENS])
 
-const matches = ref([...DISCOVERY_SPECIMENS])
+const matches = ref([])
 
 const handleGlobalSearch = async (queryOverride) => {
     // 🛡️ Neural Guard: Support both Keyword + City or City-only searches
@@ -259,13 +256,22 @@ const handleGlobalSearch = async (queryOverride) => {
     isRecalibrating.value = true;
     matches.value = []; // Clear-on-Search: Ensures fresh stream
     
+    // --- STRATEGIC COUNTRY MAPPING (ISO-2) ---
+    const countryMap = {
+        'sweden': 'se', 'germany': 'de', 'united kingdom': 'gb', 'uk': 'gb',
+        'norway': 'no', 'finland': 'fi', 'denmark': 'dk', 'united states': 'us',
+        'usa': 'us', 'france': 'fr', 'netherlands': 'nl', 'sri lanka': 'lk',
+        'sweden 🇸🇪': 'se', 'germany 🇩🇪': 'de', 'norway 🇳🇴': 'no'
+    };
+    const cCode = countryMap[activeCountry.value?.toLowerCase()] || activeCountry.value?.toLowerCase() || 'se';
+
     toastMessage.value = `Neural Engine: Dispatched Discovery for "${finalQuery || city}"...`;
     isNeuralToastVisible.value = true;
 
     try {
         const response = await jobService.searchJobs(
             finalQuery || 'Jobs', // Fallback keyword if only city provided
-            activeCountry.value || 'gb', 
+            cCode, 
             userProfile.value.email || 'guest@digynex.se',
             city
         );
@@ -299,8 +305,29 @@ const handleGlobalSearch = async (queryOverride) => {
             }));
             showNeuralToast(`Neural Engine: ${results.length} Strategic Matches Found`, 'success');
         } else {
-            showNeuralToast('Neural Search Complete: No exact matches in this region.', 'warning');
-            matches.value = []; // Keep it clean
+            // --- NEURAL CACHE FALLBACK (V25.3) ---
+            console.log('[DIGYNEX] Live scraper returned 0. Accessing Neural Cache...');
+            const cachedJobs = await jobService.getDiscoveryJobs(activeCountry.value);
+            
+            if (cachedJobs && cachedJobs.length > 0) {
+                matches.value = cachedJobs.map(j => ({
+                    id: j.id,
+                    c: j.company,
+                    r: j.role,
+                    l: j.location,
+                    m: j.match_score,
+                    t: 'Cached Match',
+                    color: j.hex_color,
+                    icon: History,
+                    isNeuralMatch: true,
+                    desc: j.description,
+                    u: j.url
+                }));
+                showNeuralToast('Neural Search Complete (Served from Cache)', 'info');
+            } else {
+                showNeuralToast('Neural Search Complete: No exact matches in this region.', 'warning');
+                matches.value = []; // Keep it clean
+            }
         }
     } catch (err) {
         console.error('Search Dispatch Failure:', err);
@@ -645,6 +672,10 @@ const saveProfile = async () => {
       });
       
       if (error) throw error;
+
+      // --- RE-HYDRATION SYNC: Update local state immediately ---
+      userProfile.value.linkedin_session = linkedInSessionInput.value || userProfile.value.linkedin_session;
+      userProfile.value.linkedin_jsessionid = linkedInJsessionidInput.value || userProfile.value.linkedin_jsessionid;
       
       toastMessage.value = 'Identity Core Synced Successfully';
       isNeuralToastVisible.value = true;
@@ -761,6 +792,11 @@ const saveLinkedIn = async () => {
             phone: userProfile.value.phone || ''
         });
     }
+
+    // --- RE-HYDRATION SYNC: Update local state immediately ---
+    userProfile.value.linkedin_session = linkedInSessionInput.value;
+    userProfile.value.linkedin_jsessionid = linkedInJsessionidInput.value;
+    userProfile.value.linkedin_url = linkedInUrlInput.value;
 
     // 2. NEURAL SIGNAL: Trigger n8n LinkedIn Scraper (Workflow JAAAAS)
     await profileService.logActivity(userProfile.value.email, 'LINKEDIN_SYNC_REQUESTED', {

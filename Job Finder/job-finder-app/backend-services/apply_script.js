@@ -1,178 +1,227 @@
+const puppeteer = require('puppeteer-core');
+const args = require('minimist')(process.argv.slice(2));
+const fs = require('fs');
+
 /**
- * 🌌 DIGYNEX NEURAL ENGINE: HEADLESS EXECUTOR (V18.6 - Neural Ghost)
+ * 🌌 DIGYNEX NEURAL ENGINE: SOVEREIGN SHIELD (V25.3 - Ultra Stealth)
  * --------------------------------------------------------------------------
- * @project DigyNex Job Finder
- * @version 18.6
- * @architecture Browserless Sidecar (ws://browserless:3000)
- * @description This script automates job applications by navigating to target URLs, 
- * filling forms (including iframes/shadow DOM), uploading CVs, and capturing 
- * proof of submission via screenshots for AI verification.
+ * Logic: Multi-Language Heuristics + JSESSIONID CSRF + Neural Wipe 2.1 + Mobile Emulation.
+ * Capabilities: English, Swedish, German, French, Spanish, Italian, Dutch, Portuguese.
+ * Improvements: Bypass Redirect Loops, Mask Webdriver, Cost-Effective Resource Handling.
  */
 
 (async () => {
-    const { url, cv, name, email, cl, phone, location } = args;
-    const timestamp = Date.now();
-    const screenshotName = `apply_${timestamp}.png`;
-    const screenshotPath = `/automation/temp/${screenshotName}`;
+    const { url, cv, name, email, phone, location, cookie, jsessionid, lastActive, proxyUrl } = args;
 
-    // 1. ARGUMENT VALIDATION
-    if (!url || !cv) {
-        console.error(JSON.stringify({ status: "ERROR", message: "Missing required arguments: --url or --cv" }));
-        process.exit(1);
+    // --- 🛡️ STEALTH: PRESENCE DETECTION ---
+    if (lastActive) {
+        const now = Date.now();
+        const activeTime = new Date(lastActive).getTime();
+        if ((now - activeTime) / 1000 / 60 < 10) {
+            console.log(JSON.stringify({ status: "ABORTED_PRESENCE_DETECTED", message: "Cooldown active." }));
+            process.exit(0);
+        }
     }
 
+    const screenshotPath = `/home/node/.n8n-files/apply_${Date.now()}.png`;
+
     let browser;
+    let cleanser;
     try {
-        /**
-         * 🌐 BROWSER INITIALIZATION
-         * Connects to the Browserless container to ensure stable, isolated execution.
-         */
+        let endpoint = 'ws://browserless:3000';
+        if (proxyUrl) endpoint += `?--proxy-server=${proxyUrl}`;
+
         browser = await puppeteer.connect({
-            browserWSEndpoint: 'ws://browserless:3000',
-            defaultViewport: { width: 1280, height: 800 }
+            browserWSEndpoint: endpoint,
+            defaultViewport: { width: 390, height: 844 }
         });
 
         const page = await browser.newPage();
-        
-        // Use a realistic User-Agent to avoid basic bot detection
-        await page.setUserAgent('Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/119.0.0.0 Safari/537.36');
-        
-        process.stderr.write(`[PROGRESS] Navigating to ${url}\n`);
-        await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
 
-        /**
-         * 📝 RECURSIVE FORM FILLER
-         * Targets input fields, dropdowns, and file uploads.
-         * Navigates through iFrames and handles Shadow DOM complexity.
-         * 
-         * @param {Object} frame - The Puppeteer page or frame object to process.
-         */
-        async function fillForm(frame) {
-            const fieldMapping = [
-                { key: 'name', value: name, selectors: ['input[name*="name"]', 'input[id*="name"]', 'input[placeholder*="Name"]', 'input[aria-label*="Name"]'] },
-                { key: 'email', value: email, selectors: ['input[type="email"]', 'input[name*="email"]', 'input[id*="email"]', 'input[placeholder*="Email"]'] },
-                { key: 'phone', value: phone, selectors: ['input[type="tel"]', 'input[name*="phone"]', 'input[id*="phone"]', 'input[placeholder*="Phone"]'] },
-                { key: 'location', value: location, selectors: ['input[name*="city"]', 'input[id*="location"]', 'input[placeholder*="City"]', 'input[name*="address"]'] },
-                { key: 'cl', value: cl, selectors: ['textarea[name*="cover"]', 'textarea[id*="cover"]', 'textarea[placeholder*="Cover"]', 'textarea[name*="msg"]'] }
-            ];
+        // --- ⚡ SPEED: RESOURCE INTERCEPTION (V1.1 OPTIMIZATION) ---
+        await page.setRequestInterception(true);
+        page.on('request', (req) => {
+            if (['image', 'font', 'media'].includes(req.resourceType())) req.abort();
+            else req.continue();
+        });
 
-            // A. Fill Text Inputs with human-like typing delay
-            for (const field of fieldMapping) {
-                if (!field.value) continue;
-                for (const selector of field.selectors) {
-                    try {
-                        const element = await frame.$(selector);
-                        if (element) {
-                            await element.click({ clickCount: 3 }); // Clear existing text
-                            await element.press('Backspace');
-                            await element.type(field.value, { delay: 20 });
-                            break; 
-                        }
-                    } catch (e) {}
+        // --- 🌍 GLOBAL LOCALIZATION & STEALTH ---
+        const localizationMap = {
+            'SE': 'Europe/Stockholm', 'DE': 'Europe/Berlin', 'UK': 'Europe/London',
+            'FR': 'Europe/Paris', 'IT': 'Europe/Rome', 'ES': 'Europe/Madrid',
+            'NL': 'Europe/Amsterdam', 'PT': 'Europe/Lisbon', 'US': 'America/New_York'
+        };
+        await page.emulateTimezone(localizationMap[location?.toUpperCase()] || 'UTC');
+        
+        // --- 📱 MOBILE EMULATION (ULTRA STEALTH - V25.3) ---
+        await page.setUserAgent('Mozilla/5.0 (iPhone; CPU iPhone OS 16_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.6 Mobile/15E148 Safari/604.1');
+        await page.setViewport({ width: 390, height: 844, deviceScaleFactor: 3, isMobile: true, hasTouch: true });
+
+        // --- 🕵️‍♂️ MANUAL STEALTH: MASK SIGNATURES ---
+        await page.evaluateOnNewDocument(() => {
+            Object.defineProperty(navigator, 'webdriver', { get: () => false });
+            window.chrome = { runtime: {} };
+            Object.defineProperty(navigator, 'maxTouchPoints', { get: () => 5 });
+        });
+
+        // --- 🔐 SESSION INJECTION (CSRF HARDENED) ---
+        if (url && cookie) {
+            const domains = ['.linkedin.com', 'se.linkedin.com', 'www.linkedin.com'];
+            for (const domain of domains) {
+                await page.setCookie({ 
+                    name: 'li_at', 
+                    value: cookie, 
+                    domain: domain, 
+                    path: '/', 
+                    secure: true, 
+                    httpOnly: true,
+                    sameSite: 'None'
+                });
+                if (jsessionid) {
+                    const cleanId = jsessionid.replace(/"/g, '');
+                    await page.setCookie({ 
+                        name: 'JSESSIONID', 
+                        value: cleanId, 
+                        domain: domain, 
+                        path: '/', 
+                        secure: true,
+                        httpOnly: false,
+                        sameSite: 'None'
+                    });
                 }
             }
+        }
 
-            // B. Handle Dropdowns (Selects) - Prefers Country/Location matching
-            const selects = await frame.$$('select');
-            for (const select of selects) {
-                try {
-                    const nameAttr = await (await select.getProperty('name')).jsonValue();
-                    if (nameAttr.includes('country') || nameAttr.includes('state')) {
-                        await select.select(location || 'Sweden'); 
-                    } else {
-                        const options = await select.$$('option');
-                        if (options.length > 1) await select.select(await (await options[1].getProperty('value')).jsonValue());
+        await page.goto(url, { waitUntil: 'networkidle2', timeout: 60000 });
+
+        // --- 🧹 NEURAL WIPE 2.1 (STABLE CLEANER) ---
+        const performNeuralWipe = async (frame) => {
+            try {
+                if (frame.isDetached()) return;
+                await frame.evaluate(() => {
+                    const wipe = (root) => {
+                        if (!root) return;
+                        root.querySelectorAll('*').forEach(el => {
+                            const cls = (el.className || '').toString().toLowerCase();
+                            const id = (el.id || '').toLowerCase();
+                            if ((cls.includes('cookie') || cls.includes('banner') || id.includes('cookie')) && !el.closest('.jobs-easy-apply-modal')) {
+                                el.remove();
+                            }
+                        });
+                    };
+                    wipe(document);
+                });
+            } catch (e) {}
+        };
+
+        cleanser = setInterval(async () => { try { await performNeuralWipe(page); } catch (e) {} }, 5000);
+
+        // --- 🧠 MULTI-LANGUAGE FIELD RECOGNITION ---
+        async function fillFields(frame) {
+            try {
+                if (frame.isDetached()) return;
+                const firstName = name ? name.split(' ')[0] : "";
+                const lastName = name ? name.split(' ').slice(1).join(' ') : "";
+
+                const mapping = [
+                    { val: firstName, sel: ['input[name*="first" i]', 'input[aria-label*="first" i]', 'input[aria-label*="Förnamn" i]', 'input[aria-label*="Vorname" i]', 'input[aria-label*="Prénom" i]', 'input[aria-label*="Nombre" i]'] },
+                    { val: lastName, sel: ['input[name*="last" i]', 'input[aria-label*="last" i]', 'input[aria-label*="Efternamn" i]', 'input[aria-label*="Nachname" i]', 'input[aria-label*="Nom" i]', 'input[aria-label*="Apellido" i]'] },
+                    { val: email, sel: ['input[type="email" i]', 'input[name*="email" i]', 'input[aria-label*="E-post" i]', 'input[aria-label*="E-Mail" i]', 'input[aria-label*="Correo" i]'] },
+                    { val: phone, sel: ['input[type="tel" i]', 'input[name*="phone" i]', 'input[aria-label*="Telefon" i]', 'input[aria-label*="Phone" i]'] },
+                    { val: location, sel: ['input[name*="location" i]', 'input[name*="city" i]', 'input[aria-label*="Stad" i]', 'input[aria-label*="Stadt" i]', 'input[aria-label*="Ville" i]', 'input[aria-label*="Ciudad" i]'] }
+                ];
+
+                for (const item of mapping) {
+                    if (!item.val) continue;
+                    for (const s of item.sel) {
+                        try {
+                            const el = await frame.$(s);
+                            if (el) {
+                                await el.scrollIntoView();
+                                await el.click({ clickCount: 3 });
+                                await el.type(item.val, { delay: 20 });
+                                break;
+                            }
+                        } catch (e) {}
                     }
-                } catch (e) {}
-            }
+                }
 
-            // C. Inject CV Specimen (File Upload)
-            const fileInputs = await frame.$$('input[type="file"]');
-            for (const input of fileInputs) {
+                // Global Radio Button Logic (Yes/Ja/Oui/Sì/Sí/Sim)
+                const radioGroups = await frame.$$('fieldset, .jobs-easy-apply-form-section__grouping');
+                for (const group of radioGroups) {
+                    try {
+                        const yesButton = await group.evaluateHandle(el => {
+                            const labels = Array.from(el.querySelectorAll('label'));
+                            return labels.find(l => l.textContent.match(/^\s*(yes|ja|oui|sì|sí|sim|agree|godkänn)\s*$/i));
+                        });
+                        if (yesButton && yesButton.asElement()) await yesButton.asElement().click();
+                    } catch (e) {}
+                }
+
+                const fileInputs = await frame.$$('input[type="file"]');
+                for (const input of fileInputs) {
+                    try { await input.uploadFile(cv); } catch (e) {}
+                }
+            } catch (e) {}
+        }
+
+        // --- 🔘 UNIVERSAL NAVIGATION LOGIC ---
+        let applicationFinished = false;
+        let attempts = 0;
+        const submitKeywords = /Submit|Done|Finish|Skicka|Lämna|Klar|Postuler|Enviar|Invia|Senden|Finalizar|Apply|Ansök|Send|Send application/i;
+        const nextKeywords = /Next|Continue|Review|Nästa|Granska|Fortsätt|Suivant|Siguiente|Avanti|Weiter|Continuar|Proceed/i;
+
+        while (!applicationFinished && attempts < 15) {
+            attempts++;
+            await new Promise(r => setTimeout(r, 4000));
+            await fillFields(page);
+            for (const f of page.frames()) await fillFields(f);
+
+            // Priority: LinkedIn Global Primary Class
+            const buttons = await page.$$('button.artdeco-button--primary, button.jobs-apply-button');
+            let clicked = false;
+
+            for (const btn of buttons) {
                 try {
-                    const nameAttr = (await (await input.getProperty('name')).jsonValue()).toLowerCase();
-                    if (nameAttr.includes('resume') || nameAttr.includes('cv') || fileInputs.length === 1) {
-                        await input.uploadFile(cv);
+                    const text = await page.evaluate(el => el.textContent || '', btn);
+                    if (text.match(submitKeywords)) {
+                        await btn.click();
+                        clicked = true;
+                        await new Promise(r => setTimeout(r, 10000));
+                        break;
+                    } else if (text.match(nextKeywords)) {
+                        await btn.click();
+                        clicked = true;
                         break;
                     }
                 } catch (e) {}
             }
+
+            const content = await page.content();
+            const successKeywords = /thank you|received|success|submitted|tack|mottagits|skickat|félicitations|enviada|inviata|erfolgreich/i;
+            if (successKeywords.test(content)) {
+                applicationFinished = true;
+                break;
+            }
+            if (!clicked) break;
         }
 
-        // START FILLING (Main Page + All Sub-frames)
-        await fillForm(page);
-        const frames = page.frames();
-        for (const frame of frames) {
-            await fillForm(frame);
-        }
-
-        /**
-         * ⚡ KINETIC ACTION: SUBMISSION
-         * Scans the viewport for the most likely 'Submit' or 'Apply' button.
-         * 
-         * @returns {String|null} - The text content of the button clicked.
-         */
-        const attemptSubmission = async () => {
-            return await page.evaluate(() => {
-                const buttons = Array.from(document.querySelectorAll('button, input[type="submit"], a.btn'));
-                const submitBtn = buttons.find(btn => {
-                    const txt = btn.textContent.toLowerCase();
-                    return txt.includes('apply') || txt.includes('submit') || txt.includes('next') || txt.includes('continue');
-                });
-                if (submitBtn) {
-                    submitBtn.click();
-                    return submitBtn.textContent.trim();
-                }
-                return null;
-            });
-        };
-
-        const actionTaken = await attemptSubmission();
-        process.stderr.write(`[PROGRESS] Action taken: ${actionTaken}\n`);
-
-        // Wait for page stabilization/navigation after click
-        await new Promise(r => setTimeout(r, 6000));
-        
-        /**
-         * 📸 NEURAL VISION CAPTURE
-         * Takes a full-page screenshot to serve as proof for the AI Vision layer.
-         */
-        if (!fs.existsSync('/automation/temp')) {
-            fs.mkdirSync('/automation/temp', { recursive: true });
-        }
+        if (!fs.existsSync('/home/node/.n8n-files')) fs.mkdirSync('/home/node/.n8n-files', { recursive: true });
         await page.screenshot({ path: screenshotPath, fullPage: true });
 
-        // 🔍 HEURISTIC SUCCESS CHECK
-        const content = await page.content();
-        const isSuccess = content.toLowerCase().includes('thank you') || 
-                          content.toLowerCase().includes('received') || 
-                          content.toLowerCase().includes('success');
-
-        /**
-         * 🏁 RESULT EMISSION
-         * Outputs a clean JSON string to stdout for n8n consumption.
-         */
-        const result = {
-            status: (isSuccess || actionTaken === 'Submit') ? "SUCCESS" : "MANUAL_REQUIRED",
-            neural_charge: (isSuccess || actionTaken === 'Submit'), 
-            url: url,
-            screenshot: screenshotName,
-            full_screenshot_path: screenshotPath,
-            timestamp: new Date().toISOString(),
-            action: actionTaken,
-            version: "V18.6 (Neural Ghost)"
-        };
-
-        console.log(JSON.stringify(result));
+        console.log(JSON.stringify({
+            status: applicationFinished ? "SUCCESS" : "MANUAL_REQUIRED",
+            screenshot: screenshotPath.split('/').pop(),
+            version: "V25.3 (Sovereign Shield)"
+        }));
 
     } catch (error) {
-        // ERROR LOGGING (n8n will capture this)
-        console.log(JSON.stringify({ 
-            status: "ERROR", 
-            message: error.message,
-            timestamp: new Date().toISOString()
-        }));
+        console.log(JSON.stringify({ status: "ERROR", message: error.message }));
     } finally {
-        if (browser) await browser.disconnect();
+        if (cleanser) clearInterval(cleanser);
+        if (browser) await browser.close();
+
+        // --- 🧹 VPS HEALTH: CV CLEANUP ---
+        try { if (cv && fs.existsSync(cv)) fs.unlinkSync(cv); } catch (e) {}
     }
 })();

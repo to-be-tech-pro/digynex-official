@@ -13,6 +13,7 @@ const props = defineProps({
   userProfile: Object,
   masterProfile: Object,
   allJobs: Array,
+  matches: Array,
   selectedPipelineStep: String,
   uploadedFileName: String,
   isRecalibrating: Boolean
@@ -23,14 +24,14 @@ const emit = defineEmits([
 ])
 
 const getStepCount = (step) => {
-    return props.allJobs.filter(j => j.step === step).length
+    return (props.allJobs || []).filter(j => j.step === step).length
 }
 
 const filteredJobs = computed(() => {
-    return props.allJobs.filter(j => j.step === props.selectedPipelineStep)
+    return (props.allJobs || []).filter(j => j.step === props.selectedPipelineStep)
 })
 
-// --- NEURAL ANALYTICS ENGINE (V16.9.8) ---
+// --- NEURAL ANALYTICS ENGINE (V24.2) ---
 const topMatches = computed(() => {
     if (props.matches && props.matches.length > 0) {
         return props.matches.slice(0, 3).map(m => ({
@@ -39,12 +40,7 @@ const topMatches = computed(() => {
             c: m.c
         }));
     }
-    // Fallback Specimen Data for Premium Aesthetics
-    return [
-        {n: 'Senior Data Scientist', p: 94, c: 'TechCorp'}, 
-        {n: 'Product Manager', p: 91, c: 'Innovate'}, 
-        {n: 'Lead ML Engineer', p: 83, c: 'Techwork'}
-    ];
+    return [];
 });
 
 const openJobDetail = (job) => emit('openJobDetail', job)
@@ -78,17 +74,17 @@ const handleDashboardAction = (action) => emit('handleAction', action)
        <div class="mt-2 grid grid-cols-[1fr_.5px_1fr_.5px_1fr] items-end px-1 gap-1 pb-1">
          <div class="flex flex-col items-center">
             <p class="text-[8.5px] font-bold text-white/40 mb-2 leading-none uppercase tracking-[0.05em]">{{ t('stats.activeApps') }}</p>
-            <p class="text-[22px] font-black text-white leading-none tracking-tighter">14</p>
+            <p class="text-[22px] font-black text-white leading-none tracking-tighter">{{ (allJobs || []).length }}</p>
          </div>
          <div class="h-6 w-[0.5px] bg-white/10 mb-0.5"></div>
          <div class="flex flex-col items-center">
             <p class="text-[8.5px] font-bold text-white/40 mb-2 leading-none uppercase tracking-[0.05em]">{{ t('stats.aiMatches') }}</p>
-            <p class="text-[22px] font-black text-white leading-none tracking-tighter shadow-2xl">08</p>
+            <p class="text-[22px] font-black text-white leading-none tracking-tighter shadow-2xl">{{ (matches || []).length }}</p>
          </div>
          <div class="h-6 w-[0.5px] bg-white/10 mb-0.5"></div>
          <div class="flex flex-col items-center">
             <p class="text-[8.5px] font-black text-white/40 mb-2 leading-none uppercase tracking-[0.05em] text-center font-jakarta">{{ t('stats.skillScore') }}</p>
-            <p class="text-[22px] font-black text-white leading-none tracking-tighter text-center font-jakarta">88%</p>
+            <p class="text-[22px] font-black text-white leading-none tracking-tighter text-center font-jakarta">{{ masterProfile?.ats_score || '88%' }}</p>
          </div>
        </div>
 

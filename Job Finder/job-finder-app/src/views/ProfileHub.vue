@@ -63,7 +63,7 @@ const hasCVData = computed(() => {
             <ArrowRight class="w-3.5 h-3.5 text-amber-500/40 group-hover:translate-x-1 transition-transform" />
          </div>
 
-         <div :class="{ 'filter blur-[10px] select-none pointer-events-none opacity-40': !isAuthenticated }" class="space-y-3">
+          <div :class="{ 'filter blur-[2px] select-none pointer-events-none opacity-50': !internalAuth }" class="space-y-3 transition-all duration-300">
 
         
         <!-- AI GENERATOR HUB (PACKED ELITE CARD) -->
@@ -187,6 +187,25 @@ const hasCVData = computed(() => {
            <span class="text-[11.5px] font-black text-[#0A2647] uppercase tracking-[0.2em] relative z-10">{{ isSavingProfile ? 'UPDATING...' : 'SAVE EXPERT IDENTITY' }}</span>
            <ShieldCheck v-if="!isSavingProfile" class="w-3.5 h-3.5 text-[#0A2647]/40" />
         </button>
+
+        <!-- NEURAL SECURITY TRUST BANNER (PHASE 4) -->
+        <div class="mx-2 mt-4 p-5 bg-[#0A2647]/40 backdrop-blur-2xl border border-[#C1A172]/30 rounded-[2.5rem] shadow-2xl flex flex-col gap-3 relative overflow-hidden">
+           <div class="absolute top-0 right-0 p-4 opacity-5 pointer-events-none">
+              <ShieldCheck class="w-24 h-24 text-[#C1A172]" />
+           </div>
+           <div class="flex items-center gap-3">
+              <div class="bg-[#C1A172] p-2 rounded-xl shadow-[0_0_15px_#C1A172]">
+                 <Lock class="w-4 h-4 text-[#0A2647]" />
+              </div>
+              <div class="flex flex-col">
+                 <span class="text-[10px] font-black text-white uppercase tracking-widest leading-none">Military Grade Security</span>
+                 <span class="text-[7px] font-bold text-[#C1A172] uppercase tracking-[0.2em] mt-1">AES-256 Neural Vault Active</span>
+              </div>
+           </div>
+           <p class="text-[9px] font-bold text-white/40 uppercase tracking-widest leading-relaxed">
+              Your LinkedIn session cookies are encrypted with a single-use key and stored ephemerally. Data is permanently purged from our neural pipe immediately after each successful application cycle.
+           </p>
+        </div>
 
         <!-- GOVERNANCE SYSTEM (MULTI-CARD) -->
         <div class="mt-4 mb-10 space-y-2.5 px-2">
