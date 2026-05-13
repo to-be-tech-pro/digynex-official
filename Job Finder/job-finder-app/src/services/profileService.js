@@ -94,20 +94,27 @@ export const profileService = {
 
       const safeUrl = getSafeUrl(details?.job_url);
 
+      // 🌐 NEURAL DEBUG: See exactly what leaves the browser
+      console.log(`[NEURAL_PULSE] Dispatching to n8n:`, { action: actionId, url: safeUrl });
+
       const response = await fetch(webhookUrl, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          // 🏁 Flat Structure: Optimized for n8n Webhook node (which wraps in 'body' automatically)
+          // 🏁 Flat Structure: Optimized for n8n Webhook node
           action: actionId,
           user_id: userId,
           job_url: safeUrl,
+          url: safeUrl, // 👈 Redundancy for different n8n nodes
+          u: safeUrl,   // 👈 Shorthand redundancy
           location: mappedLocation,
           
           // 📦 Details: Nested correctly for Cookie Prep node's JS logic
           details: {
              ...details,
-             job_url: safeUrl
+             job_url: safeUrl,
+             url: safeUrl,
+             u: safeUrl
           },
           
           // 🔑 Credentials: Flat for direct mapping
