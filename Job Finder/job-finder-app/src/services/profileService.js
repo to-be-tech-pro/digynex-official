@@ -92,13 +92,18 @@ export const profileService = {
           action: actionId,
           user_id: userId,
           job_url: details?.job_url || "https://www.linkedin.com/jobs/",
+          location: mappedLocation,
           
           // 📦 Level 2: Wrapped 'body' object for Cookie Prep node
           body: {
             action: actionId,
             user_id: userId,
-            job_url: details?.job_url || "https://www.linkedin.com/jobs/",
-            details: details,
+            job_url: details?.job_url || "https://www.linkedin.com/jobs/", // 👈 Ensuring it's here
+            location: mappedLocation,
+            details: {
+               ...details,
+               job_url: details?.job_url || "https://www.linkedin.com/jobs/" // 👈 AND here for deep nested checks
+            },
             cookie: details?.linkedin_session || "",
             jsessionid: details?.linkedin_jsessionid || ""
           },
@@ -166,6 +171,12 @@ export const profileService = {
         // 🛡️ Neural Identity Hardening: Fallback through all possible identity sources
         const resolvedEmail = user?.email || profile?.email || "amilawijayantha858@gmail.com"; 
         
+        // Final safety check to prevent unknown identity propagation
+        if (!resolvedEmail || resolvedEmail.includes('unknown')) {
+            console.error("🚨 NEURAL BRIDGE: Identity Resolution Failed. Dispatch aborted.");
+            return { ok: false, status: 'ID_RESOLUTION_FAILED', message: 'User profile not ready. Please refresh.' };
+        }
+
         const payload = {
             action: 'JOB_APPLY',
             job_url: job?.u || job?.url || "https://www.linkedin.com/jobs/", // Strategic Fallback
