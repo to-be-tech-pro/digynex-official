@@ -98,27 +98,23 @@ export const profileService = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
-          // 🏁 Level 1: Flat keys for Master Router & direct n8n access
+          // 🏁 Flat Structure: Optimized for n8n Webhook node (which wraps in 'body' automatically)
           action: actionId,
           user_id: userId,
           job_url: safeUrl,
           location: mappedLocation,
           
-          // 📦 Level 2: Wrapped 'body' object for Cookie Prep node
-          body: {
-            action: actionId,
-            user_id: userId,
-            job_url: safeUrl,
-            location: mappedLocation,
-            details: {
-               ...details,
-               job_url: safeUrl
-            },
-            cookie: details?.linkedin_session || "",
-            jsessionid: details?.linkedin_jsessionid || ""
+          // 📦 Details: Nested correctly for Cookie Prep node's JS logic
+          details: {
+             ...details,
+             job_url: safeUrl
           },
           
-          // 📑 Level 3: Extra metadata
+          // 🔑 Credentials: Flat for direct mapping
+          cookie: details?.linkedin_session || "",
+          jsessionid: details?.linkedin_jsessionid || "",
+          
+          // 📑 Metadata
           timestamp: new Date().toISOString(),
           user_uuid: details?.user_uuid || null
         })
